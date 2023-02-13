@@ -1,4 +1,4 @@
-namespace EVV.Models
+namespace CGI.Models
 {
     public class ErrorViewModel
     {

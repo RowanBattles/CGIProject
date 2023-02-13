@@ -1,8 +1,8 @@
 ﻿using System.Diagnostics;
-using EVV.Models;
+using CGI.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace EVV.Controllers
+namespace CGI.Controllers
 {
     public class HomeController : Controller
     {

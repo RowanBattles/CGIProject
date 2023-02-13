@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33122.133
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EVV", "EVV\EVV.csproj", "{9C10376B-A257-4357-9FE3-0BFC04B41DBD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CGI", "CGI\CGI.csproj", "{AEC03523-8D24-4A48-B8F5-51184161BEC2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{9C10376B-A257-4357-9FE3-0BFC04B41DBD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9C10376B-A257-4357-9FE3-0BFC04B41DBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9C10376B-A257-4357-9FE3-0BFC04B41DBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9C10376B-A257-4357-9FE3-0BFC04B41DBD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AEC03523-8D24-4A48-B8F5-51184161BEC2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AEC03523-8D24-4A48-B8F5-51184161BEC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AEC03523-8D24-4A48-B8F5-51184161BEC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AEC03523-8D24-4A48-B8F5-51184161BEC2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {9430C19C-D1B1-4863-8B9A-38DD768F3CDD}
+		SolutionGuid = {70DC98B6-37FE-42AA-8ABA-AD01097D64C9}
 	EndGlobalSection
 EndGlobal
