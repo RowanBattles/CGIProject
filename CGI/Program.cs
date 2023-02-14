@@ -14,6 +14,12 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
 
+// Convert URL to lowercase
+builder.Services.Configure<RouteOptions>(options =>
+{
+    options.LowercaseUrls = true;
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
