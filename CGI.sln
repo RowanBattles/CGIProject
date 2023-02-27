@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.4.33122.133
+VisualStudioVersion = 17.4.33403.182
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CGI", "CGI\CGI.csproj", "{AEC03523-8D24-4A48-B8F5-51184161BEC2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CGI", "CGI\CGI.csproj", "{5B4181FC-07FA-4A39-816B-09E278B46417}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{AEC03523-8D24-4A48-B8F5-51184161BEC2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AEC03523-8D24-4A48-B8F5-51184161BEC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AEC03523-8D24-4A48-B8F5-51184161BEC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AEC03523-8D24-4A48-B8F5-51184161BEC2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B4181FC-07FA-4A39-816B-09E278B46417}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B4181FC-07FA-4A39-816B-09E278B46417}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B4181FC-07FA-4A39-816B-09E278B46417}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B4181FC-07FA-4A39-816B-09E278B46417}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {70DC98B6-37FE-42AA-8ABA-AD01097D64C9}
+		SolutionGuid = {1329998E-7C32-464A-9E06-42D5881FB20C}
 	EndGlobalSection
 EndGlobal
