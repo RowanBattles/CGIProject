@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using CGI.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CGI.Controllers
 {
@@ -13,6 +14,7 @@ namespace CGI.Controllers
             _logger = logger;
         }
 
+        [Authorize]
         public IActionResult Index()
         {
             return View();
