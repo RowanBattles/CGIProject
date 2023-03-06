@@ -1,8 +1,91 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿    @{
+        ViewData["Title"] = "Home Page";
+    }
 
-<div class="text-center">
-    <h1 class="display-4">PROLIEUMMMMM!!! LETSGOO!</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+    <div class="text-center">
+    </div>
+
+    <div class="grid grid-cols-3 gap-4">
+        <div class="cols-span-1">
+            <br />
+            <button onclick="location.href='./home/createjourney';" class="text-2xl text-white border-white " style="border: 5px solid; padding: 20px; background-color: black; width: 250px; height: 100px;">
+                Create Journey
+            </button>
+            <br />
+            <button onclick="location.href='./home/test';" class="text-2xl text-white border-white" style="border: 5px solid; padding: 20px; background-color: black; width: 250px; height: 100px;">
+                Manage Journeys
+            </button>
+            <br />
+            <button onclick="location.href='./home/privacy';" class="text-2xl text-white border-white" style="border: 5px solid; padding: 20px; background-color: black; width: 250px; height: 100px;">
+                Manage Groups
+            </button>
+        </div>
+        <div class="cols-span-1">
+            <h1 class="text-4xl text-center" style="line-height: 4;">Hello &user</h1>
+        </div>
+        <div class="cols-span-1 h-screen grid grid-rows-3">
+            <div class="row-span-1 border-4 border-black">
+                <div class="grid grid-cols-3 text-2xl">
+                    <div class="grid grid-rows-2">
+                        <p class="h-10 text-center">Joost Raemakers</p>
+                        <div class ="text-center" style="background-color: saddlebrown; height:166px;">#3</div>
+                    </div>
+                    <div class="grid grid-rows-2">
+                        <p class="h-10 text-center">Jonathan Kat</p>
+                        <div class="text-center" style="background-color: goldenrod; height:166px;">#1</div>
+                    </div>
+                    <div class="grid grid-rows-2">
+                        <p class="h-10 text-center">Rowan Battles</p>
+                        <div class ="text-center"style="background-color: silver; height:166px;">#2</div>
+                    </div>
+                </div>
+                
+            </div>
+            <div class="row-span-2 border-l-4 border-b-4 border-r-4 border-black">
+                <div class="grid grid-cols-3">
+                    <div class="cols-span-1 grid-rows-12 text-xl">
+                        <p class="mb-3">#4 -</p>
+                        <p class="mb-3">#5 -</p>
+                        <p class="mb-3">#6 -</p>
+                        <p class="mb-3">#7 -</p>
+                        <p class="mb-3">#8 -</p>
+                        <p class="mb-3">#9 -</p>
+                        <p class="mb-3">#10 -</p>
+                        <p class="mb-3">#11 -</p>
+                        <p class="mb-3">#12 -</p>
+                        <p class="mb-3">#13 -</p>
+                        <p class="mb-3">#14 -</p>
+                        <p class="mb-3">#15 -</p>
+                    </div>
+                    <div class="cols-span-1 grid-rows-12 text-xl">
+                        <p class="mb-3">Name</p>
+                        <p class="mb-3">Name</p>
+                        <p class="mb-3">Name</p>
+                        <p class="mb-3">Name</p>
+                        <p class="mb-3">Name</p>
+                        <p class="mb-3">Name</p>
+                        <p class="mb-3">Name</p>
+                        <p class="mb-3">Name</p>
+                        <p class="mb-3">Name</p>
+                        <p class="mb-3">Name</p>
+                        <p class="mb-3">Name</p>
+                        <p class="mb-3">Name</p>
+                    </div>
+                    <div class="cols-span-1 grid-rows-12 text-xl">
+                        <p class="mb-3">Score</p>
+                        <p class="mb-3">Score</p>
+                        <p class="mb-3">Score</p>
+                        <p class="mb-3">Score</p>
+                        <p class="mb-3">Score</p>
+                        <p class="mb-3">Score</p>
+                        <p class="mb-3">Score</p>
+                        <p class="mb-3">Score</p>
+                        <p class="mb-3">Score</p>
+                        <p class="mb-3">Score</p>
+                        <p class="mb-3">Score</p>
+                        <p class="mb-3">Score</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
