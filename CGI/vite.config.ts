@@ -7,7 +7,7 @@ export default defineConfig({
         manifest: true,
         rollupOptions: {
             input: {
-                main: './wwwroot/js/site.js',
+                site: './wwwroot/js/site.js',
             },
         },
     },
