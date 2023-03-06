@@ -13,14 +13,14 @@
     </environment>
 
     <environment names="Staging,Production">
+        <script type="module" asp-src-include="~/build/assets/main-*.js"></script>
+        <link rel="stylesheet" asp-href-include="~/build/assets/site-*.css">
     </environment>
 </head>
 <body>
-    <div class="container">
-        <main role="main" class="">
-            @RenderBody()
-        </main>
-    </div>
+    <main role="main">
+        @RenderBody()
+    </main>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
