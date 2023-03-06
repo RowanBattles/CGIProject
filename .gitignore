@@ -400,4 +400,6 @@ FodyWeavers.xsd
 
 # Vite build output
 cgi/wwwroot/build/
+
+# Lock files
 *.lock
