@@ -403,3 +403,4 @@ cgi/wwwroot/build/
 
 # Lock files
 *.lock
+/CGI/package-lock.json
