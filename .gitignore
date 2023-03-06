@@ -399,8 +399,8 @@ FodyWeavers.xsd
 *.sln.iml
 
 # Vite build output
-cgi/wwwroot/build/
+**/build/
 
 # Lock files
 *.lock
-/CGI/package-lock.json
+*-lock.json
