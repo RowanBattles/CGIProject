@@ -8,6 +8,8 @@
     <environment names="Development">
         <script type="module" src="http://localhost:5173/@@vite/client"></script>
         <script type="module" src="http://localhost:5173/wwwroot/js/site.js"></script>
+        <script src="https://cdn.tailwindcss.com"></script>
+
     </environment>
 
     <environment names="Staging,Production">
@@ -15,11 +17,9 @@
     </environment>
 </head>
 <body>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
+    <main role="main">
+        @RenderBody()
+    </main>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
