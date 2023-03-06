@@ -1,8 +1,76 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿<link rel="stylesheet" href="~/css/site.css">
 
-<div class="text-center">
-    <h1 class="display-4">PROLIEUMMMMM!!! LETSGOO!</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<nav class="bg-gray-100 shadow-lg">
+    <div class="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8">
+        <div class="flex justify-between h-16">
+            <div class="flex-shrink-0 flex items-center">
+                <a href="#" class="font-bold text-xl text-gray-800">My App</a>
+            </div>
+            <div class="hidden sm:block sm:ml-6">
+                <div class="flex space-x-4">
+                    <div class="relative">
+                        <button type="button" class="nav-button">
+                            <span>Home</span>
+                            <svg class="h-4 w-4 ml-1" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd"
+                                      d="M10 12l-8-8 1.5-1.5L10 9.8l6.5-6.5L18 4l-8 8zm0 4l-8-8 1.5-1.5L10 13.8l6.5-6.5L18 8l-8 8z"
+                                      clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                        <div class="dropdown-menu absolute hidden bg-white rounded-lg shadow-lg z-10">
+                            <a href="@Url.Action("Index", "Home")"
+                               class="block px-4 py-2 text-gray-800 hover:bg-gray-200 hover:text-gray-900">Index</a>
+                            <a href="@Url.Action("About", "Home")"
+                               class="block px-4 py-2 text-gray-800 hover:bg-gray-200 hover:text-gray-900">About</a>
+                            <a href="@Url.Action("Contact", "Home")"
+                               class="block px-4 py-2 text-gray-800 hover:bg-gray-200 hover:text-gray-900">Contact</a>
+                        </div>
+                    </div>
+                    <div class="relative">
+                        <button type="button" class="nav-button">
+                            <span>Journeys</span>
+                            <svg class="h-4 w-4 ml-1" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd"
+                                      d="M10 12l-8-8 1.5-1.5L10 9.8l6.5-6.5L18 4l-8 8zm0 4l-8-8 1.5-1.5L10 13.8l6.5-6.5L18 8l-8 8z"
+                                      clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                        <div class="dropdown-menu absolute hidden bg-white rounded-lg shadow-lg z-10">
+                            <a href="@Url.Action("Index", "Journey")"
+                               class="block px-4 py-2 text-gray-800 hover:bg-gray-200 hover:text-gray-900">All Journeys</a>
+                            <a href="@Url.Action("Create", "Journey")"
+                               class="block px-4 py-2 text-gray-800 hover:bg-gray-200 hover:text-gray-900">Create Journey</a>
+                            <a href="@Url.Action("Edit", "Journey", new { id = 1 })"
+                               class="block px-4 py-2 text-gray-800 hover:bg-gray-200 hover:text-gray-900">Edit Journey</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<style>
+    .dropdown-menu {
+        top: 2.5rem;
+        right: 0;
+        min-width: 10rem;
+    }
+
+    .nav-button {
+        background-color: transparent;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        font-size: 1rem;
+        font-weight: 500;
+        line-height: 1.5rem;
+        padding: 0.5rem 1rem;
+        transition: background-color 0.2s ease-in-out;
+    }
+
+    .nav-button:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+    }
+</style>
+
