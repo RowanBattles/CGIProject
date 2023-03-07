@@ -3,10 +3,7 @@
 }
 
 <style>
-    body {
-        overflow: hidden;
-        height: 100%;
-    }
+
     h1 {
         font-size: 2rem;
         font-weight: 800;
@@ -41,7 +38,7 @@
             </li>
         </ul>
     </div>
-    <div class="relative overflow-hidden flex-1 pb-4 custom-font">
+    <div class="relative overflow-hidden flex-1 custom-font">
         <div class="px-4 py-2 bg-gray-300 text-center">
             <h1>Journey Information</h1>
         </div>
@@ -62,8 +59,8 @@
         <div class="px-4 py-2">
             <h3>Stopovers:</h3>
         </div>
-        <div class="px-4 py-2 border-t-2 border-black">
-            <ul class="stopovers-list overflow-y-scroll max-h-500">
+        <div class="px-4 py-2 border-t-2 border-black overflow-y-scroll max-h-96">
+            <ul class="stopovers-list">
                 <li class="border-b-2 border-black px-2 py-1">
                     <div class="mt-2">
                         <h2>Stopover 1:</h2>
@@ -75,54 +72,6 @@
                         <p class="inline-block">Vehicle:</p>
                         <p class="inline-block">Car (diesel)</p>
                     </div>        
-                </li>
-                <li class="border-b-2 border-black px-2 py-1">
-                    <div class="mt-2">
-                        <h2>Stopover 1:</h2>
-                        <p class="inline-block">Distance:</p>
-                        <p class="inline-block">42.32</p>
-                        <p class="inline-block">km</p>
-                    </div>
-                    <div class="mb-2">
-                        <p class="inline-block">Vehicle:</p>
-                        <p class="inline-block">Train</p>
-                    </div>
-                </li>
-                <li class="border-b-2 border-black px-2 py-1">
-                    <div class="mt-2">
-                        <h2>Stopover 1:</h2>
-                        <p class="inline-block">Distance:</p>
-                        <p class="inline-block">42.32</p>
-                        <p class="inline-block">km</p>
-                    </div>
-                    <div class="mb-2">
-                        <p class="inline-block">Vehicle:</p>
-                        <p class="inline-block">Train</p>
-                    </div>
-                </li>
-                <li class="border-b-2 border-black px-2 py-1">
-                    <div class="mt-2">
-                        <h2>Stopover 1:</h2>
-                        <p class="inline-block">Distance:</p>
-                        <p class="inline-block">42.32</p>
-                        <p class="inline-block">km</p>
-                    </div>
-                    <div class="mb-2">
-                        <p class="inline-block">Vehicle:</p>
-                        <p class="inline-block">Train</p>
-                    </div>
-                </li>
-                <li class="border-b-2 border-black px-2 py-1">
-                    <div class="mt-2">
-                        <h2>Stopover 1:</h2>
-                        <p class="inline-block">Distance:</p>
-                        <p class="inline-block">42.32</p>
-                        <p class="inline-block">km</p>
-                    </div>
-                    <div class="mb-2">
-                        <p class="inline-block">Vehicle:</p>
-                        <p class="inline-block">Train</p>
-                    </div>
                 </li>
                 <li class="border-b-2 border-black px-2 py-1">
                     <div class="mt-2">
@@ -157,3 +106,4 @@
         });
     });
 </script>
+
