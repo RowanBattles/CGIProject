@@ -7,7 +7,6 @@ namespace CGI.Controllers
     public class UserController : Controller
     {
         private readonly string _connectionString;
-
         public UserController(IConfiguration configuration)
         {
             _connectionString = configuration.GetConnectionString("DefaultConnection");
@@ -15,8 +14,7 @@ namespace CGI.Controllers
 
         public IActionResult Index()
         {
-            // Fetch all journeys from the database
-            List<Journey> journeys = new List<Journey>();
+            List<User> users = new List<User>();
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
@@ -30,26 +28,19 @@ namespace CGI.Controllers
 
                     while (reader.Read())
                     {
-                        Journey journey = new Journey
+                        User user = new User
                         {
-                            JourneyID = (int)reader["Journey_ID"],
-                            UserID = (int)reader["User_ID"],
-                            TotalDistance = (int)reader["Total_Distance"],
-                            TotalEmission = (int)reader["Total_Emission"],
-                            Start = (string)reader["Start"],
-                            End = (string)reader["End"],
-                            Date = (DateTime)reader["Date"]
+                            ID = (int)reader["User_ID"]
                         };
 
-                        journeys.Add(journey);
+                        users.Add(user);
                     }
 
                     reader.Close();
                 }
             }
 
-            // Pass the list of journeys to the view
-            return View(journeys);
+            return View(users);
         }
     }
 }

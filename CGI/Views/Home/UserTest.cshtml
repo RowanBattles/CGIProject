@@ -1,34 +1,19 @@
-﻿@model UsersViewModel
+﻿@model List<User>
 
-    @{
-        Layout = null;
-    }
+<h1>User List</h1>
 
-    <!DOCTYPE html>
-
-    <html>
-    <head>
-        <meta name="viewport" content="width=device-width" />
-        <title>User Test</title>
-    </head>
-    <body>
-    <h1>User Test</h1>
-    <table>
-        <thead>
+<table>
+    <thead>
         <tr>
             <th>ID</th>
-            <th>Name</th>
         </tr>
-        </thead>
-        <tbody>
-            @foreach (var User in Model.Users)
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
         {
             <tr>
-                <td>@User.ID</td>
-                <td>@User.Name</td>
+                <td>@user.ID</td>
             </tr>
         }
-        </tbody>
-    </table>
-    </body>
-    </html>
+    </tbody>
+</table>

@@ -1,0 +1,26 @@
+﻿
+@model List<Journey>
+
+<h1>Journeys</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>Id</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var journey in Model)
+        {
+            <tr>
+                <td>@journey.JourneyID</td>
+                <td>@journey.UserID</td>
+                <td>@journey.TotalDistance</td>
+                <td>@journey.TotalEmission</td>
+                <td>@journey.Start</td>
+                <td>@journey.End</td>
+                <td>@journey.Date.ToShortDateString()</td>
+            </tr>
+        }
+    </tbody>
+</table>
