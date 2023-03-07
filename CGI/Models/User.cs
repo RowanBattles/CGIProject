@@ -2,14 +2,9 @@
 {
     public class User
     {
-        private int ID { get; set; }
+        public int ID { get; set; }
 
-        private int Score { get; set; }
-
-        public User(int iD, int score)
-        {
-            this.ID = iD;
-            this.Score = score;
-        }
+        public int Score { get; set; }
+        public string Name { get; set; }
     }
 }
