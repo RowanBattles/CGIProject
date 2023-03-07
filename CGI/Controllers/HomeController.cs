@@ -19,16 +19,6 @@ namespace CGI.Controllers
             return View();
         }
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
-        public IActionResult Test()
-        {
-            return View();
-        }
-
         public IActionResult CreateJourney()
         {
             return View();
