@@ -19,15 +19,6 @@ namespace CGI.Controllers
             return View();
         }
 
-        public IActionResult CreateJourney()
-        {
-            return View();
-        }
-
-        public IActionResult ManageJourney()
-        {
-            return View();
-        }
         public IActionResult UserTest()
         {
             return View();
