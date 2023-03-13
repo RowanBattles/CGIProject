@@ -37,3 +37,7 @@ h5 {
 h6 {
     @apply text-xs font-extralight;
 }
+
+active {
+    @apply bg-green-300;
+}

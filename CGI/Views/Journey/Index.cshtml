@@ -73,12 +73,12 @@
 
     liElements.forEach(li => {
         li.addEventListener('click', () => {
-            // Remove the active class from all the li elements of the first ul list
+            // Remove the active class from all the li elements of the first ul list.
                 liElements.forEach(li => {
                     li.classList.remove('active');
                 });
 
-                // Add the active class to the clicked li element
+                // Add the active class to the clicked li element.
                 li.classList.add('active');
         });
     });
