@@ -3,10 +3,10 @@ DELETE FROM [dbo].[Journeys];
 DELETE FROM [dbo].[Stopovers];
 DELETE FROM [dbo].[Users];
 
-DBCC CHECKIDENT ('[dbo].[Categories]', RESEED, 1);
-DBCC CHECKIDENT ('[dbo].[Journeys]', RESEED, 1);
-DBCC CHECKIDENT ('[dbo].[Stopovers]', RESEED, 1);
-DBCC CHECKIDENT ('[dbo].[Users]', RESEED, 1);
+DBCC CHECKIDENT ('[dbo].[Categories]', RESEED, 0);
+DBCC CHECKIDENT ('[dbo].[Journeys]', RESEED, 0);
+DBCC CHECKIDENT ('[dbo].[Stopovers]', RESEED, 0);
+DBCC CHECKIDENT ('[dbo].[Users]', RESEED, 0);
 
 INSERT INTO [dbo].[Users] ([UUID])
 VALUES 
