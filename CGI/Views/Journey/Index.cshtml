@@ -9,7 +9,7 @@
             @foreach (var journey in Model) 
             {
                 <li class="border-b-2 border-black px-2 py-1 cursor-pointer hover:bg-green-400 active:bg-green-300">
-                    <h2>@journey.Start - @journey.End | @journey.Date</h2>
+                    <h2>@journey.Start - @journey.End | @journey.Date.ToShortDateString()</h2>
                     <p>Totale afstand: @journey.TotalDistance km</p>
                 </li>
             }

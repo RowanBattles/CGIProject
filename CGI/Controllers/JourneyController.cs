@@ -237,7 +237,7 @@ namespace CGI.Controllers
                             TotalEmission = (int)reader["Total_Emission"],
                             Start = (string)reader["Start"],
                             End = (string)reader["End"],
-                            Date = ((DateTime)reader["Date"]).Date
+                            Date = (DateTime)reader["Date"]
                         };
                     }
 
