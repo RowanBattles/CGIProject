@@ -1,7 +1,7 @@
 ﻿
-@model List<Journey>
+@model List<User>
 
-<h1>Journeys</h1>
+<h1>Users:</h1>
 
 <table>
     <thead>
@@ -10,16 +10,10 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var journey in Model)
+        @foreach (var user in Model)
         {
             <tr>
-                <td>@journey.JourneyID</td>
-                <td>@journey.UserID</td>
-                <td>@journey.TotalDistance</td>
-                <td>@journey.TotalEmission</td>
-                <td>@journey.Start</td>
-                <td>@journey.End</td>
-                <td>@journey.Date.ToShortDateString()</td>
+                <td>@user.ID</td>
             </tr>
         }
     </tbody>
