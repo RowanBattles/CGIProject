@@ -8,19 +8,11 @@
         <ul>
             @foreach (var journey in Model) 
             {
-                <li class="border-b-2 border-black px-2 py-1 cursor-pointer hover:bg-green-400 active:bg-green-300">
+                <li class="border-b-2 border-black px-2 py-1 cursor-pointer hover:bg-green-400 active:bg-green-300" data-journey-id="@journey.JourneyID">
                     <h2>@journey.Start - @journey.End | @journey.Date</h2>
-                    <p>Totale afstand: @journey.TotalDistance km</p>
+                    <p>Totale afstand: @journey.TotalDistance km | @journey.JourneyID</p>
                 </li>
             }
-            <li class="border-b-2 border-black px-2 py-1 cursor-pointer hover:bg-green-400 active:bg-green-300">
-                <h2>1e Rit | 06-03-2023</h2>
-                <p>5.64 km | Auto (diesel)</p>
-            </li>
-            <li class="border-b-2 border-black px-2 py-1 cursor-pointer hover:bg-green-400 active:bg-green-300">
-                <h2>&lt;Titel&gt; | &lt;Datum&gt;</h2>
-                <p>&lt;Aantal&gt; km | &lt;1e vervoer&gt;</p>
-            </li>
         </ul>
     </div>
     <div class="relative overflow-hidden flex-1 custom-font">
@@ -44,7 +36,7 @@
         <div class="px-4 py-2">
             <h3>Stopovers:</h3>
         </div>
-        <div class="px-4 py-2 border-t-2 border-black overflow-y-scroll max-h-96">
+        @*<div class="px-4 py-2 border-t-2 border-black overflow-y-scroll max-h-96">
             <ul class="stopovers-list">
                 <li class="border-b-2 border-black px-2 py-1">
                     <div class="mt-2">
@@ -71,7 +63,7 @@
                     </div>
                 </li>
             </ul>
-        </div>
+        </div>*@
     </div>
 </div>
 
@@ -88,6 +80,10 @@
 
             // Add the active class to the clicked li element.
             li.classList.add('active');
+
+            // Get the ID of the clicked journey.
+            const journeyId = li.dataset.journeyId;
+            console.log(journeyId); // Replace this with your desired functionality.
         });
     });
 </script>
