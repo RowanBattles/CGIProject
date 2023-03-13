@@ -270,6 +270,9 @@ ServiceFabricBackup/
 *.ldf
 *.ndf
 
+#Jonathan Connectionstring
+*appsettings.json
+
 # Business Intelligence projects
 *.rdl.data
 *.bim.layout
