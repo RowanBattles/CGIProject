@@ -1,3 +1,5 @@
+USE [evv]
+
 SET IDENTITY_INSERT evv.dbo.Journeys off;
 SET IDENTITY_INSERT evv.dbo.Users on;
 DELETE FROM evv.dbo.Users WHERE User_ID = 1;

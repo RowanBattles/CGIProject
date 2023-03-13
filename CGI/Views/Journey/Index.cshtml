@@ -1,10 +1,18 @@
-﻿@{
+﻿@model List<Journey>
+@{
     ViewData["Title"] = "Manage Journey";
 }
 
 <div class="flex">
     <div class="border-2 border-black overflow-y-auto h-screen w-1/4">
         <ul>
+            @foreach (var journey in Model) 
+            {
+                <li class="border-b-2 border-black px-2 py-1 cursor-pointer hover:bg-green-400 active:bg-green-300">
+                    <h2>@journey.Start - @journey.End | @journey.Date</h2>
+                    <p>Totale afstand: @journey.TotalDistance km</p>
+                </li>
+            }
             <li class="border-b-2 border-black px-2 py-1 cursor-pointer hover:bg-green-400 active:bg-green-300">
                 <h2>1e Rit | 06-03-2023</h2>
                 <p>5.64 km | Auto (diesel)</p>

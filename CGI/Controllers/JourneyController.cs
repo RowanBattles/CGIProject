@@ -1,6 +1,7 @@
 ﻿using CGI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using System.Data.SqlTypes;
 
 
 namespace CGI.Controllers
@@ -39,7 +40,7 @@ namespace CGI.Controllers
                             TotalEmission = (int)reader["Total_Emission"],
                             Start = (string)reader["Start"],
                             End = (string)reader["End"],
-                            Date = (DateTime)reader["Date"]
+                            Date = ((DateTime)reader["Date"]).Date
                         };
 
                         journeys.Add(journey);
@@ -63,6 +64,7 @@ namespace CGI.Controllers
                 connection.Open();
 
                 string sql = "SELECT * FROM Journeys WHERE Journey_ID = @JourneyID";
+ 
 
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
@@ -80,16 +82,17 @@ namespace CGI.Controllers
                             TotalEmission = (int)reader["Total_Emission"],
                             Start = (string)reader["Start"],
                             End = (string)reader["End"],
-                            Date = (DateTime)reader["Date"]
+                            Date = ((DateTime)reader["Date"]).Date
                         };
                     }
 
                     reader.Close();
                 }
             }
+            
 
-            // If the journey is not found, return a 404 error
-            if (journey == null)
+                // If the journey is not found, return a 404 error
+                if (journey == null)
             {
                 return NotFound();
             }
@@ -161,7 +164,7 @@ namespace CGI.Controllers
                             TotalEmission = (int)reader["Total_Emission"],
                             Start = (string)reader["Start"],
                             End = (string)reader["End"],
-                            Date = (DateTime)reader["Date"]
+                            Date = ((DateTime)reader["Date"]).Date
                         };
                     }
 
@@ -234,7 +237,7 @@ namespace CGI.Controllers
                             TotalEmission = (int)reader["Total_Emission"],
                             Start = (string)reader["Start"],
                             End = (string)reader["End"],
-                            Date = (DateTime)reader["Date"]
+                            Date = ((DateTime)reader["Date"]).Date
                         };
                     }
 
