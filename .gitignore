@@ -271,7 +271,7 @@ ServiceFabricBackup/
 *.ndf
 
 #Jonathan Connectionstring
-*appsettings.json
+appsettings.json
 
 # Business Intelligence projects
 *.rdl.data
