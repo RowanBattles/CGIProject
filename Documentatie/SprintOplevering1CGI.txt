@@ -56,7 +56,7 @@ Leren we van fouten
 Team Building door McDonald's, en vanalles.
 
 // Volgende Sprint:
-Paginas goed werkend
+Werkende create pagina
 Formule voor de Score
 
 Focussen op de volgende dingen:
