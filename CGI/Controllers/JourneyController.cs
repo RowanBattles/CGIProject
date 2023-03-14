@@ -17,20 +17,89 @@ namespace CGI.Controllers
 
         public IActionResult Index()
         {
-            // Fetch all journeys from the database
             List<Journey> journeys = new List<Journey>();
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
 
-                string sql = "SELECT * FROM Journeys";
+                string sql = @"SELECT j.Journey_ID, j.User_ID, j.Start, j.[End], j.Date, s.Stopover_ID, s.Vehicle_ID, s.Distance, s.Start, s.[End], s.Emission, SUM(s.Distance) OVER (PARTITION BY j.Journey_ID) AS Total_Distance, SUM(s.Emission) OVER (PARTITION BY j.Journey_ID) AS Total_Emission FROM Journeys j JOIN Stopovers s ON j.Journey_ID = s.Journey_ID ORDER BY j.Date DESC";
+
+
+                SqlCommand command = new SqlCommand(sql, connection);
+                SqlDataReader reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    int journeyID = (int)reader["Journey_ID"];
+                    Journey journey = journeys.FirstOrDefault(j => j.JourneyID == journeyID);
+
+                    if (journey == null)
+                    {
+                        journey = new Journey
+                        {
+                            JourneyID = journeyID,
+                            UserID = (int)reader["User_ID"],
+                            TotalDistance = (int)reader["Total_Distance"],
+                            TotalEmission = (int)reader["Total_Emission"],
+                            Start = (string)reader["Start"],
+                            End = (string)reader["End"],
+                            Date = ((DateTime)reader["Date"]).Date,
+                            Stopovers = new List<Stopover>()
+                        };
+                        journeys.Add(journey);
+                    }
+
+                    Stopover stopover = new Stopover
+                    {
+                        StopoverID = (int)reader["Stopover_ID"],
+                        JourneyID = journeyID,
+                        VehicleID = (int)reader["Vehicle_ID"],
+                        Distance = (int)reader["Distance"],
+                        Start = (string)reader["Start"],
+                        End = (string)reader["End"],
+                        Emission = (int)reader["Emission"],
+                    };
+
+                    journey.Stopovers.Add(stopover);
+                }
+
+                reader.Close();
+            }
+
+            return View(journeys);
+        }
+
+
+        public IActionResult Details(int id)
+        {
+            // Fetch a specific journey from the database
+            Journey journey = GetJourneyById(id);
+
+            if (journey == null)
+            {
+                return NotFound();
+            }
+
+            journey.Stopovers = GetStopoversForJourney(id);
+            return View(journey);
+        }
+
+        private Journey GetJourneyById(int id)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                string sql = "SELECT * FROM Journeys WHERE Journey_ID = @JourneyID";
 
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
+                    command.Parameters.AddWithValue("@JourneyID", id);
+
                     SqlDataReader reader = command.ExecuteReader();
 
-                    while (reader.Read())
+                    if (reader.Read())
                     {
                         Journey journey = new Journey
                         {
@@ -43,62 +112,51 @@ namespace CGI.Controllers
                             Date = ((DateTime)reader["Date"]).Date
                         };
 
-                        journeys.Add(journey);
-                    }
+                        reader.Close();
 
-                    reader.Close();
+                        return journey;
+                    }
                 }
             }
-
-            // Pass the list of journeys to the view
-            return View(journeys);
+            return null;
         }
 
-        public IActionResult Details(int id)
+        private List<Stopover> GetStopoversForJourney(int journeyId)
         {
-            // Fetch a specific journey from the database
-            Journey journey = null;
+            List<Stopover> stopovers = new List<Stopover>();
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
 
-                string sql = "SELECT * FROM Journeys WHERE Journey_ID = @JourneyID";
- 
+                string sql = "SELECT * FROM Stopovers WHERE Journey_ID = @JourneyID";
 
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
-                    command.Parameters.AddWithValue("@JourneyID", id);
+                    command.Parameters.AddWithValue("@JourneyID", journeyId);
 
                     SqlDataReader reader = command.ExecuteReader();
 
-                    if (reader.Read())
+                    while (reader.Read())
                     {
-                        journey = new Journey
+                        Stopover stopover = new Stopover
                         {
+                            StopoverID = (int)reader["Stopover_ID"],
                             JourneyID = (int)reader["Journey_ID"],
-                            UserID = (int)reader["User_ID"],
-                            TotalDistance = (int)reader["Total_Distance"],
-                            TotalEmission = (int)reader["Total_Emission"],
+                            VehicleID = (int)reader["Vehichle_ID"],
+                            Distance = (int)reader["Distance"],
                             Start = (string)reader["Start"],
                             End = (string)reader["End"],
-                            Date = ((DateTime)reader["Date"]).Date
-                        };
-                    }
+                            Emission = (int)reader["Emission"],
 
+                        };
+
+                        stopovers.Add(stopover);
+                    }
                     reader.Close();
                 }
             }
-            
-
-                // If the journey is not found, return a 404 error
-                if (journey == null)
-            {
-                return NotFound();
-            }
-
-            // Pass the journey to the view
-            return View(journey);
+            return stopovers;
         }
 
         public IActionResult Create()
