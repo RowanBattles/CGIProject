@@ -11,20 +11,13 @@ namespace CGI.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly string _connectionString;
 
-<<<<<<< HEAD
         
-        public HomeController(ILogger<HomeController> logger)
-=======
         public HomeController(ILogger<HomeController> logger, IConfiguration configuration)
->>>>>>> a4f40e23c65ad868cce056a116858172d8904f46
         {
             _logger = logger;
              _connectionString = configuration.GetConnectionString("DefaultConnection");
         }
-<<<<<<< HEAD
 
-=======
->>>>>>> a4f40e23c65ad868cce056a116858172d8904f46
         [Authorize]
         public IActionResult Index()
         {
@@ -65,11 +58,7 @@ namespace CGI.Controllers
         }
 
         [Authorize]
-<<<<<<< HEAD
         public IActionResult UserTest()
-=======
-        public IActionResult ManageJourney()
->>>>>>> a4f40e23c65ad868cce056a116858172d8904f46
         {
             return View();
         }
