@@ -9,8 +9,8 @@
             @foreach (var journey in Model) 
             {
                 <li class="border-b-2 border-black px-2 py-1 cursor-pointer hover:bg-green-400 active:bg-green-300">
-                    <h2>@journey.Start - @journey.End | @journey.Date.ToShortDateString()</h2>
-                    <p>Totale afstand: @journey.TotalDistance km | @journey.JourneyID</p>
+                    <h2>@journey.Start - @journey.End | @journey.Date</h2>
+                    <p>Totale afstand: @journey.TotalDistance km</p>
                 </li>
             }
         </ul>
@@ -25,8 +25,7 @@
         <div class="p-5 mb-20">
             <div>
                 <h3 class="inline-block mr-1">Date:</h3>
-                <p class="inline-block">||DATE||</p>
-
+                <p class="inline-block">06-03-2023</p>
             </div>
             <div>
                 <h3 class="inline-block mr-1">Total distance:</h3>
@@ -77,7 +76,6 @@
             // Remove the active class from all the li elements of the first ul list.
             liElements.forEach(li => {
                 li.classList.remove('active');
-                
             });
 
             // Add the active class to the clicked li element.
