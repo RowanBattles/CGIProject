@@ -15,12 +15,17 @@
         public int JourneyID { get; set; }
         public int Distance { get; set; }
         public string Start { get; set; }
+<<<<<<< HEAD
         public string End { get; set; }
+=======
+        public string End { get; set; }   
+>>>>>>> a4f40e23c65ad868cce056a116858172d8904f46
         public int Emission { get; set; }
         public int CalculateEmission(int Emission, int Distance)
         {
             //Work in progress..
             return Emission * Distance;
         }
+        public Journey Journey { get; set; } //Add this property to hold the Journey information
     }
 }

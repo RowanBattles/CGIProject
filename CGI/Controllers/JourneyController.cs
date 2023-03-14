@@ -1,4 +1,4 @@
-﻿using CGI.Models;
+﻿﻿using CGI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using System.Data.SqlTypes;
