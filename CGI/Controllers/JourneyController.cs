@@ -17,7 +17,6 @@ namespace CGI.Controllers
 
         public IActionResult Index()
         {
-            // Fetch all journeys from the database
             List<Journey> journeys = new List<Journey>();
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
@@ -50,8 +49,44 @@ namespace CGI.Controllers
                 }
             }
 
-            // Pass the list of journeys to the view
-            return View(journeys);
+            List<Stopover> stopovers = new List<Stopover>();
+
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                string sql = "SELECT * FROM Stopovers";
+
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        Stopover stopover = new Stopover
+                        {
+                            StopoverID = (int)reader["Stopover_ID"],
+                            JourneyID = (int)reader["Journey_ID"],
+                            Distance = (int)reader["Distance"],
+                            Emission = (int)reader["Emission"],
+                            Start = (string)reader["Start"],
+                            End = (string)reader["End"]
+                        };
+
+                        stopovers.Add(stopover);
+                    }
+
+                    reader.Close();
+                }
+            }
+
+            var manageJourney = new ManageJourneyViewModel
+            {
+                Journeys = journeys,
+                Stopovers = stopovers
+            };
+
+            return View(manageJourney);
         }
 
         public IActionResult Details(int id)
