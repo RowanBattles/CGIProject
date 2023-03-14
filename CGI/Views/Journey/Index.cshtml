@@ -6,7 +6,7 @@
 <div class="flex">
     <div class="border-2 border-black overflow-y-auto h-screen w-1/4">
         <ul>
-            @foreach (var journey in Model)
+            @foreach (var journey in Model) 
             {
                 <li class="border-b-2 border-black px-2 py-1 cursor-pointer hover:bg-green-400 active:bg-green-300">
                     <h2>@journey.Start - @journey.End | @journey.Date</h2>
@@ -20,7 +20,7 @@
             <h1>Journey Information</h1>
         </div>
         <div class="relative">
-            <button id="delete-journey-btn" class="absolute top-4 right-4 z-0 border-black border-2 bg-red-600 hover:bg-red-400 active:bg-red-200 px-4 py-2 rounded-md" value="@journeyId">Delete journey</button>  
+            <button class="absolute top-4 right-4 z-0 border-black border-2 bg-red-600 hover:bg-red-400 active:bg-red-200 px-4 py-2 rounded-md">Delete journey</button>
         </div>
         <div class="p-5 mb-20">
             <div>
@@ -29,43 +29,41 @@
             </div>
             <div>
                 <h3 class="inline-block mr-1">Total distance:</h3>
-                <p class="inline-block">@Model[0].TotalDistance</p>
+                <p class="inline-block">56.3</p>
                 <p class="inline-block">km</p>
             </div>
         </div>
         <div class="px-4 py-2">
             <h3>Stopovers:</h3>
         </div>
-        <div class="px-4 py-2 border-t-2 border-black overflow-y-scroll max-h-96">
+        @*<div class="px-4 py-2 border-t-2 border-black overflow-y-scroll max-h-96">
             <ul class="stopovers-list">
-                @if (Model[0].stopovers.Count == 0)
-                {
-                    <li>No stopovers found.</li>
-                }
-                else
-                {
-                    @foreach (var stopover in Model[0].stopovers)
-                    {
-                        <li class="border-b-2 border-black px-2 py-1">
-                            <div class="mt-2">
-                                <h2>Stopover:</h2>
-                                <p class="inline-block">Distance:</p>
-                                <p class="inline-block">@stopover.Distance</p>
-                                <p class="inline-block">km</p>
-                            </div>
-                            <div class="mb-2">
-                                <p class="inline-block">Vehicle:</p>
-                                <p class="inline-block">@((Vehicle)stopover.VehicleID)</p>
-                            </div>
-                            <div>
-                                <p class="inline-block">@stopover.Start</p>
-                                <p class="inline-block">@stopover.End</p>
-                            </div>
-                        </li>
-                    } 
-                }
+                <li class="border-b-2 border-black px-2 py-1">
+                    <div class="mt-2">
+                        <h2>Stopover 1:</h2>
+                        <p class="inline-block">Distance:</p>
+                        <p class="inline-block">5.23</p>
+                        <p class="inline-block">km</p>
+                    </div>
+                    <div class="mb-2">
+                        <p class="inline-block">Vehicle:</p>
+                        <p class="inline-block">Car (diesel)</p>
+                    </div>        
+                </li>
+                <li class="border-b-2 border-black px-2 py-1">
+                    <div class="mt-2">
+                        <h2>Stopover 1:</h2>
+                        <p class="inline-block">Distance:</p>
+                        <p class="inline-block">42.32</p>
+                        <p class="inline-block">km</p>
+                    </div>
+                    <div class="mb-2">
+                        <p class="inline-block">Vehicle:</p>
+                        <p class="inline-block">Train</p>
+                    </div>
+                </li>
             </ul>
-        </div>
+        </div>*@
     </div>
 </div>
 
@@ -79,7 +77,13 @@
             liElements.forEach(li => {
                 li.classList.remove('active');
             });
-            li.classList.add('active');           
+
+            // Add the active class to the clicked li element.
+            li.classList.add('active');
+
+            // Get the ID of the clicked journey.
+            const journeyId = li.dataset.journeyId;
+            console.log(journeyId); // Replace this with your desired functionality.
         });
     });
 </script>

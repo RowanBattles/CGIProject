@@ -1,4 +1,4 @@
-﻿using CGI.Models;
+﻿﻿using CGI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using System.Data.SqlTypes;
@@ -52,152 +52,6 @@ namespace CGI.Controllers
 
             // Pass the list of journeys to the view
             return View(journeys);
-        }
-
-        public ActionResult Stopovers(int journeyId)
-        {
-            using (SqlConnection connection = new SqlConnection(_connectionString))
-            {
-                SqlCommand command = new SqlCommand("SELECT j.*, s.* " +
-                                                      "FROM Journeys j " +
-                                                      "LEFT JOIN Stopovers s ON j.JourneyID = s.JourneyID " +
-                                                      "WHERE j.JourneyID = @journeyId", connection);
-                command.Parameters.AddWithValue("@journeyId", journeyId);
-                connection.Open();
-                SqlDataReader reader = command.ExecuteReader();
-
-                Journey journey = null;
-                List<Stopover> stopovers = new List<Stopover>();
-                while (reader.Read())
-                {
-                    if (journey == null)
-                    {
-                        journey = new Journey
-                        {
-                            JourneyID = (int)reader["Journey_ID"],
-                            UserID = (int)reader["User_ID"],
-                            TotalDistance = (int)reader["Total_Distance"],
-                            TotalEmission = (int)reader["Total_Emission"],
-                            Start = (string)reader["Start"],
-                            End = (string)reader["End"],
-                            Date = ((DateTime)reader["Date"]).Date,
-                            stopovers = new List<Stopover>()
-                        };
-                    }
-
-                    Stopover stopover = new Stopover
-                    {
-                        StopoverID = (int)reader["Stopover_ID"],
-                        VehicleID = (int)reader["Vehicle_ID"],
-                        JourneyID = (int)reader["Journey_ID"],
-                        Distance = (int)reader["Distance"],
-                        Start = (string)reader["Start"],
-                        End = (string)reader["End"],
-                        Emission = (int)reader["Emission"]
-                    };
-
-                    journey.stopovers.Add(stopover);
-                }
-
-                reader.Close();
-
-                return View(journey);
-            }
-        }
-
-        [HttpGet]
-        public IActionResult JourneyStopovers(int journeyID)
-        {
-            List<Stopover> stopovers = new List<Stopover>();
-
-            using (SqlConnection connection = new SqlConnection(_connectionString))
-            {
-                connection.Open();
-
-                string sql = "SELECT * FROM Stopovers WHERE Journey_ID = @journeyID ORDER BY Stopover_Number ASC";
-
-                using (SqlCommand command = new SqlCommand(sql, connection))
-                {
-                    command.Parameters.AddWithValue("@journeyID", journeyID);
-
-                    SqlDataReader reader = command.ExecuteReader();
-
-                    while (reader.Read())
-                    {
-                        Stopover stopover = new Stopover
-                        {
-                            StopoverID = (int)reader["Stopover_ID"],
-                            JourneyID = (int)reader["Journey_ID"],
-                            VehicleID = (int)reader["Vehicle_ID"],
-                            Distance = (int)reader["Distance"],
-                            Start = (string)reader["Start"],
-                            End = (string)reader["End"],
-                            Emission = (int)reader["Emission"]
-                        };
-                        stopovers.Add(stopover);
-                    }
-                    reader.Close();
-                }
-            }
-
-            Journey journey = GetJourneyById(journeyID);
-            journey.stopovers = stopovers;
-            return View(journey);
-        }
-
-        private Journey GetJourneyById(int journeyID)
-        {
-            using (SqlConnection connection = new SqlConnection(_connectionString))
-            {
-                connection.Open();
-
-                string sql = "SELECT j.*, s.* FROM Journeys j LEFT JOIN Stopovers s ON j.JourneyID = s.JourneyID WHERE j.Journey_ID = @journeyID";
-
-                using (SqlCommand command = new SqlCommand(sql, connection))
-                {
-                    command.Parameters.AddWithValue("@journeyID", journeyID);
-
-                    SqlDataReader reader = command.ExecuteReader();
-
-                    Journey journey = null;
-                    while (reader.Read())
-                    {
-                        if (journey == null)
-                        {
-                            journey = new Journey
-                            {
-                                JourneyID = (int)reader["Journey_ID"],
-                                UserID = (int)reader["User_ID"],
-                                TotalDistance = (int)reader["Total_Distance"],
-                                TotalEmission = (int)reader["Total_Emission"],
-                                Start = (string)reader["Start"],
-                                End = (string)reader["End"],
-                                Date = ((DateTime)reader["Date"]).Date,
-                                stopovers = new List<Stopover>()
-                            };
-                        }
-
-                        if (reader["StopoverID"] != DBNull.Value)
-                        {
-                            Stopover stopover = new Stopover
-                            {
-                                StopoverID = Convert.ToInt32(reader["StopoverID"]),
-                                VehicleID = Convert.ToInt32(reader["VehicleID"]),
-                                JourneyID = Convert.ToInt32(reader["JourneyID"]),
-                                Distance = Convert.ToInt32(reader["Distance"]),
-                                Start = reader["Start"].ToString(),
-                                End = reader["End"].ToString(),
-                                Emission = Convert.ToInt32(reader["Emission"])
-                            };
-
-                            journey.stopovers.Add(stopover);
-                        }
-                    }
-                    reader.Close();
-
-                    return journey;
-                }
-            }
         }
 
         public IActionResult Details(int id)
@@ -402,10 +256,8 @@ namespace CGI.Controllers
         }
 
         [HttpPost, ActionName("Delete")]
-        public IActionResult DeleteConfirmed([FromBody] Journey journey)
+        public IActionResult DeleteConfirmed(int id)
         {
-            int journeyId = data.Value<int>("journeyId");
-
             // Delete an existing journey from the database
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
@@ -415,14 +267,14 @@ namespace CGI.Controllers
 
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
-                    command.Parameters.AddWithValue("@JourneyID", journeyId);
+                    command.Parameters.AddWithValue("@JourneyID", id);
 
                     command.ExecuteNonQuery();
                 }
             }
 
-            // Return a successful response
-            return Ok();
+            // Redirect to the Index action to show the updated list of journeys
+            return RedirectToAction(nameof(Index));
         }
     }
 }
