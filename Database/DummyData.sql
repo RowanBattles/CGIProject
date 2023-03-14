@@ -1,3 +1,5 @@
+USE [evv]
+
 DELETE FROM [dbo].[Categories];
 DELETE FROM [dbo].[Journeys];
 DELETE FROM [dbo].[Stopovers];

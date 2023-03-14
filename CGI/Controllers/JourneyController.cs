@@ -1,7 +1,9 @@
-﻿using CGI.Models;
+﻿﻿using CGI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using System.Data.SqlTypes;
 
+using System.Text.Json;
 
 namespace CGI.Controllers
 {
@@ -16,48 +18,76 @@ namespace CGI.Controllers
 
         public IActionResult Index()
         {
-            // Fetch all journeys from the database
             List<Journey> journeys = new List<Journey>();
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
 
-                string sql = "SELECT * FROM Journeys";
+                string sql = @"SELECT j.Journey_ID, j.User_ID, j.Start, j.[End], j.Date, s.Stopover_ID, s.Vehicle_ID, s.Distance, s.Start, s.[End], s.Emission, SUM(s.Distance) OVER (PARTITION BY j.Journey_ID) AS Total_Distance, SUM(s.Emission) OVER (PARTITION BY j.Journey_ID) AS Total_Emission FROM Journeys j JOIN Stopovers s ON j.Journey_ID = s.Journey_ID ORDER BY j.Date DESC";
 
-                using (SqlCommand command = new SqlCommand(sql, connection))
+
+                SqlCommand command = new SqlCommand(sql, connection);
+                SqlDataReader reader = command.ExecuteReader();
+
+                while (reader.Read())
                 {
-                    SqlDataReader reader = command.ExecuteReader();
+                    int journeyID = (int)reader["Journey_ID"];
+                    Journey journey = journeys.FirstOrDefault(j => j.JourneyID == journeyID);
 
-                    while (reader.Read())
+                    if (journey == null)
                     {
-                        Journey journey = new Journey
+                        journey = new Journey
                         {
-                            JourneyID = (int)reader["Journey_ID"],
+                            JourneyID = journeyID,
                             UserID = (int)reader["User_ID"],
                             TotalDistance = (int)reader["Total_Distance"],
                             TotalEmission = (int)reader["Total_Emission"],
                             Start = (string)reader["Start"],
                             End = (string)reader["End"],
-                            Date = (DateTime)reader["Date"]
+                            Date = ((DateTime)reader["Date"]).Date,
+                            Stopovers = new List<Stopover>()
                         };
-
                         journeys.Add(journey);
                     }
 
-                    reader.Close();
+                    Stopover stopover = new Stopover
+                    {
+                        StopoverID = (int)reader["Stopover_ID"],
+                        JourneyID = journeyID,
+                        VehicleID = (int)reader["Vehicle_ID"],
+                        Distance = (int)reader["Distance"],
+                        Start = (string)reader["Start"],
+                        End = (string)reader["End"],
+                        Emission = (int)reader["Emission"],
+                    };
+
+                    journey.Stopovers.Add(stopover);
                 }
+
+                reader.Close();
             }
 
-            // Pass the list of journeys to the view
             return View(journeys);
         }
+
 
         public IActionResult Details(int id)
         {
             // Fetch a specific journey from the database
-            Journey journey = null;
+            Journey journey = GetJourneyById(id);
 
+            if (journey == null)
+            {
+                return NotFound();
+            }
+
+            journey.Stopovers = GetStopoversForJourney(id);
+            return View(journey);
+        }
+
+        private Journey GetJourneyById(int id)
+        {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
@@ -72,7 +102,7 @@ namespace CGI.Controllers
 
                     if (reader.Read())
                     {
-                        journey = new Journey
+                        Journey journey = new Journey
                         {
                             JourneyID = (int)reader["Journey_ID"],
                             UserID = (int)reader["User_ID"],
@@ -80,32 +110,77 @@ namespace CGI.Controllers
                             TotalEmission = (int)reader["Total_Emission"],
                             Start = (string)reader["Start"],
                             End = (string)reader["End"],
-                            Date = (DateTime)reader["Date"]
+                            Date = ((DateTime)reader["Date"]).Date
                         };
-                    }
 
+                        reader.Close();
+
+                        return journey;
+                    }
+                }
+            }
+            return null;
+        }
+
+        private List<Stopover> GetStopoversForJourney(int journeyId)
+        {
+            List<Stopover> stopovers = new List<Stopover>();
+
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                string sql = "SELECT * FROM Stopovers WHERE Journey_ID = @JourneyID";
+
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.Parameters.AddWithValue("@JourneyID", journeyId);
+
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        Stopover stopover = new Stopover
+                        {
+                            StopoverID = (int)reader["Stopover_ID"],
+                            JourneyID = (int)reader["Journey_ID"],
+                            VehicleID = (int)reader["Vehichle_ID"],
+                            Distance = (int)reader["Distance"],
+                            Start = (string)reader["Start"],
+                            End = (string)reader["End"],
+                            Emission = (int)reader["Emission"],
+
+                        };
+
+                        stopovers.Add(stopover);
+                    }
                     reader.Close();
                 }
             }
-
-            // If the journey is not found, return a 404 error
-            if (journey == null)
-            {
-                return NotFound();
-            }
-
-            // Pass the journey to the view
-            return View(journey);
+            return stopovers;
         }
 
         public IActionResult Create()
         {
-            return View();
+            Stopover model = new Stopover();
+            return View(model);
+        }
+
+        public IActionResult CreateCookie(Stopover model)
+        {
+            var cookieOptions = new CookieOptions();
+            cookieOptions.Expires = DateTime.Now.AddDays(2);
+            cookieOptions.Path = "/"; 
+
+            string test = JsonSerializer.Serialize(model);
+
+            Response.Cookies.Append("Stopover", test, cookieOptions);
+            return RedirectToAction(nameof(Create));
         }
 
         [HttpPost]
         public IActionResult Create(Journey journey)
-        {
+        {         
             // Insert a new journey into the database
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
@@ -123,7 +198,7 @@ namespace CGI.Controllers
                     command.Parameters.AddWithValue("@Date", journey.Date);
 
                     // Execute the query and get the newly inserted Journey ID
-                    int journeyID = Convert.ToInt32(command.ExecuteScalar());
+                    int journeyID = 1;
 
                     // Set the JourneyID property of the journey object to the newly inserted ID
                     journey.JourneyID = journeyID;
@@ -161,7 +236,7 @@ namespace CGI.Controllers
                             TotalEmission = (int)reader["Total_Emission"],
                             Start = (string)reader["Start"],
                             End = (string)reader["End"],
-                            Date = (DateTime)reader["Date"]
+                            Date = ((DateTime)reader["Date"]).Date
                         };
                     }
 
@@ -234,7 +309,7 @@ namespace CGI.Controllers
                             TotalEmission = (int)reader["Total_Emission"],
                             Start = (string)reader["Start"],
                             End = (string)reader["End"],
-                            Date = (DateTime)reader["Date"]
+                            Date = ((DateTime)reader["Date"]).Date
                         };
                     }
 

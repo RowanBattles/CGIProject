@@ -1,18 +1,18 @@
-﻿@{
+﻿@model List<Journey>
+@{
     ViewData["Title"] = "Manage Journey";
 }
 
 <div class="flex">
     <div class="border-2 border-black overflow-y-auto h-screen w-1/4">
         <ul>
-            <li class="border-b-2 border-black px-2 py-1 cursor-pointer hover:bg-green-400 active:bg-green-300">
-                <h2>1e Rit | 06-03-2023</h2>
-                <p>5.64 km | Auto (diesel)</p>
-            </li>
-            <li class="border-b-2 border-black px-2 py-1 cursor-pointer hover:bg-green-400 active:bg-green-300">
-                <h2>&lt;Titel&gt; | &lt;Datum&gt;</h2>
-                <p>&lt;Aantal&gt; km | &lt;1e vervoer&gt;</p>
-            </li>
+            @foreach (var journey in Model)
+            {
+                <li class="border-b-2 border-black px-2 py-1 cursor-pointer hover:bg-green-400 active:bg-green-300" data-journey-id="@journey.JourneyID">
+                    <h2>@journey.Start - @journey.End | @journey.Date.ToShortDateString()</h2>
+                    <p>Totale afstand: @journey.TotalDistance km</p>
+                </li>
+            }
         </ul>
     </div>
     <div class="relative overflow-hidden flex-1 custom-font">
@@ -25,61 +25,69 @@
         <div class="p-5 mb-20">
             <div>
                 <h3 class="inline-block mr-1">Date:</h3>
-                <p class="inline-block">06-03-2023</p>
+                <p class="inline-block" id="journey-date"></p>
             </div>
             <div>
                 <h3 class="inline-block mr-1">Total distance:</h3>
-                <p class="inline-block">56.3</p>
+                <p class="inline-block" id="journey-distance"></p>
                 <p class="inline-block">km</p>
             </div>
         </div>
-        <div class="px-4 py-2">
+        <div class="px-4 py-2 border-black border-solid border-b-2">
             <h3>Stopovers:</h3>
         </div>
-        <div class="px-4 py-2 border-t-2 border-black overflow-y-scroll max-h-96">
-            <ul class="stopovers-list">
-                <li class="border-b-2 border-black px-2 py-1">
-                    <div class="mt-2">
-                        <h2>Stopover 1:</h2>
-                        <p class="inline-block">Distance:</p>
-                        <p class="inline-block">5.23</p>
-                        <p class="inline-block">km</p>
-                    </div>
-                    <div class="mb-2">
-                        <p class="inline-block">Vehicle:</p>
-                        <p class="inline-block">Car (diesel)</p>
-                    </div>        
-                </li>
-                <li class="border-b-2 border-black px-2 py-1">
-                    <div class="mt-2">
-                        <h2>Stopover 1:</h2>
-                        <p class="inline-block">Distance:</p>
-                        <p class="inline-block">42.32</p>
-                        <p class="inline-block">km</p>
-                    </div>
-                    <div class="mb-2">
-                        <p class="inline-block">Vehicle:</p>
-                        <p class="inline-block">Train</p>
-                    </div>
-                </li>
+        @foreach (var journey in Model)
+        {   
+            <ul class="p-5">
+                @foreach (var stopover in journey.Stopovers)
+                {
+                    <li class="border-b-2 border-solid border-black">
+                        <div>
+                            <h4>Stopover:</h4>
+                        </div>
+                        <div>
+                            <p>@stopover.Start - @stopover.End</p>
+                        </div>
+                        <div>
+                            <p>Distance: @stopover.Distance km</p>
+                        </div>
+                        <div>
+                            <p>Emission: @stopover.Emission km</p>
+                        </div>
+                    </li>
+                }
             </ul>
-        </div>
+        }
     </div>
 </div>
 
 <script>
     const firstUl = document.querySelector('ul:first-of-type');
     const liElements = firstUl.querySelectorAll('li');
+    const journeyDateElement = document.querySelector('#journey-date');
+    const journeyDistanceElement = document.querySelector('#journey-distance');
+
+    const journeys = @Html.Raw(Json.Serialize(Model));
+
+    function getJourneyById(journeyId) {
+        return journeys.find(j => j.journeyID == journeyId);
+    }
 
     liElements.forEach(li => {
         li.addEventListener('click', () => {
-            // Remove the active class from all the li elements of the first ul list.
-                liElements.forEach(li => {
-                    li.classList.remove('active');
-                });
 
-                // Add the active class to the clicked li element.
-                li.classList.add('active');
+            liElements.forEach(li => {
+                li.classList.remove('active');
+            });
+
+            li.classList.add('active');
+
+            const journeyId = li.dataset.journeyId;
+
+            const journey = getJourneyById(journeyId);
+
+            journeyDateElement.textContent = new Date(journey.date).toLocaleDateString();
+            journeyDistanceElement.textContent = journey.totalDistance;
         });
     });
 </script>

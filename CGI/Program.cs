@@ -10,6 +10,7 @@ builder.Services
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 // Convert URL to lowercase
 builder.Services.Configure<RouteOptions>(options =>
