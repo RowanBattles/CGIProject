@@ -1,4 +1,4 @@
-﻿@model ManageJourneyViewModel
+﻿@model List<Journey>
 @{
     ViewData["Title"] = "Manage Journey";
 }
@@ -6,9 +6,9 @@
 <div class="flex">
     <div class="border-2 border-black overflow-y-auto h-screen w-1/4">
         <ul>
-            @foreach (var journey in Model.Journeys) 
+            @foreach (var journey in Model) 
             {
-                <li data-journey-id="@journey.JourneyID" class="border-b-2 border-black px-2 py-1 cursor-pointer hover:bg-green-400 active:bg-green-300">
+                <li class="border-b-2 border-black px-2 py-1 cursor-pointer hover:bg-green-400 active:bg-green-300">
                     <h2>@journey.Start - @journey.End | @journey.Date</h2>
                     <p>Totale afstand: @journey.TotalDistance km</p>
                 </li>
@@ -19,23 +19,23 @@
         <div class="px-4 py-2 bg-gray-300 text-center">
             <h1>Journey Information</h1>
         </div>
-        @foreach (var stopover in Model.Stopovers) 
-        {
-            @if (stopover.JourneyID == Model.Journeys[0].JourneyID)
-            {
-                <div class="p-5 mb-20">
-                    <div>
-                        <h3 class="inline-block mr-1">Date:</h3>
-                        <p class="inline-block">06-03-2023</p>
-                    </div>
-                    <div>
-                        <h3 class="inline-block mr-1">Total distance:</h3>
-                        <p class="inline-block">@stopover.Distance</p>
-                        <p class="inline-block">km</p>
-                    </div>
-                </div>
-            }
-        }
+        <div class="relative">
+            <button class="absolute top-4 right-4 z-0 border-black border-2 bg-red-600 hover:bg-red-400 active:bg-red-200 px-4 py-2 rounded-md">Delete journey</button>
+        </div>
+        <div class="p-5 mb-20">
+            <div>
+                <h3 class="inline-block mr-1">Date:</h3>
+                <p class="inline-block">06-03-2023</p>
+            </div>
+            <div>
+                <h3 class="inline-block mr-1">Total distance:</h3>
+                <p class="inline-block">56.3</p>
+                <p class="inline-block">km</p>
+            </div>
+        </div>
+        <div class="px-4 py-2">
+            <h3>Stopovers:</h3>
+        </div>
         @*<div class="px-4 py-2 border-t-2 border-black overflow-y-scroll max-h-96">
             <ul class="stopovers-list">
                 <li class="border-b-2 border-black px-2 py-1">
