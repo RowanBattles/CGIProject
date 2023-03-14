@@ -10,8 +10,8 @@
 *.userosscache
 *.sln.docstates
 
-#battles andere connectiestring
-*.appsettings.json
+# Connection string
+appsettings.json
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
