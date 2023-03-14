@@ -5,15 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Content Remove="appsettings.json" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="appsettings.json" />
-  </ItemGroup>
-
+  
   <ItemGroup>
     <PackageReference Include="Auth0.AspNetCore.Authentication" Version="1.1.0" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.0" />

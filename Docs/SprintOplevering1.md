@@ -1,21 +1,25 @@
-Vragen:
-- Berekenen emission
-- Wil CGI in onze git repository? nee
-- Wat zijn de specificaties voor de groeppagina? niet belangrijk, is nice to have, niet noodzakelijk
-- Inloggen met CGI? Voor nu niet, authenticatie connector.
-- Hoe hebben jullie geparkeerd?
+# Sprint Oplevering 1
 
+### Dinsdag 14-2-2023 14:30
 
-Wat we laten zien:
-- Auth0
-- CRC, ERD
-- Database
-- Wireframe
-- Website
+## Vragen:
 
+-   Berekenen emission
+-   Wil CGI in onze git repository? nee
+-   Wat zijn de specificaties voor de groeppagina? niet belangrijk, is nice to have, niet noodzakelijk
+-   Inloggen met CGI? Voor nu niet, authenticatie connector.
+-   Hoe hebben jullie geparkeerd?
 
+## Wat we laten zien:
 
-Notule:
+-   Auth0
+-   CRC, ERD
+-   Database
+-   Wireframe
+-   Website
+
+## Notule:
+
 Weet het systeem waar het huis is?
 Nee, is administratief
 
@@ -24,7 +28,6 @@ Zodat je gelijk door de eindgebruiker kan zien
 
 Bepaalde opties in een dropdown lijst, zodat je niet steeds hetzelfde in te vullen
 Bijv: Begin en Eindpunt met een dropdown of een klaargemaakte route zodat je het niet zelf hoeft in te vullen.
-
 
 Groepen gebaseerd op afstand
 
@@ -48,20 +51,18 @@ geen details verliezen
 Waarom zijn we het aan het doen, wat levert het op.
 
 Uiteindelijk verantwoordelijk voor iedereen en alles in het project zelf.
-Dagelijkse standups doen we goed, zijn helpen.
+Dagelijkse standups doen we goed, zijn helpend.
 
 Elkaar helpen, vooral blijven doen.
 Leren we van fouten
 
 Team Building door McDonald's, en vanalles.
 
-// Volgende Sprint:
+### Volgende Sprint:
+
 Werkende create pagina
 Formule voor de Score
 
 Focussen op de volgende dingen:
 De create journey, het maken van de journey is nu belangrijk.
 Database aanpassen aan goede situaties die je kloppen in het echt
-
-
-

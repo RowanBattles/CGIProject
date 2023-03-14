@@ -2,7 +2,6 @@
 {
     public class Journey
     {
-
         public int JourneyID { get; set; }
         public int UserID { get; set; }
         public int TotalDistance { get; set; }
@@ -12,5 +11,4 @@
         public DateTime Date { get; set; }
         public List<Stopover> Stopovers { get; set; }
     }
-
 }
