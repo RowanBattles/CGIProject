@@ -1,6 +1,6 @@
 ﻿namespace CGI.Models
 {
-    enum Vehicle
+    public enum Vehicle
     {
         Car = 1,
         Bike = 2,

@@ -315,6 +315,7 @@ namespace CGI.Controllers
 
                     reader.Close();
                 }
+                return View(journey);
             }
 
             // If the journey is not found, return a 404 error

@@ -1,5 +1,35 @@
-﻿@*
+﻿@model Journey
+
+@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
 }
+
+
+<h2>Delete Journey</h2>
+
+<p>Are you sure you want to delete this journey?</p>
+
+<dl class="row">
+    <dt class="col-sm-2">Start</dt>
+    <dd class="col-sm-10">@Model.Start</dd>
+
+    <dt class="col-sm-2">End</dt>
+    <dd class="col-sm-10">@Model.End</dd>
+
+    <dt class="col-sm-2">Date</dt>
+    <dd class="col-sm-10">@Model.Date.ToShortDateString()</dd>
+
+    <dt class="col-sm-2">Total Distance</dt>
+    <dd class="col-sm-10">@Model.TotalDistance</dd>
+
+    <dt class="col-sm-2">Total Emission</dt>
+    <dd class="col-sm-10">@Model.TotalEmission</dd>
+</dl>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="JourneyID" />
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
