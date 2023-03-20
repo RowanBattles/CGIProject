@@ -1,95 +1,37 @@
-﻿@model List<Journey>
+﻿@model IEnumerable<CGI.Models.Journey>
 @{
     ViewData["Title"] = "Manage Journey";
 }
 
-<div class="flex">
-    <div class="border-2 border-black overflow-y-auto h-screen w-1/4">
-        <ul>
-            @foreach (var journey in Model)
-            {
-                <li class="border-b-2 border-black px-2 py-1 cursor-pointer hover:bg-green-400 active:bg-green-300" data-journey-id="@journey.JourneyID">
-                    <h2>@journey.Start - @journey.End | @journey.Date.ToShortDateString()</h2>
-                    <p>Totale afstand: @journey.TotalDistance km</p>
-                </li>
-            }
-        </ul>
-    </div>
-    <div class="relative overflow-hidden flex-1 custom-font">
-        <div class="px-4 py-2 bg-gray-300 text-center">
-            <h1>Journey Information</h1>
-        </div>
-        <form id="delete-form" method="post" action="/journey/delete">
-            <div class="relative">
-                <button class="absolute top-4 right-4 z-0 border-black border-2 bg-red-600 hover:bg-red-400 active:bg-red-200 px-4 py-2 rounded-md" id="Delete-Journey">Delete journey</button>
-            </div>
-        </form>
-        <div class="p-5 mb-20">
-            <div>
-                <h3 class="inline-block mr-1">Date:</h3>
-                <p class="inline-block" id="journey-date"></p>
-            </div>
-            <div>
-                <h3 class="inline-block mr-1">Total distance:</h3>
-                <p class="inline-block" id="journey-distance"></p>
-                <p class="inline-block">km</p>
-            </div>
-        </div>
-        <div class="px-4 py-2 border-black border-solid border-b-2">
-            <h3>Stopovers:</h3>
-        </div>
-        @foreach (var journey in Model)
-        {   
-            <ul class="p-5">
-                @foreach (var stopover in journey.Stopovers)
-                {
-                    <li class="border-b-2 border-solid border-black">
-                        <div>
-                            <h4>Stopover:</h4>
-                        </div>
-                        <div>
-                            <p>@stopover.Start - @stopover.End</p>
-                        </div>
-                        <div>
-                            <p>Distance: @stopover.Distance km</p>
-                        </div>
-                        <div>
-                            <p>Emission: @stopover.Emission km</p>
-                        </div>
-                    </li>
-                }
-            </ul>
-        }
-    </div>
-</div>
+<h2>Journeys</h2>
 
-<script>
-    const firstUl = document.querySelector('ul:first-of-type');
-    const liElements = firstUl.querySelectorAll('li');
-    const journeyDateElement = document.querySelector('#journey-date');
-    const journeyDistanceElement = document.querySelector('#journey-distance');
-
-    const journeys = @Html.Raw(Json.Serialize(Model));
-
-    function getJourneyById(journeyId) {    
-        return journeys.find(j => j.journeyID == journeyId);
+<table>
+    <thead>
+    <tr>
+        <th>Start</th>
+        <th>End</th>
+        <th>Total Distance</th>
+        <th>Total Emission</th>
+        <th>Date</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var journey in Model)
+    {
+        <tr>
+            <td>@journey.Start</td>
+            <td>@journey.End</td>
+            <td>@journey.Total_Distance</td>
+            <td>@journey.Total_Emission</td>
+            <td>@journey.Date.ToString("dd-MM-yyyy")</td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@journey.Journey_ID">Edit</a> |
+                <a asp-action="Delete" asp-route-id="@journey.Journey_ID">Delete</a>
+            </td>
+        </tr>
     }
+    </tbody>
+</table>
 
-    liElements.forEach(li => {
-        li.addEventListener('click', () => {
-
-            liElements.forEach(li => {
-                li.classList.remove('active');
-            });
-
-            li.classList.add('active');
-
-            const journeyId = li.dataset.journeyId;
-
-            const journey = getJourneyById(journeyId);
-
-            journeyDateElement.textContent = new Date(journey.date).toLocaleDateString();
-            journeyDistanceElement.textContent = journey.totalDistance;
-        });
-    });
-</script>
+<a asp-action="Create">Add Journey</a>
