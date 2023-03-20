@@ -12,39 +12,53 @@ DBCC CHECKIDENT ('[dbo].[Users]', RESEED, 0);
 
 INSERT INTO [dbo].[Users] ([UUID])
 VALUES 
-('4d4cb605-277a-4d11-9c85-9ae01d06df43'),
-('c12f1845-5e4f-4b4d-bb81-9e9f9d56f59c'),
-('2ef14f51-3e8c-4fae-bd36-482c225b9f38'),
-('f16e281b-67e6-46a8-8a69-cf26e7bca3b9'),
-('d67fa413-9010-43c1-86fb-8f81cd787d62');
+('Billy-277a-4d11-9c85-9ae01d06df43'),
+('Rowan-5e4f-4b4d-bb81-9e9f9d56f59c'),
+('Stijn-3e8c-4fae-bd36-482c225b9f38'),
+('Joost-67e6-46a8-8a69-cf26e7bca3b9'),
+('Jonathan-9010-43c1-86fb-8f81cd787d62');
 
 INSERT INTO [dbo].[Categories] ([Vehicle_Name], [Emission])
 VALUES 
-('Car', 100),
-('Bike', 20),
-('Bus', 200),
-('Train', 50),
-('Plane', 500);
+('Walking', 0),
+('Bicycle', 0),
+('E-Bicycle', 5),
+('B-Scooter', 53),
+('E-Scooter', 19),
+('Tram', 57),
+('Train', 0),
+('B-Scooter', 64),
+('Bus', 140),
+('E-Car', 53),
+('H-Car', 127),
+('D-Car', 213),
+('B-Car', 224),
+('Motorcycle', 137);
 
 INSERT INTO [dbo].[Journeys] ([User_ID], [Total_Distance], [Total_Emission], [Start], [End], [Date])
 VALUES 
-(1, 20, 100, 'New York', 'Boston', '2022-01-01'),
-(2, 30, 120, 'San Francisco', 'Los Angeles', '2022-02-02'),
-(3, 50, 250, 'London', 'Paris', '2022-03-03'),
-(4, 100, 500, 'Sydney', 'Melbourne', '2022-04-04'),
-(5, 200, 1000, 'Tokyo', 'Osaka', '2022-05-05');
+(1, 23.75, 3080, 'Thuis', 'Fontys ICT', '2023-03-20'),
+(2, 2.8, 0, 'Thuis', 'Fontys ICT', '2023-03-20'),
+(3, 14.3, 0, 'Thuis', 'Fontys ICT', '2022-03-03'),
+(4, 96.5, 0, 'Thuis', 'Fontys ICT', '2022-03-03'),
+(5, 55, 0, 'Thuis', 'Fontys ICT', '2022-03-03');
 
 INSERT INTO [dbo].[Stopovers] ([Vehicle_ID], [Journey_ID], [Distance], [Start], [End], [Emission])
 VALUES 
-(1, 1, 10, 'New York', 'Philadelphia', 50),
-(1, 1, 10, 'Philadelphia', 'Boston', 50),
-(2, 2, 30, 'San Francisco', 'Los Angeles', 60),
-(3, 3, 20, 'London', 'Calais', 100),
-(3, 3, 30, 'Calais', 'Paris', 100),
-(4, 4, 50, 'Sydney', 'Canberra', 25),
-(4, 4, 50, 'Canberra', 'Melbourne', 25),
-(5, 5, 100, 'Tokyo', 'Kyoto', 250),
-(5, 5, 100, 'Kyoto', 'Osaka', 250);
+(1, 1, 0.75, 'Thuis', 'Varendonk', 0),
+(9, 1, 22, 'Varendonk', 'Eindhoven Centraal', 3080),
+(1, 1, 1, 'Eindhoven Centraal', 'Fontys ICT', 0),
+(1, 2, 2.8, 'Thuis', 'Fontys ICT', 0),
+(1, 3, 0.3, 'Thuis', 'Helmond het Hout', 0),
+(7, 3, 13, 'Helmond het Hout', 'Eindhoven Centraal', 0),
+(1, 3, 1, 'Eindhoven Centraal', 'Fontys ICT', 0),
+(2, 4, 6.5, 'Thuis', 'Maastricht Centraal', 0),
+(7, 4, 89.0, 'Maastricht Centraal', 'Eindhoven Centraal', 0),
+(1, 4, 1, 'Eindhoven Centraal', 'Fontys ICT', 0),
+(2, 5, 10, 'Thuis', 'Zaltbommel Station', 0),
+(7, 5, 14, 'Zaltbommel Station', 's-Hertogenbosch Centraal', 0),
+(7, 5, 40, 's-Hertogenbosch Centraal', 'Eindhoven Centraal', 0),
+(1, 5, 1, 'Eindhoven Centraal', 'Fontys ICT', 0);
 
 SELECT * FROM [dbo].[Users];
 SELECT * FROM [dbo].[Categories];
