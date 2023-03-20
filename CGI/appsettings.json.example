@@ -11,10 +11,6 @@
         "ClientId": "aUkbnaKOtCSpDGJYgBlryAg05mElJY5m"
     },
     "ConnectionStrings": {
-<<<<<<< HEAD
-        "DefaultConnection": "Server=.\\SqlExpress05;Database=evv;Integrated Security=true;TrustServerCertificate=True;"
-=======
-        "DefaultConnection": "Server=localhost,1433;Database=evv;TrustServerCertificate=True;User id=sa;password=yourStrong(!)Password"
->>>>>>> a4f40e23c65ad868cce056a116858172d8904f46
+        "DefaultConnection": "Server=.\\SqlExpress;Database=evv;Integrated Security=true;TrustServerCertificate=True;"
     }
 }
