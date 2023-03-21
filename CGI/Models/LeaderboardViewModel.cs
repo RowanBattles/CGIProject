@@ -2,7 +2,7 @@
 {
     public class LeaderboardViewModel
     {
-        public int userID { get; set; }
+        public string userName { get; set; }
         public int score { get; set; }
     }
 }

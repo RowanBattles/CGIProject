@@ -30,7 +30,8 @@ namespace CGI.Controllers
                     {
                         User user = new User
                         {
-                            UserId = reader["User_ID"].ToString()
+                            UserId = reader["User_ID"].ToString(),
+                            Name = reader["Fullname"].ToString()
                         };
 
                         users.Add(user);

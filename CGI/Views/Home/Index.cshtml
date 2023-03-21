@@ -7,7 +7,7 @@
     <div class="text-center">
     </div>
 
-    <div class="grid grid-cols-4 gap-5">
+    <div class="grid grid-cols-3 gap-5">
         <div class="cols-span-1">
             <br />
             <button onclick="location.href='./journey/create';" class="text-2xl text-white border-white " style="border: 5px solid; padding: 20px; background-color: black; width: 250px; height: 100px;">
@@ -27,7 +27,7 @@
             </button>
         </div>
         <div class="cols-span-1">
-            <h1 class="text-4xl text-center" style="line-height: 4;">Hello &user</h1>
+            <h1 class="text-4xl text-center" style="line-height: 4;">Hello User</h1>
         </div>
 
         <div class="cols-span-1">
@@ -47,7 +47,7 @@
                     {
                         <tr>
                            <td class="text-3xl px-4 py-2 text-amber-500">@ranking</td>
-                           <td class="text-3xl px-4 py-2 text-amber-500">@leaderboardViewModel.userID</td>
+                           <td class="text-3xl px-4 py-2 text-amber-500">@leaderboardViewModel.userName</td>
                            <td class="text-3xl px-4 py-2 text-amber-500">@leaderboardViewModel.score</td>     
                         </tr>
                     }
@@ -55,7 +55,7 @@
                     {
                         <tr>
                            <td class="text-2xl px-4 py-2 text-stone-400">@ranking</td>
-                           <td class="text-2xl px-4 py-2 text-stone-400">@leaderboardViewModel.userID</td>
+                           <td class="text-2xl px-4 py-2 text-stone-400">@leaderboardViewModel.userName</td>
                            <td class="text-2xl px-4 py-2 text-stone-400">@leaderboardViewModel.score</td>     
                         </tr>
                     }
@@ -63,7 +63,7 @@
                     {
                         <tr>
                          <td class="text-xl px-4 py-2 text-amber-800">@ranking</td>
-                         <td class="text-xl px-4 py-2 text-amber-800">@leaderboardViewModel.userID</td>
+                         <td class="text-xl px-4 py-2 text-amber-800">@leaderboardViewModel.userName</td>
                          <td class="text-xl px-4 py-2 text-amber-800">@leaderboardViewModel.score</td>     
                         </tr>
                     }
@@ -71,7 +71,7 @@
                     {
                         <tr>
                             <td class="text-l px-4 py-2">@ranking</td>
-                            <td class="text-l px-4 py-2">@leaderboardViewModel.userID</td>
+                            <td class="text-l px-4 py-2">@leaderboardViewModel.userName</td>
                             <td class="text-l px-4 py-2">@leaderboardViewModel.score</td>     
                         </tr>
                     }
