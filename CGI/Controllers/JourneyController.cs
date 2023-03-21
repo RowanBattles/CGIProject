@@ -72,7 +72,44 @@ namespace CGI.Controllers
                 }
             }
 
-            return View(journeys);
+            string id = Request.Query["id"];
+
+            List<Stopover> stopovers = new List<Stopover>();
+
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("SELECT * FROM Stopovers WHERE Journey_ID = @Journey_ID", conn))
+                {
+                    cmd.Parameters.AddWithValue("@Journey_ID", id);
+
+                    conn.Open();
+                    using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            Stopover stopover = new Stopover
+                            {
+                                StopoverID = reader.GetInt32(0),
+                                VehicleID = reader.GetInt32(1),
+                                JourneyID = reader.GetInt32(2),
+                                Distance = reader.GetInt32(3),
+                                Start = reader.GetString(4),
+                                End = reader.GetString(5),
+                                Emission = reader.GetInt32(6)
+                            };
+                            stopovers.Add(stopover);
+                        }
+                    }
+                }
+            }
+
+            JourneyViewModel model = new JourneyViewModel
+            {
+                Journeys = journeys,
+                Stopovers = stopovers,
+            };
+
+            return View(model);
         }
 
         // Update
