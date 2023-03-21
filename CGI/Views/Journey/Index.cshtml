@@ -1,60 +1,61 @@
 ﻿@model JourneyViewModel
+<div class="container mx-auto">
+    <div class="flex flex-columns gap-16">
+        <div>
+            <h1>List of Journeys</h1>
+            <ul>
+            @foreach (var journey in Model.Journeys)
+            {
+                <a href="~/journey?id=@journey.Journey_ID">           
+                    <li class="p-2 bg-gray-50 hover:bg-gray-100 @(@Model.Id == @journey.Journey_ID ? "border-2 border-blue-800 border-l-4 shadow" : "border-gray-200 border-b")">
+                        <h2>@journey.Start - @journey.End | @journey.Date.ToShortDateString()</h2>
+                        <p>
+                            Total emission: @journey.Total_Emission kg<br />
+                            Total distance: @journey.Total_Distance km
+                        </p>
+                    </li>
+                </a>
+            }
+            </ul>
 
-<div class="flex flex-columns gap-16">
-    <div>
-        <h1>List of Journeys</h1>
-        <ul>
-        @foreach (var journey in Model.Journeys)
-        {
-            <a href="~/journey?id=@journey.Journey_ID">           
-                <li>
-                    <h2>@journey.Start - @journey.End | @journey.Date.ToShortDateString()</h2>
-                    <p>
-                        Total emission: @journey.Total_Emission kg<br />
-                        Total distance: @journey.Total_Distance km
-                    </p>
-                </li>
-            </a>
-        }
-        </ul>
+        </div>
+        <div>
+            <h2>List of Stopovers</h2>
 
-    </div>
-    <div>
-        <h2>List of Stopovers</h2>
-
-        @if (Model.Stopovers.Count > 0)
-        {
-            <table>
-                <thead>
-                    <tr>
-                        <th>Stopover ID</th>
-                        <th>Vehicle ID</th>
-                        <th>Journey ID</th>
-                        <th>Distance</th>
-                        <th>Start</th>
-                        <th>End</th>
-                        <th>Emission</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var stopover in Model.Stopovers)
-                    {
+            @if (Model.Stopovers.Count > 0)
+            {
+                <table>
+                    <thead>
                         <tr>
-                            <td>@stopover.StopoverID</td>
-                            <td>@stopover.VehicleID</td>
-                            <td>@stopover.JourneyID</td>
-                            <td>@stopover.Distance</td>
-                            <td>@stopover.Start</td>
-                            <td>@stopover.End</td>
-                            <td>@stopover.Emission</td>
+                            <th>Stopover ID</th>
+                            <th>Vehicle ID</th>
+                            <th>Journey ID</th>
+                            <th>Distance</th>
+                            <th>Start</th>
+                            <th>End</th>
+                            <th>Emission</th>
                         </tr>
-                    }
-                </tbody>
-            </table>
-        } 
-        else
-        {
-            <p>No stopovers found</p>
-        }
+                    </thead>
+                    <tbody>
+                        @foreach (var stopover in Model.Stopovers)
+                        {
+                            <tr>
+                                <td>@stopover.StopoverID</td>
+                                <td>@stopover.VehicleID</td>
+                                <td>@stopover.JourneyID</td>
+                                <td>@stopover.Distance</td>
+                                <td>@stopover.Start</td>
+                                <td>@stopover.End</td>
+                                <td>@stopover.Emission</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            } 
+            else
+            {
+                <p>No stopovers found</p>
+            }
+        </div>
     </div>
 </div>
