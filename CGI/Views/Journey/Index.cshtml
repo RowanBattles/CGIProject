@@ -1,42 +1,4 @@
-﻿@*@model IEnumerable<CGI.Models.Journey>
-@{
-    ViewData["Title"] = "Manage Journey";
-}
-
-<h2>Journeys</h2>
-
-<table>
-    <thead>
-    <tr>
-        <th>Start</th>
-        <th>End</th>
-        <th>Total Distance</th>
-        <th>Total Emission</th>
-        <th>Date</th>
-        <th></th>
-    </tr>
-    </thead>
-    <tbody>
-    @foreach (var journey in Model)
-    {
-        <tr>
-            <td>@journey.Start</td>
-            <td>@journey.End</td>
-            <td>@journey.Total_Distance</td>
-            <td>@journey.Total_Emission</td>
-            <td>@journey.Date.ToString("dd-MM-yyyy")</td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@journey.Journey_ID">Edit</a> |
-                <a asp-action="Delete" asp-route-id="@journey.Journey_ID">Delete</a>
-            </td>
-        </tr>
-    }
-    </tbody>
-</table>
-
-<a asp-action="Create">Add Journey</a>*@
-
-@model IEnumerable<CGI.Models.Journey>
+﻿@model IEnumerable<CGI.Models.Journey>
 @{
     ViewData["Title"] = "Manage Journey";
 }
@@ -46,10 +8,24 @@
         <ul>
             @foreach (var journey in Model)
             {
-                <li class="border-b-2 border-black px-2 py-1 cursor-pointer hover:bg-green-400 active:bg-green-300" data-journey-id="@journey.Journey_ID">
+                var selected = "";
+                if (ViewContext.RouteData.Values["controller"].ToString().Equals("Journey", StringComparison.OrdinalIgnoreCase) && ViewContext.RouteData.Values["action"].ToString().Equals("Index", StringComparison.OrdinalIgnoreCase) && ViewContext.RouteData.Values["id"]?.ToString() == journey.Journey_ID.ToString())
+                {
+                    selected = "bg-green-400 active:bg-green-300";
+                }
+
+                <li class="border-b-2 border-black px-2 py-1 cursor-pointer hover:bg-green-400 @selected" data-journey-id="@journey.Journey_ID" onclick="showJourneyDetails('@journey.Journey_ID')">
                     <h2>@journey.Start - @journey.End | @journey.Date.ToShortDateString()</h2>
                     <p>Totale afstand: @journey.Total_Distance km</p>
                 </li>
+            }
+
+            @section Scripts {
+                <script>
+                    function showJourneyDetails(journeyId) {
+                        window.location.href = "/journey/index/" + journeyId;
+                    }
+                </script>
             }
         </ul>
     </div>
@@ -74,58 +50,17 @@
         <div class="px-4 py-2 border-black border-solid border-b-2">
             <h3>Stopovers:</h3>
         </div>
-        @foreach (var journey in Model)
-        {
-            <ul class="p-5">
-                @foreach (var stopover in journey.Stopovers)
-                {
-                    <li class="border-b-2 border-solid border-black">
-                        <div>
-                            <h4>Stopover:</h4>
-                        </div>
-                        <div>
-                            <p>@stopover.Start - @stopover.End</p>
-                        </div>
-                        <div>
-                            <p>Distance: @stopover.Distance km</p>
-                        </div>
-                        <div>
-                            <p>Emission: @stopover.Emission km</p>
-                        </div>
-                    </li>
-                }
-            </ul>
-        }
     </div>
 </div>
 
 <script>
-    const firstUl = document.querySelector('ul:first-of-type');
-    const liElements = firstUl.querySelectorAll('li');
-    const journeyDateElement = document.querySelector('#journey-date');
-    const journeyDistanceElement = document.querySelector('#journey-distance');
+    function showJourneyDetails(journeyId) {
+      // Change the URL to include the journey ID
+      history.pushState(null, null, "/journey/" + journeyId);
 
-    const journeys = @Html.Raw(Json.Serialize(Model));
-
-    function getJourneyById(journeyId) {
-        return journeys.find(j => j.journeyID == journeyId);
+      // Update the journey informa    tion displayed on the page
+      document.getElementById("journey-date").innerHTML = ...;
+      document.getElementByI    d("journey-distance").innerHTML = ...;
+      ...
     }
-
-    liElements.forEach(li => {
-        li.addEventListener('click', () => {
-
-            liElements.forEach(li => {
-                li.classList.remove('active');
-            });
-
-            li.classList.add('active');
-
-            const journeyId = li.dataset.journeyId;
-
-            const journey = getJourneyById(journeyId);
-
-            journeyDateElement.textContent = new Date(journey.date).toLocaleDateString();
-            journeyDistanceElement.textContent = journey.totalDistance;
-        });
-    });
 </script>

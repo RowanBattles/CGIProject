@@ -41,7 +41,6 @@ namespace CGI.Controllers
                             score = (int)reader["UserEmission"]
                         };
                         leaderboardViewModels.Add(leaderboardViewModel);
-
                     }
 
                     reader.Close();
