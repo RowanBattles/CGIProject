@@ -27,7 +27,7 @@ namespace CGI.Controllers
             {
                 connection.Open();
 
-                string sqlSelectUsers = "SELECT User_id, SUM(Total_Emission) AS UserEmission FROM Journeys GROUP BY User_ID ORDER BY UserEmission ASC";
+                string sqlSelectUsers = "SELECT u.User_ID, u.FullName, SUM(j.Total_Emission) AS UserEmission FROM Journeys j, Users u WHERE j.User_ID = u.User_ID GROUP BY u.User_ID, u.FullName ORDER BY UserEmission ASC";
 
                 using (SqlCommand command = new SqlCommand(sqlSelectUsers, connection))
                 {
@@ -37,7 +37,7 @@ namespace CGI.Controllers
                     {
                         LeaderboardViewModel leaderboardViewModel = new LeaderboardViewModel
                         {
-                            userID = (int)reader["User_ID"],
+                            userName = (string)reader["Fullname"],
                             score = (int)reader["UserEmission"]
                         };
                         leaderboardViewModels.Add(leaderboardViewModel);
