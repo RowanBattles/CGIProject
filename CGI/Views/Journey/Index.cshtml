@@ -1,4 +1,4 @@
-﻿@*@model IEnumerable<CGI.Models.Journey>
+﻿@model IEnumerable<CGI.Models.Journey>
 @{
     ViewData["Title"] = "Manage Journey";
 }
@@ -34,9 +34,9 @@
     </tbody>
 </table>
 
-<a asp-action="Create">Add Journey</a>*@
+<a asp-action="Create">Add Journey</a>
 
-@model IEnumerable<CGI.Models.Journey>
+@* @model IEnumerable<CGI.Models.Journey>
 @{
     ViewData["Title"] = "Manage Journey";
 }
@@ -128,4 +128,4 @@
             journeyDistanceElement.textContent = journey.totalDistance;
         });
     });
-</script>
+</script> *@
