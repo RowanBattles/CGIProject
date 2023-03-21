@@ -42,7 +42,6 @@ namespace CGI.Controllers
             return RedirectToAction("Index");
         }
 
-        // Read
         public async Task<IActionResult> Index()
         {
             List<Journey> journeys = new List<Journey>();
@@ -73,6 +72,11 @@ namespace CGI.Controllers
             }
 
             string id = Request.Query["id"];
+
+            if (string.IsNullOrEmpty(id))
+            {
+                id = "0";
+            }
 
             List<Stopover> stopovers = new List<Stopover>();
 
