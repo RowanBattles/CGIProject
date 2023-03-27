@@ -2,7 +2,8 @@
 {
     public class JourneyViewModel
     {
-       public List<Journey> Journeys { get; set; }
-       public List<Stopover> Stopovers { get; set; }
+        public int Id { get; set; }
+        public List<Journey> Journeys { get; set; }
+        public List<Stopover> Stopovers { get; set; }
     }
 }

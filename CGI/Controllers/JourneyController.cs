@@ -109,6 +109,7 @@ namespace CGI.Controllers
 
             JourneyViewModel model = new JourneyViewModel
             {
+                Id = int.Parse(id),
                 Journeys = journeys,
                 Stopovers = stopovers,
             };
