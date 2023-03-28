@@ -1,34 +1,93 @@
-﻿@model CGI.Models.Journey
+﻿@model CGI.Models.Stopover
 
 @{
     ViewData["Title"] = "Register Journey";
 }
-<h2>Create Journey</h2>
+<body>
+    <script>
 
-<form asp-action="Create" method="post">
-    <div>
-        <label asp-for="User_ID">User ID:</label>
-        <input asp-for="User_ID" />
+        window.onload = function()
+        {
+            GetStopovers();
+        }
+
+        function GetStopovers()
+        {
+            const cookie = document.cookie
+            console.log("cookie: " + cookie);
+            const preparedCookie = cookie.replace("Stopovers=", "");
+            console.log("Prepared: " + preparedCookie);
+            const Stopovers = preparedCookie.split('?');
+            console.log("stopovers: " + Stopovers);
+
+            var div = document.getElementById("StopoverList");
+            var html = "";
+            for (let i = 0; i < Stopovers.length; i++)
+            {
+                html += "<td>" + Stopovers[i] + "</td>" + "<br>";
+            }
+
+            console.log("yes" + html);
+            div.innerHTML = html;
+        }
+
+        function getCookie(name)
+        {
+            const cookies = document.cookie.split(';');
+            for(let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if(cookie.startsWith(name + '=')) {
+                return cookie.substring(name.length + 1);
+                }
+            }
+            return null;
+        }
+
+        function AddStopoverToCookies()
+        {
+            console.log('test');
+            let start = document.getElementById('startinglocation').value;
+            let end = document.getElementById('endlocation').value;
+            let vehicle = document.getElementById('vehicle').value;
+            let distance = document.getElementById('distance').value;
+
+            let cookie = getCookie("Stopovers");
+
+            console.log("Oeeehhhh nomnomnomnomnomnnom: " + document.cookie);
+            if (start != "" || end != "" || distance != 0)
+            {
+                if (cookie != null)
+                {
+                    let values = start + "|" + end + "|" + vehicle + "|" + distance + "|" + "\?";
+                    let value = cookie + values;
+                    document.cookie = "Stopovers=" + value;
+                } else {
+                    let values = start + "|" + end + "|" + vehicle + "|" + distance + "|" + "\?";
+                    let value = values;
+                    document.cookie = "Stopovers=" + value;
+                }
+            }
+            console.log("Oeeehhhh nomnomnomnomnomnnom: " + document.cookie);
+        }
+    </script>
+    <div class="flex justify-center items-center h-screen bg-slate-200">
+        <div class="block bg-slate-100 p-6 rounded-lg shadow-md shadow-slate-300 w-90">
+            <div class="text-lg">Register new journey:</div>
+            <br>
+            <div class="block bg-slate-50 p-6 rounded-lg shadow-md shadow-slate-300 w-90">
+                <form action="">
+                    <label>Starting Location:</label><br>
+                    <input asp-for="Start" class="shadow appearance-none border border-black rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="startinglocation" placeholder="Input starting location.">
+                    <label>End Location:</label><br>
+                    <input asp-for="End" class="shadow appearance-none border border-black rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="endlocation" placeholder="Input end location.">
+                    <label>Vehicle:</label><br>
+                    <input asp-for="VehicleID" class="shadow appearance-none border border-black rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="vehicle" placeholder="Input vehicle used for travel.">
+                    <label>Distance in km:</label><br>
+                    <input asp-for="Distance" class="shadow appearance-none border border-black rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="distance" placeholder="Input distance in km.">
+                    <button class="bg-blue-700 rounded-lg w-full text-white min-h-fit" onclick="AddStopoverToCookies()">Add</button>
+                </form>
+            </div>
+            <div id="StopoverList"></div>
+        </div>
     </div>
-    <div>
-        <label asp-for="Total_Distance">Total Distance:</label>
-        <input asp-for="Total_Distance" />
-    </div>
-    <div>
-        <label asp-for="Total_Emission">Total Emission:</label>
-        <input asp-for="Total_Emission" />
-    </div>
-    <div>
-        <label asp-for="Start">Start:</label>
-        <input asp-for="Start" />
-    </div>
-    <div>
-        <label asp-for="End">End:</label>
-        <input asp-for="End" />
-    </div>
-    <div>
-        <label asp-for="Date">Date:</label>
-        <input asp-for="Date" type="date" />
-    </div>
-    <button type="submit">Create</button>
-</form>
+</body>
