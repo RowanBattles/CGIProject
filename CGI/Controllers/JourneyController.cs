@@ -107,7 +107,7 @@ namespace CGI.Controllers
                 }
             }
 
-            JourneyViewModel model = new JourneyViewModel
+            JourneyViewModel model = new()
             {
                 Id = int.Parse(id),
                 Journeys = journeys,
