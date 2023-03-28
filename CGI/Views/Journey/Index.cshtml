@@ -53,6 +53,7 @@
                                 </td>
                                 <td>
                                     <form asp-controller="stopover" asp-action="delete" asp-route-id="@stopover.StopoverID" class="destroy">
+                                        <input type="hidden" name="StopoverID" value="@stopover.StopoverID" />
                                         <button class="ml-2 border-black border-2 bg-red-600 hover:bg-red-400 active:bg-red-200 px-0.5 py-1 rounded-md" type="submit">Delete stopover</button>
                                     </form>
                                 </td>

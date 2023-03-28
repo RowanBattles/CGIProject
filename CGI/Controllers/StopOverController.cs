@@ -41,7 +41,7 @@ namespace CGI.Controllers
         {
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
-                using (SqlCommand cmd = new SqlCommand("DELETE FROM Stopovers WHERE StopoverID = @StopoverID", conn))
+                using (SqlCommand cmd = new SqlCommand("DELETE FROM Stopovers WHERE Stopover_ID = @StopoverID", conn))
                 {
                     cmd.Parameters.AddWithValue("@StopoverID", stopoverid);
 
