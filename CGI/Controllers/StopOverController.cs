@@ -15,7 +15,6 @@ namespace CGI.Controllers
         {
             _connectionString = configuration.GetConnectionString("DefaultConnection");
         }
-        [HttpPost]
         public async Task<IActionResult> Edit(Stopover stopover)
         {
             using (SqlConnection conn = new SqlConnection(_connectionString))
@@ -37,7 +36,8 @@ namespace CGI.Controllers
 
             return RedirectToAction("Index");
         }
-        public async Task<IActionResult> DeleteStopOver(int stopoverid)
+        [HttpPost]
+        public async Task<IActionResult> Delete(int stopoverid)
         {
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
