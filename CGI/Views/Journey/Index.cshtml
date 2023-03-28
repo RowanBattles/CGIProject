@@ -39,7 +39,7 @@
                     <tbody>
                         @foreach (var stopover in Model.Stopovers)
                         {
-                            <tr>
+                            <tr class="bg-200">
                                 <td>@stopover.StopoverID</td>
                                 <td>@stopover.VehicleID</td>
                                 <td>@stopover.JourneyID</td>
@@ -49,8 +49,21 @@
                                 <td>@stopover.Emission</td>
                             </tr>
                         }
+
                     </tbody>
                 </table>
+
+                    
+                        <div class="my-2 flex justify-end bg-200">
+                            <form id="edit-form" method="post" action="/journey/edit/@Model.Id">                    
+                                <button class="border-black border-2 bg-blue-600 hover:bg-blue-400 active:bg-blue-200 px-4 py-2 rounded-md">Edit journey</button>
+                            </form>
+                            <form id="delete-form" method="post" action="/journey/delete/@Model.Id">    
+                                <button class="ml-2 border-black border-2 bg-red-600 hover:bg-red-400 active:bg-red-200 px-4 py-2 rounded-md">Delete journey</button>
+                            </form>
+                        </div>
+                    
+                
             } 
             else
             {
