@@ -50,6 +50,7 @@ namespace CGI.Controllers
             {
                 using (SqlCommand cmd = new SqlCommand("SELECT * FROM Journeys", conn))
                 {
+                    
                     conn.Open();
                     using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
                     {
@@ -77,6 +78,7 @@ namespace CGI.Controllers
             {
                 id = "0";
             }
+            
 
             List<Stopover> stopovers = new List<Stopover>();
 
@@ -116,7 +118,22 @@ namespace CGI.Controllers
 
             return View(model);
         }
+        public async Task<IActionResult> DeleteJourneyWhenZeroStopovers(List<Stopover> stopovers)
+        {
+            if (stopovers.Count == 0)
+            {
+                using (SqlConnection conn = new SqlConnection(_connectionString))
+                {
+                    using (SqlCommand cmd = new SqlCommand("DELETE FROM Journeys WHERE Journey_ID = @Journey_ID", conn))
+                    {
+                        conn.Open();
+                        await cmd.ExecuteNonQueryAsync();
+                    }
+                }
+            }
+            return RedirectToAction("Index");
 
+        }
         // Update
         public async Task<IActionResult> Edit(int id)
         {
