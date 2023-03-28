@@ -177,43 +177,9 @@ namespace CGI.Controllers
         }
 
         // Delete
-        public async Task<IActionResult> Delete(int id)
-        {
-            Journey journey;
-
-            using (SqlConnection conn = new SqlConnection(_connectionString))
-            {
-                using (SqlCommand cmd = new SqlCommand("SELECT * FROM Journeys WHERE Journey_ID = @Journey_ID", conn))
-                {
-                    cmd.Parameters.AddWithValue("@Journey_ID", id);
-
-                    conn.Open();
-                    using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
-                    {
-                        if (!await reader.ReadAsync())
-                        {
-                            return NotFound();
-                        }
-
-                        journey = new Journey
-                        {
-                            Journey_ID = reader.GetInt32(0),
-                            User_ID = reader.GetInt32(1),
-                            Total_Distance = reader.GetInt32(2),
-                            Total_Emission = reader.GetInt32(3),
-                            Start = reader.GetString(4),
-                            End = reader.GetString(5),
-                            Date = reader.GetDateTime(6)
-                        };
-                    }
-                }
-            }
-
-            return View(journey);
-        }
 
         [HttpPost]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
