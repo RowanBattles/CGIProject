@@ -107,7 +107,7 @@ namespace CGI.Controllers
                 }
             }
 
-            JourneyViewModel model = new JourneyViewModel
+            JourneyViewModel model = new()
             {
                 Id = int.Parse(id),
                 Journeys = journeys,
@@ -154,7 +154,32 @@ namespace CGI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> Edit(Journey journey)
+        {
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+        {
+                using (SqlCommand cmd = new SqlCommand("UPDATE Journeys SET User_ID = @User_ID, Total_Distance = @Total_Distance, Total_Emission = @Total_Emission, Start = @Start, End = @End, Date = @Date WHERE Journey_ID = @Journey_ID", conn))
+                {
+                    cmd.Parameters.AddWithValue("@Journey_ID", journey.Journey_ID);
+                    cmd.Parameters.AddWithValue("@User_ID", journey.User_ID);
+                    cmd.Parameters.AddWithValue("@Total_Distance", journey.Total_Distance);
+                    cmd.Parameters.AddWithValue("@Total_Emission", journey.Total_Emission);
+                    cmd.Parameters.AddWithValue("@Start", journey.Start);
+                    cmd.Parameters.AddWithValue("@End", journey.End);
+                    cmd.Parameters.AddWithValue("@Date", journey.Date);
+
+                    conn.Open();
+                    await cmd.ExecuteNonQueryAsync();
+                }
+            }
+
+            return RedirectToAction("Index");
+        }
+
+        // Delete
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id)
         {
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {

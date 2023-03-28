@@ -62,17 +62,14 @@
                 </table>
 
                     
-                <div class="my-2 flex justify-end bg-200">
-                    <a asp-controller="journey" asp-action="edit" asp-route-id="@Model.Id">
-                        <button class="border-black border-2 bg-green-600 hover:bg-green-400 active:bg-green-200 px-4 py-2 rounded-md">Add journey</button>
-                    </a>
-                    <a asp-controller="journey" asp-action="delete" asp-route-id="@Model.Id">    
-                        <button class="ml-2 border-black border-2 bg-red-600 hover:bg-red-400 active:bg-red-200 px-4 py-2 rounded-md">Delete journey</button>
-                    </a>
-
-                </div>
-                    
-                
+                        <div class="my-2 flex justify-end bg-200">
+                            <a asp-controller="journey" asp-action="edit" asp-route-id="@Model.Id">
+                                <button class="border-black border-2 bg-blue-600 hover:bg-blue-400 active:bg-blue-200 px-4 py-2 rounded-md">Edit journey</button>
+                            </a>
+                            <form asp-controller="journey" asp-action="Delete" asp-route-id="@Model.Id" class="destroy">    
+                                <button class="ml-2 border-black border-2 bg-red-600 hover:bg-red-400 active:bg-red-200 px-4 py-2 rounded-md" type="submit">Delete journey</button>
+                            </form>
+                        </div>
             } 
             else
             {
