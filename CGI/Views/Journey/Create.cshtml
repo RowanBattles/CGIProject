@@ -1,6 +1,5 @@
 ﻿@model CGI.Models.Journey
 
-
 @{
     ViewData["Title"] = "Register Journey";
 }
@@ -12,24 +11,24 @@
         <input asp-for="User_ID" />
     </div>
     <div>
-    <label asp-for="Total_Distance">Total Distance:</label>
-    <input asp-for="Total_Distance" />
-</div>
-<div>
-    <label asp-for="Total_Emission">Total Emission:</label>
-    <input asp-for="Total_Emission" />
-</div>
-<div>
-    <label asp-for="Start">Start:</label>
-    <input asp-for="Start" />
-</div>
-<div>
-    <label asp-for="End">End:</label>
-    <input asp-for="End" />
-</div>
-<div>
-    <label asp-for="Date">Date:</label>
-    <input asp-for="Date" type="date" />
-</div>
-<button type="submit">Create</button>
+        <label asp-for="Total_Distance">Total Distance:</label>
+        <input asp-for="Total_Distance" />
+    </div>
+    <div>
+        <label asp-for="Total_Emission">Total Emission:</label>
+        <input asp-for="Total_Emission" />
+    </div>
+    <div>
+        <label asp-for="Start">Start:</label>
+        <input asp-for="Start" />
+    </div>
+    <div>
+        <label asp-for="End">End:</label>
+        <input asp-for="End" />
+    </div>
+    <div>
+        <label asp-for="Date">Date:</label>
+        <input asp-for="Date" type="date" />
+    </div>
+    <button type="submit">Create</button>
 </form>
