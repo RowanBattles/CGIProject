@@ -36,7 +36,6 @@ CREATE TABLE Users(
 User_ID int IDENTITY(1,1) NOT NULL,
 UUID nvarchar(50) NOT NULL,
 FullName nvarchar(50) NOT NULL,
-Score int NULL,
 CONSTRAINT PK_Users PRIMARY KEY CLUSTERED (User_ID)
 );
 

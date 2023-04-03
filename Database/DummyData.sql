@@ -3,6 +3,7 @@ USE evv;
 DELETE FROM Categories;
 DELETE FROM Users;
 DELETE FROM Journeys;
+DELETE FROM Stopovers;
 
 DBCC CHECKIDENT (Categories, RESEED, 0);
 DBCC CHECKIDENT (Users, RESEED, 0);
@@ -10,13 +11,13 @@ DBCC CHECKIDENT (Journeys, RESEED, 0);
 DBCC CHECKIDENT (Stopovers, RESEED, 0);
 
 
-INSERT INTO Users (UUID, FullName, Score)
+INSERT INTO Users (UUID, FullName)
 VALUES
-('Billy-277a-4d11-9c85-9ae01d06df43', 'Billy Hofland', 20),
-('Rowan-5e4f-4b4d-bb81-9e9f9d56f59c', 'Rowan Battles', 100),
-('Stijn-3e8c-4fae-bd36-482c225b9f38', 'Stijn van der Vliet', 100),
-('Joost-67e6-46a8-8a69-cf26e7bca3b9', 'Joost Raemakers', 100),
-('Jonathan-9010-43c1-86fb-8f81cd787d62', 'Jonathan Kitten', 100);
+('Billy-277a-4d11-9c85-9ae01d06df43', 'Billy Hofland'),
+('Rowan-5e4f-4b4d-bb81-9e9f9d56f59c', 'Rowan Battles'),
+('Stijn-3e8c-4fae-bd36-482c225b9f38', 'Stijn van der Vliet'),
+('Joost-67e6-46a8-8a69-cf26e7bca3b9', 'Joost Raemakers'),
+('Jonathan-9010-43c1-86fb-8f81cd787d62', 'Jonathan Kitten');
 
 INSERT INTO Categories (Vehicle_Name, Emission)
 VALUES
@@ -27,7 +28,6 @@ VALUES
 ('E-Scooter', 17),
 ('E-Car', 54),
 ('G-Scooter', 62),
-('G-Scooter', 64),
 ('D-Train', 90),
 ('Tram', 96),
 ('Bus', 96),
@@ -49,7 +49,7 @@ VALUES
 INSERT INTO Stopovers (Journey_ID, Vehicle_ID, Distance, [Start], [End], Emission)
 VALUES 
 (1, 1, 0.75, 'Thuis', 'Varendonk', 0),
-(1, 11, 22, 'Varendonk', 'Eindhoven Centraal', 2112),
+(1, 10, 22, 'Varendonk', 'Eindhoven Centraal', 2112),
 (1, 1, 1, 'Eindhoven Centraal', 'Fontys ICT', 0),
 (2, 2, 2.8, 'Thuis', 'Fontys ICT', 0),
 (3, 1, 0.3, 'Thuis', 'Helmond het Hout', 0),
@@ -66,4 +66,4 @@ VALUES
 SELECT * FROM Categories;
 SELECT * FROM Journeys;
 SELECT * FROM Stopovers;
-SELECT * FROM Users;
+SELECT * FROM Users;	
