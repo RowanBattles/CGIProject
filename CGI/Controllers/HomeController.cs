@@ -52,7 +52,7 @@ namespace CGI.Controllers
             {
                 connection.Open();
 
-                string sqlSelectUsers = "SELECT u.User_ID, u.FullName, SUM(j.Total_Emission) AS UserEmission FROM Journeys j, Users u WHERE j.User_ID = u.User_ID GROUP BY u.User_ID, u.FullName ORDER BY UserEmission ASC";
+                string sqlSelectUsers = "SELECT u.User_ID, u.FullName, SUM(j.Total_Emission) AS UserEmission FROM Journeys j, Users u WHERE j.User_ID = u.User_ID GROUP BY u.User_ID, u.FullName ORDER BY UserEmission DESC";
 
                 using (SqlCommand command = new SqlCommand(sqlSelectUsers, connection))
                 {
