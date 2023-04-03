@@ -117,18 +117,24 @@ namespace CGI.Controllers
                     {
                         while (await reader.ReadAsync())
                         {
-                            Journey journey = new Journey
+                            if (!reader.IsDBNull(0) && !reader.IsDBNull(1) && !reader.IsDBNull(2) &&
+                                !reader.IsDBNull(3) && !reader.IsDBNull(4) && !reader.IsDBNull(5) && !reader.IsDBNull(6))
                             {
-                                Journey_ID = reader.GetInt32(0),
-                                User_ID = reader.GetInt32(1),
-                                Total_Distance = reader.GetInt32(2),
-                                Total_Emission = reader.GetInt32(3),
-                                Start = reader.GetString(4),
-                                End = reader.GetString(5),
-                                Date = reader.GetDateTime(6)
-                            };
-                            journeys.Add(journey);
+                                Journey journey = new Journey
+                                {
+                                    Journey_ID = reader.GetInt32(0),
+                                    User_ID = reader.GetInt32(1),
+                                    Total_Distance = reader.GetInt32(2),
+                                    Total_Emission = reader.GetInt32(3),
+                                    Start = reader.GetString(4),
+                                    End = reader.GetString(5),
+                                    Date = reader.GetDateTime(6)
+                                };
+                                journeys.Add(journey);
+                            }
                         }
+
+
                     }
                 }
             }
@@ -153,17 +159,21 @@ namespace CGI.Controllers
                     {
                         while (await reader.ReadAsync())
                         {
-                            Stopover stopover = new Stopover
+                            if (!reader.IsDBNull(0) && !reader.IsDBNull(1) && !reader.IsDBNull(2) &&
+                                !reader.IsDBNull(3) && !reader.IsDBNull(4) && !reader.IsDBNull(5) && !reader.IsDBNull(6))
                             {
-                                StopoverID = reader.GetInt32(0),
-                                VehicleType = (Vehicle)reader.GetInt32(1), 
-                                JourneyID = reader.GetInt32(2),
-                                Distance = reader.GetInt32(3),
-                                Start = reader.GetString(4),
-                                End = reader.GetString(5),
-                                Emission = reader.GetInt32(6)
-                            };
-                            stopovers.Add(stopover);
+                                Stopover stopover = new Stopover
+                                {
+                                    StopoverID = reader.GetInt32(0),
+                                    VehicleType = (Vehicle)reader.GetInt32(1),
+                                    JourneyID = reader.GetInt32(2),
+                                    Distance = reader.GetInt32(3),
+                                    Start = reader.GetString(4),
+                                    End = reader.GetString(5),
+                                    Emission = reader.GetInt32(6)
+                                };
+                                stopovers.Add(stopover);
+                            }
                         }
                     }
                 }
