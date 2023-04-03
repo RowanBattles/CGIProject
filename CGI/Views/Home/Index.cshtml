@@ -3,6 +3,19 @@
         ViewData["Title"] = "Home Page";
         int ranking = 0;
     }
+    
+
+    <script>
+    // Get the User_ID from the server and store it in localStorage
+    if (!localStorage.getItem("User_ID")) {
+        // Get the User_ID from the server and store it in localStorage
+        fetch("/Home/GetUserId")
+            .then(response => response.json())
+            .then(data => {
+                localStorage.setItem("User_ID", data.userId);
+            });
+    }
+</script>
 
     <div class="grid grid-cols-3 gap-5">
         <div class="cols-span-1">

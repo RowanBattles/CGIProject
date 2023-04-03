@@ -1,73 +1,70 @@
-﻿@model CGI.Models.Stopover
+﻿@using Microsoft.AspNetCore.Authentication
+@model CGI.Models.Stopover
 
 @{
     ViewData["Title"] = "Register Journey";
 }
-<body>
-    <script>
 
-        window.onload = function()
-        {
+@{
+    var idToken = await Context.GetTokenAsync("id_token");
+    var userInfo = new CGI.Controllers.AccountController(null).GetAuth0UserInfo(idToken);
+    string userId = userInfo.UserId;
+}
+
+<body>
+<script>
+    
+        async function checkAndCreateJourney() {
+            let journeyId = localStorage.getItem('JourneyID');
+            if (!journeyId) {
+                let response = await fetch('/Journey/CreateAndGetJourneyId?userId=@userId');
+                if (response.ok) {
+                    let jsonResponse = await response.json();
+                    if (jsonResponse.success) {
+                        localStorage.setItem('JourneyID', jsonResponse.journeyId);
+                    }
+                } else {
+                    console.error('Failed to create a new journey:', response.statusText);
+                }
+            }
+        }
+
+        window.onload = function () {
+            checkAndCreateJourney();
             GetStopovers();
         }
 
-        function GetStopovers()
-        {
-            const cookie = document.cookie
-            console.log("cookie: " + cookie);
-            const preparedCookie = cookie.replace("Stopovers=", "");
-            console.log("Prepared: " + preparedCookie);
-            const Stopovers = preparedCookie.split('?');
-            console.log("stopovers: " + Stopovers);
-
-            var div = document.getElementById("StopoverList");
-            var html = "";
-            for (let i = 0; i < Stopovers.length; i++)
-            {
-                html += "<td>" + Stopovers[i] + "</td>" + "<br>";
+        function GetStopovers() {
+            let stopovers = JSON.parse(localStorage.getItem('Stopovers')) || [];
+            let div = document.getElementById("StopoverList");
+            let html = "";
+            for (let i = 0; i < stopovers.length; i++) {
+                let stopover = stopovers[i];
+                html += "<td>" + stopover.start + " - " + stopover.end + " (" + stopover.vehicle + ", " + stopover.distance + "km)" + "</td><br>";
             }
-
-            console.log("yes" + html);
             div.innerHTML = html;
         }
 
-        function getCookie(name)
-        {
-            const cookies = document.cookie.split(';');
-            for(let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                if(cookie.startsWith(name + '=')) {
-                return cookie.substring(name.length + 1);
-                }
-            }
-            return null;
-        }
 
-        function AddStopoverToCookies()
-        {
-            console.log('test');
+        function AddStopoverToList() {
             let start = document.getElementById('startinglocation').value;
             let end = document.getElementById('endlocation').value;
             let vehicle = document.getElementById('vehicle').value;
             let distance = document.getElementById('distance').value;
 
-            let cookie = getCookie("Stopovers");
-
-            console.log("Oeeehhhh nomnomnomnomnomnnom: " + document.cookie);
-            if (start != "" || end != "" || distance != 0)
-            {
-                if (cookie != null)
-                {
-                    let values = start + "|" + end + "|" + vehicle + "|" + distance + "|" + "\?";
-                    let value = cookie + values;
-                    document.cookie = "Stopovers=" + value;
-                } else {
-                    let values = start + "|" + end + "|" + vehicle + "|" + distance + "|" + "\?";
-                    let value = values;
-                    document.cookie = "Stopovers=" + value;
-                }
+            if (start != "" || end != "" || distance != 0) {
+                let stopovers = JSON.parse(localStorage.getItem('Stopovers')) || [];
+                let stopover = {
+                    start: start,
+                    end: end,
+                    vehicle: vehicle,
+                    distance: distance,
+                    emission: 0 // You can add a function to calculate the emission based on the distance and vehicle type
+                };
+                stopovers.push(stopover);
+                localStorage.setItem('Stopovers', JSON.stringify(stopovers));
+                GetStopovers();
             }
-            console.log("Oeeehhhh nomnomnomnomnomnnom: " + document.cookie);
         }
     </script>
     <div class="flex justify-center items-center h-screen bg-slate-200">
@@ -84,7 +81,7 @@
                     <input asp-for="VehicleID" class="shadow appearance-none border border-black rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="vehicle" placeholder="Input vehicle used for travel.">
                     <label>Distance in km:</label><br>
                     <input asp-for="Distance" class="shadow appearance-none border border-black rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="distance" placeholder="Input distance in km.">
-                    <button class="bg-blue-700 rounded-lg w-full text-white min-h-fit" onclick="AddStopoverToCookies()">Add</button>
+                    <button class="bg-blue-700 rounded-lg w-full text-white min-h-fit" onclick="AddStopoverToList()">Add</button>
                 </form>
             </div>
             <div id="StopoverList"></div>

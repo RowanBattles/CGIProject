@@ -1,6 +1,7 @@
 ﻿using CGI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using Newtonsoft.Json;
 
 namespace CGI.Controllers
 {
@@ -15,6 +16,36 @@ namespace CGI.Controllers
         {
             _connectionString = configuration.GetConnectionString("DefaultConnection");
         }
+
+        [HttpPost]
+        public async Task<IActionResult> SubmitStopovers(string stopoversJson)
+        {
+            List<Stopover> stopovers = JsonConvert.DeserializeObject<List<Stopover>>(stopoversJson);
+
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                foreach (var stopover in stopovers)
+                {
+                    using (SqlCommand cmd = new SqlCommand("INSERT INTO Stopovers (VehicleID, JourneyID, Distance, Start, End, Emission) VALUES (@VehicleID, @JourneyID, @Distance, @Start, @End, @Emission)", conn))
+                    {
+                        cmd.Parameters.AddWithValue("@VehicleID", stopover.VehicleID);
+                        cmd.Parameters.AddWithValue("@JourneyID", stopover.JourneyID);
+                        cmd.Parameters.AddWithValue("@Distance", stopover.Distance);
+                        cmd.Parameters.AddWithValue("@Start", stopover.Start);
+                        cmd.Parameters.AddWithValue("@End", stopover.End);
+                        cmd.Parameters.AddWithValue("@Emission", stopover.Emission);
+
+                        conn.Open();
+                        await cmd.ExecuteNonQueryAsync();
+                        conn.Close();
+                    }
+                }
+            }
+
+            return Json(new { success = true });
+        }
+
+
         public async Task<IActionResult> Edit(Stopover stopover)
         {
             using (SqlConnection conn = new SqlConnection(_connectionString))

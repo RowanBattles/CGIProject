@@ -20,6 +20,26 @@ namespace CGI.Controllers
             return View();
         }
 
+        [HttpGet]
+        public async Task<IActionResult> CreateAndGetJourneyId(int userId)
+        {
+            int newJourneyId;
+
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("INSERT INTO Journeys (User_ID) OUTPUT INSERTED.Journey_ID VALUES (@User_ID)", conn))
+                {
+                    cmd.Parameters.AddWithValue("@User_ID", userId);
+
+                    conn.Open();
+                    newJourneyId = (int)await cmd.ExecuteScalarAsync();
+                }
+            }
+
+            return Json(new { success = true, journeyId = newJourneyId });
+        }
+
+
         [HttpPost]
         public async Task<IActionResult> Create(Journey journey)
         {

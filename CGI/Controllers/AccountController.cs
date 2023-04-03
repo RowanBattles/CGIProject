@@ -1,4 +1,5 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
+using System.Text;
 using Auth0.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -74,8 +75,9 @@ public class AccountController : Controller
         var userInfo = GetAuth0UserInfo(idToken);
         string userId = userInfo.UserId;
         string userName = userInfo.Name;
-        await InsertUserIdIntoDatabase(userId, userName);
 
+        // Insert the user into the database if they don't already exist
+        await InsertUserIdIntoDatabase(userId, userName);
 
         // Redirect to a different view after a successful login
         return RedirectToAction("Index", "Home");
