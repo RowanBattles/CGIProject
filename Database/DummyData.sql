@@ -11,13 +11,13 @@ DBCC CHECKIDENT (Journeys, RESEED, 0);
 DBCC CHECKIDENT (Stopovers, RESEED, 0);
 
 
-INSERT INTO Users (UUID, FullName, Score)
+INSERT INTO Users (UUID, FullName)
 VALUES
-('Billy-277a-4d11-9c85-9ae01d06df43', 'Billy Hofland', 202),
-('Rowan-5e4f-4b4d-bb81-9e9f9d56f59c', 'Rowan Battles', 500),
-('Stijn-3e8c-4fae-bd36-482c225b9f38', 'Stijn van der Vliet', 494),
-('Joost-67e6-46a8-8a69-cf26e7bca3b9', 'Joost Raemakers', 494),
-('Jonathan-9010-43c1-86fb-8f81cd787d62', 'Jonathan Kitten', 494);
+('Billy-277a-4d11-9c85-9ae01d06df43', 'Billy Hofland'),
+('Rowan-5e4f-4b4d-bb81-9e9f9d56f59c', 'Rowan Battles'),
+('Stijn-3e8c-4fae-bd36-482c225b9f38', 'Stijn van der Vliet'),
+('Joost-67e6-46a8-8a69-cf26e7bca3b9', 'Joost Raemakers'),
+('Jonathan-9010-43c1-86fb-8f81cd787d62', 'Jonathan Kitten');
 
 INSERT INTO Categories (Vehicle_Name, Emission)
 VALUES
