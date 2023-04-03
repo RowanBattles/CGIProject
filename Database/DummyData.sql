@@ -40,11 +40,11 @@ VALUES
 
 INSERT INTO Journeys (User_ID, Total_Distance, Total_Emission, [Start], [End], Date, Score)
 VALUES
-(1, 23.75, 3080, 'Thuis', 'Fontys ICT', '2023-03-20', 202),
+(1, 23.75, 2112, 'Thuis', 'Fontys ICT', '2023-03-20', 202),
 (2, 2.8, 0, 'Thuis', 'Fontys ICT', '2023-03-20', 500),
-(3, 14.3, 0, 'Thuis', 'Fontys ICT', '2022-03-03', 494),
-(4, 96.5, 0, 'Thuis', 'Fontys ICT', '2022-03-03', 494),
-(5, 55, 0, 'Thuis', 'Fontys ICT', '2022-03-03', 494);
+(3, 14.3, 26, 'Thuis', 'Fontys ICT', '2022-03-03', 494),
+(4, 96.5, 178, 'Thuis', 'Fontys ICT', '2022-03-03', 494),
+(5, 55, 108, 'Thuis', 'Fontys ICT', '2022-03-03', 494);
 
 INSERT INTO Stopovers (Journey_ID, Vehicle_ID, Distance, [Start], [End], Emission)
 VALUES 
