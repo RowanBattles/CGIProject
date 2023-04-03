@@ -27,5 +27,10 @@ namespace CGI.Models
         [Required]
         [DataType(DataType.Date)]
         public DateTime Date { get; set; }
+
+        public int Score { get; set; }
+
+        // Total_Distance = List<Stopover> AllDistances
+        // Total_Emission = List<Stopover> AllEmission
     }
 }
