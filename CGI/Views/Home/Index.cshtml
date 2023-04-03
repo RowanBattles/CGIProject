@@ -1,13 +1,15 @@
-﻿    @model List<LeaderboardViewModel>
-    @{
-        ViewData["Title"] = "Home Page";
-        int ranking = 0;
-    }
-    
+﻿@model List<LeaderboardViewModel>
+@{
+    ViewData["Title"] = "Home Page";
+    var ranking = 0;
+}
 
-    <script>
+
+<script>
     // Get the User_ID from the server and store it in localStorage
     if (!localStorage.getItem("User_ID")) {
+        localStorage.removeItem("JourneyID");
+        localStorage.removeItem("Stopovers");
         // Get the User_ID from the server and store it in localStorage
         fetch("/Home/GetUserId")
             .then(response => response.json())
@@ -15,82 +17,84 @@
                 localStorage.setItem("User_ID", data.userId);
             });
     }
-</script>
 
-    <div class="grid grid-cols-3 gap-5">
-        <div class="cols-span-1">
-            <br />
-            <button onclick="location.href='./journey/create';" class="text-2xl text-white border-white " style="border: 5px solid; padding: 20px; background-color: black; width: 250px; height: 100px;">
-                Create Journey
-            </button>
-            <br />
-            <button onclick="location.href='./journey';" class="text-2xl text-white border-white" style="border: 5px solid; padding: 20px; background-color: black; width: 250px; height: 100px;">
-                Manage Journeys
-            </button>
-            <br />
-            <button onclick="location.href='./home/privacy';" class="text-2xl text-white border-white" style="border: 5px solid; padding: 20px; background-color: black; width: 250px; height: 100px;">
-                Manage Groups
-            </button>
-            <br />
-            <button onclick="location.href='./account/logout';" class="text-2xl text-white border-white" style="border: 5px solid; padding: 20px; background-color: black; width: 250px; height: 100px;">
-                Log Out
-            </button>
-        </div>
-        <div class="cols-span-1 text-4xl text-center">
-            <p class="mt-10">Welcome</p>
-            <p class="">@User.Identity.Name</p>
-        </div>
+    </script>
 
-        <div class="cols-span-1">
-                    <table class="table-auto w-full bg-transparent h-screen border-black border-4 text-center">
+<div class="grid grid-cols-3 gap-5">
+    <div class="cols-span-1">
+        <br/>
+        <button onclick="location.href='./journey/create';" class="text-2xl text-white border-white " style="border: 5px solid; padding: 20px; background-color: black; width: 250px; height: 100px;">
+            Create Journey
+        </button>
+        <br/>
+        <button onclick="location.href='./journey';" class="text-2xl text-white border-white" style="border: 5px solid; padding: 20px; background-color: black; width: 250px; height: 100px;">
+            Manage Journeys
+        </button>
+        <br/>
+        <button onclick="location.href='./home/privacy';" class="text-2xl text-white border-white" style="border: 5px solid; padding: 20px; background-color: black; width: 250px; height: 100px;">
+            Manage Groups
+        </button>
+        <br/>
+        <button onclick="location.href='./account/logout';" class="text-2xl text-white border-white" style="border: 5px solid; padding: 20px; background-color: black; width: 250px; height: 100px;">
+            Log Out
+        </button>
+    </div>
+    <div class="cols-span-1 text-4xl text-center">
+        <p class="mt-10">Welcome</p>
+        <p class="">@User.Identity.Name</p>
+    </div>
+
+    <div class="cols-span-1">
+        <table class="table-auto w-full bg-transparent h-screen border-black border-4 text-center">
             <thead>
-                <tr class="border-b-4 border-black">
-                    <th class="px-4 py-2">Rank</th>
-                    <th class="px-4 py-2">Player</th>
-                    <th class="px-4 py-2">Score</th>
-                </tr>
+            <tr class="border-b-4 border-black">
+                <th class="px-4 py-2">Rank</th>
+                <th class="px-4 py-2">Player</th>
+                <th class="px-4 py-2">Score</th>
+            </tr>
             </thead>
             <tbody>
-                @foreach (var leaderboardViewModel in Model)
+            @foreach (var leaderboardViewModel in Model)
+            {
+                ranking++;
+                if (ranking == 1)
                 {
-                    ranking++;
-                    if(ranking == 1)
-                    {
-                        <tr>
-                           <td class="text-3xl px-4 py-2 text-amber-500">@ranking</td>
-                           <td class="text-3xl px-4 py-2 text-amber-500">@leaderboardViewModel.userName</td>
-                           <td class="text-3xl px-4 py-2 text-amber-500">@leaderboardViewModel.score</td>     
-                        </tr>
-                    }
-                    else if (ranking == 2)
-                    {
-                        <tr>
-                           <td class="text-2xl px-4 py-2 text-stone-400">@ranking</td>
-                           <td class="text-2xl px-4 py-2 text-stone-400">@leaderboardViewModel.userName</td>
-                           <td class="text-2xl px-4 py-2 text-stone-400">@leaderboardViewModel.score</td>     
-                        </tr>
-                    }
-                    else if (ranking == 3)
-                    {
-                        <tr>
-                         <td class="text-xl px-4 py-2 text-amber-800">@ranking</td>
-                         <td class="text-xl px-4 py-2 text-amber-800">@leaderboardViewModel.userName</td>
-                         <td class="text-xl px-4 py-2 text-amber-800">@leaderboardViewModel.score</td>     
-                        </tr>
-                    }
-                    else
-                    {
-                        <tr>
-                            <td class="text-l px-4 py-2">@ranking</td>
-                            <td class="text-l px-4 py-2">@leaderboardViewModel.userName</td>
-                            <td class="text-l px-4 py-2">@leaderboardViewModel.score</td>     
-                        </tr>
-                    }
-                    if (ranking == 10)
-                    {
-                        break;
-                    }
+                    <tr>
+                        <td class="text-3xl px-4 py-2 text-amber-500">@ranking</td>
+                        <td class="text-3xl px-4 py-2 text-amber-500">@leaderboardViewModel.userName</td>
+                        <td class="text-3xl px-4 py-2 text-amber-500">@leaderboardViewModel.score</td>
+                    </tr>
                 }
+                else if (ranking == 2)
+                {
+                    <tr>
+                        <td class="text-2xl px-4 py-2 text-stone-400">@ranking</td>
+                        <td class="text-2xl px-4 py-2 text-stone-400">@leaderboardViewModel.userName</td>
+                        <td class="text-2xl px-4 py-2 text-stone-400">@leaderboardViewModel.score</td>
+                    </tr>
+                }
+                else if (ranking == 3)
+                {
+                    <tr>
+                        <td class="text-xl px-4 py-2 text-amber-800">@ranking</td>
+                        <td class="text-xl px-4 py-2 text-amber-800">@leaderboardViewModel.userName</td>
+                        <td class="text-xl px-4 py-2 text-amber-800">@leaderboardViewModel.score</td>
+                    </tr>
+                }
+                else
+                {
+                    <tr>
+                        <td class="text-l px-4 py-2">@ranking</td>
+                        <td class="text-l px-4 py-2">@leaderboardViewModel.userName</td>
+                        <td class="text-l px-4 py-2">@leaderboardViewModel.score</td>
+                    </tr>
+                }
+                if (ranking == 10)
+                {
+                    break;
+                }
+            }
             </tbody>
         </table>
     </div>
+</div>

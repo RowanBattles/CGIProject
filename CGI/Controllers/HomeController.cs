@@ -58,15 +58,23 @@ namespace CGI.Controllers
                 {
                     SqlDataReader reader = command.ExecuteReader();
 
-                    while(reader.Read())
+                    while (reader.Read())
                     {
-                        LeaderboardViewModel leaderboardViewModel = new LeaderboardViewModel
+                        LeaderboardViewModel leaderboardViewModel = new LeaderboardViewModel();
+
+                        if (!reader.IsDBNull(reader.GetOrdinal("Fullname")))
                         {
-                            userName = (string)reader["Fullname"],
-                            score = (int)reader["UserEmission"]
-                        };
+                            leaderboardViewModel.userName = (string)reader["Fullname"];
+                        }
+
+                        if (!reader.IsDBNull(reader.GetOrdinal("UserEmission")))
+                        {
+                            leaderboardViewModel.score = (int)reader["UserEmission"];
+                        }
+
                         leaderboardViewModels.Add(leaderboardViewModel);
                     }
+
 
                     reader.Close();
                 }

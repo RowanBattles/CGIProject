@@ -28,7 +28,7 @@ namespace CGI.Controllers
                 {
                     using (SqlCommand cmd = new SqlCommand("INSERT INTO Stopovers (VehicleID, JourneyID, Distance, Start, End, Emission) VALUES (@VehicleID, @JourneyID, @Distance, @Start, @End, @Emission)", conn))
                     {
-                        cmd.Parameters.AddWithValue("@VehicleID", stopover.VehicleID);
+                        cmd.Parameters.AddWithValue("@VehicleID", stopover.VehicleType);
                         cmd.Parameters.AddWithValue("@JourneyID", stopover.JourneyID);
                         cmd.Parameters.AddWithValue("@Distance", stopover.Distance);
                         cmd.Parameters.AddWithValue("@Start", stopover.Start);
@@ -53,7 +53,7 @@ namespace CGI.Controllers
                 using (SqlCommand cmd = new SqlCommand("UPDATE Stopovers SET StopoverID = @StopoverID, VehicleID = @VehicleID, JourneyID = @JourneyID, Distance = @Distance, Start = @Start, End = @End, Emission = @Emission WHERE StopoverID = @StopoverID", conn))
                 {
                     cmd.Parameters.AddWithValue("@StopoverID", stopover.StopoverID);
-                    cmd.Parameters.AddWithValue("@VehicleID", stopover.VehicleID);
+                    cmd.Parameters.AddWithValue("@VehicleID", stopover.VehicleType);
                     cmd.Parameters.AddWithValue("@JourneyID", stopover.JourneyID);
                     cmd.Parameters.AddWithValue("@Distance", stopover.Distance);
                     cmd.Parameters.AddWithValue("@Start", stopover.Start);

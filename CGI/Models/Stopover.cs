@@ -27,7 +27,7 @@
     public class Stopover
     {
         public int StopoverID { get; set; }
-        public int VehicleID { get; set; }
+        public Vehicle VehicleType { get; set; }
         public int JourneyID { get; set; }
         public int Distance { get; set; }
         public string Start { get; set; }
@@ -36,7 +36,7 @@
 
         public void CalculateEmission()
         {
-            Emission = Distance * VehicleID;
+            Emission = Distance * (int)VehicleType;
         }
     }
 }

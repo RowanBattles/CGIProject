@@ -39,6 +39,48 @@ namespace CGI.Controllers
             return Json(new { success = true, journeyId = newJourneyId });
         }
 
+        [HttpPost]
+        public async Task<IActionResult> UpdateJourney(int journeyId, int userId, [FromBody] List<Stopover> stopovers)
+        {
+            // Calculate total distance and total emission from the stopovers
+            int totalDistance = 0;
+            int totalEmission = 0;
+
+            foreach (var stopover in stopovers)
+            {
+                totalDistance += stopover.Distance;
+                totalEmission += stopover.Emission;
+            }
+
+            // Get the Start and End from the first and last stopovers
+            string start = stopovers[0].Start;
+            string end = stopovers[^1].End;
+
+            // Update the journey in the database
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("UPDATE Journeys SET Total_Distance = @Total_Distance, Total_Emission = @Total_Emission, Start = @Start, [End] = @End WHERE Journey_ID = @Journey_ID AND User_ID = @User_ID", conn))
+                {
+                    cmd.Parameters.AddWithValue("@Journey_ID", journeyId);
+                    cmd.Parameters.AddWithValue("@User_ID", userId);
+                    cmd.Parameters.AddWithValue("@Total_Distance", totalDistance);
+                    cmd.Parameters.AddWithValue("@Total_Emission", totalEmission);
+                    cmd.Parameters.AddWithValue("@Start", start);
+                    cmd.Parameters.AddWithValue("@End", end);
+
+                    conn.Open();
+                    int rowsAffected = await cmd.ExecuteNonQueryAsync();
+
+                    if (rowsAffected == 0)
+                    {
+                        return Json(new { success = false, message = "Failed to update journey" });
+                    }
+                }
+            }
+
+            return Json(new { success = true });
+        }
+
 
         [HttpPost]
         public async Task<IActionResult> Create(Journey journey)
@@ -114,7 +156,7 @@ namespace CGI.Controllers
                             Stopover stopover = new Stopover
                             {
                                 StopoverID = reader.GetInt32(0),
-                                VehicleID = reader.GetInt32(1),
+                                VehicleType = (Vehicle)reader.GetInt32(1), 
                                 JourneyID = reader.GetInt32(2),
                                 Distance = reader.GetInt32(3),
                                 Start = reader.GetString(4),

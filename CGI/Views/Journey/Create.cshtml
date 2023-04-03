@@ -1,14 +1,8 @@
-﻿@using Microsoft.AspNetCore.Authentication
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model CGI.Models.Stopover
 
 @{
     ViewData["Title"] = "Register Journey";
-}
-
-@{
-    var idToken = await Context.GetTokenAsync("id_token");
-    var userInfo = new CGI.Controllers.AccountController(null).GetAuth0UserInfo(idToken);
-    string userId = userInfo.UserId;
 }
 
 <body>
@@ -16,8 +10,9 @@
     
         async function checkAndCreateJourney() {
             let journeyId = localStorage.getItem('JourneyID');
+            let userId = localStorage.getItem('User_ID');
             if (!journeyId) {
-                let response = await fetch('/Journey/CreateAndGetJourneyId?userId=@userId');
+                let response = await fetch('/Journey/CreateAndGetJourneyId?userId=' + userId);
                 if (response.ok) {
                     let jsonResponse = await response.json();
                     if (jsonResponse.success) {
@@ -33,6 +28,28 @@
             checkAndCreateJourney();
             GetStopovers();
         }
+        
+            function getEmission(vehicleType, distance) {
+        let vehicleEmission = {
+            Walking: 0,
+            Bicycle: 0,
+            EBicycle: 3,
+            HCar: 110,
+            DCar: 131,
+            GCar: 149,
+            ECar: 54,
+            EScooter: 17,
+            GScooter: 62,
+            DTrain: 90,
+            ETrain: 2,
+            Bus: 96,
+            Tram: 96,
+            Metro: 96,
+            GMotorcycle: 129
+        };
+
+        return vehicleEmission[vehicleType] * distance;
+    }
 
         function GetStopovers() {
             let stopovers = JSON.parse(localStorage.getItem('Stopovers')) || [];
@@ -43,6 +60,38 @@
                 html += "<td>" + stopover.start + " - " + stopover.end + " (" + stopover.vehicle + ", " + stopover.distance + "km)" + "</td><br>";
             }
             div.innerHTML = html;
+
+        if (stopovers.length > 0) {
+            document.getElementById("submitJourneyBtn").classList.remove("hidden");
+            } else {
+            document.getElementById("submitJourneyBtn").classList.add("hidden");
+        }
+        }
+
+        async function submitJourney() {
+            let journeyId = localStorage.getItem('JourneyID');
+            let userId = localStorage.getItem('User_ID');
+            let stopovers = JSON.parse(localStorage.getItem('Stopovers')) || [];
+
+            // Update the journey in the database
+            let response = await fetch('/Journey/UpdateJourney?journeyId=' + journeyId + '&userId=' + userId, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(stopovers)
+            });
+
+            if (response.ok) {
+                // Remove stopovers and journey ID from LocalStorage
+                localStorage.removeItem('Stopovers');
+                localStorage.removeItem('JourneyID');
+
+                // Redirect the user to the Index.cshtml in the Home controller
+                window.location.href = '/Home/Index';
+            } else {
+                console.error('Failed to submit journey:', response.statusText);
+            }
         }
 
 
@@ -51,6 +100,8 @@
             let end = document.getElementById('endlocation').value;
             let vehicle = document.getElementById('vehicle').value;
             let distance = document.getElementById('distance').value;
+            let emission = getEmission(vehicle, distance);
+
 
             if (start != "" || end != "" || distance != 0) {
                 let stopovers = JSON.parse(localStorage.getItem('Stopovers')) || [];
@@ -59,7 +110,7 @@
                     end: end,
                     vehicle: vehicle,
                     distance: distance,
-                    emission: 0 // You can add a function to calculate the emission based on the distance and vehicle type
+                    emission: emission
                 };
                 stopovers.push(stopover);
                 localStorage.setItem('Stopovers', JSON.stringify(stopovers));
@@ -78,13 +129,31 @@
                     <label>End Location:</label><br>
                     <input asp-for="End" class="shadow appearance-none border border-black rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="endlocation" placeholder="Input end location.">
                     <label>Vehicle:</label><br>
-                    <input asp-for="VehicleID" class="shadow appearance-none border border-black rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="vehicle" placeholder="Input vehicle used for travel.">
+                    <select asp-for="VehicleType" class="shadow appearance-none border border-black rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="vehicle">
+                        <option value="Walking">Walking</option>
+                        <option value="Bicycle">Bicycle</option>
+                        <option value="EBicycle">E-Bicycle</option>
+                        <option value="HCar">Hybrid Car</option>
+                        <option value="DCar">Diesel Car</option>
+                        <option value="GCar">Gasoline Car</option>
+                        <option value="ECar">Electric Car</option>
+                        <option value="EScooter">Electric Scooter</option>
+                        <option value="GScooter">Gasoline Scooter</option>
+                        <option value="DTrain">Diesel Train</option>
+                        <option value="ETrain">Electric Train</option>
+                        <option value="Bus">Bus</option>
+                        <option value="Tram">Tram</option>
+                        <option value="Metro">Metro</option>
+                        <option value="GMotorcycle">Gasoline Motorcycle</option>
+                    </select>
+
                     <label>Distance in km:</label><br>
                     <input asp-for="Distance" class="shadow appearance-none border border-black rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="distance" placeholder="Input distance in km.">
                     <button class="bg-blue-700 rounded-lg w-full text-white min-h-fit" onclick="AddStopoverToList()">Add</button>
                 </form>
             </div>
             <div id="StopoverList"></div>
+            <button id="submitJourneyBtn" class="bg-green-700 rounded-lg w-full text-white min-h-fit hidden" onclick="submitJourney()">Submit Journey</button>
         </div>
     </div>
 </body>
