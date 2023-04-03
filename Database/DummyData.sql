@@ -3,6 +3,7 @@ USE evv;
 DELETE FROM Categories;
 DELETE FROM Users;
 DELETE FROM Journeys;
+DELETE FROM Stopovers;
 
 DBCC CHECKIDENT (Categories, RESEED, 0);
 DBCC CHECKIDENT (Users, RESEED, 0);
@@ -27,7 +28,6 @@ VALUES
 ('E-Scooter', 17),
 ('E-Car', 54),
 ('G-Scooter', 62),
-('G-Scooter', 64),
 ('D-Train', 90),
 ('Tram', 96),
 ('Bus', 96),
@@ -49,7 +49,7 @@ VALUES
 INSERT INTO Stopovers (Journey_ID, Vehicle_ID, Distance, [Start], [End], Emission)
 VALUES 
 (1, 1, 0.75, 'Thuis', 'Varendonk', 0),
-(1, 11, 22, 'Varendonk', 'Eindhoven Centraal', 2112),
+(1, 10, 22, 'Varendonk', 'Eindhoven Centraal', 2112),
 (1, 1, 1, 'Eindhoven Centraal', 'Fontys ICT', 0),
 (2, 2, 2.8, 'Thuis', 'Fontys ICT', 0),
 (3, 1, 0.3, 'Thuis', 'Helmond het Hout', 0),
@@ -66,4 +66,4 @@ VALUES
 SELECT * FROM Categories;
 SELECT * FROM Journeys;
 SELECT * FROM Stopovers;
-SELECT * FROM Users;
+SELECT * FROM Users;	

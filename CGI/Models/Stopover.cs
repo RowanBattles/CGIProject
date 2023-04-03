@@ -2,21 +2,21 @@
 {
     public enum Vehicle
     {
-        Walking = 0,
-        Bicycle = 0,
-        EBicycle = 3,
-        HCar = 110,
-        DCar = 131,
-        GCar = 149,
-        ECar = 54,
-        EScooter = 17,
-        GScooter = 62,
-        DTrain = 90,
-        ETrain = 2,
-        Bus = 96,
-        Tram = 96,
-        Metro = 96,
-        GMotorcycle = 129
+        Walking = 1,
+        Bicycle,
+        ETrain, 
+        EBicycle,
+        EScooter,
+        ECar,
+        GScooter,
+        DTrain,
+        Tram,
+        Bus,
+        Metro,
+        HCar,
+        GMotorcycle,
+        DCar,
+        GCar,
 
         // E = Electric
         // G = Gasoline
