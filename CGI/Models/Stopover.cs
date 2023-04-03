@@ -2,11 +2,27 @@
 {
     public enum Vehicle
     {
-        Car = 1,
-        Bike = 2,
-        Bus = 3,
-        Train = 4,
-        Plane = 5
+        Walking = 0,
+        Bicycle = 0,
+        EBicycle = 3,
+        HCar = 110,
+        DCar = 131,
+        GCar = 149,
+        ECar = 54,
+        EScooter = 17,
+        GScooter = 62,
+        DTrain = 90,
+        ETrain = 2,
+        Bus = 96,
+        Tram = 96,
+        Metro = 96,
+        GMotorcycle = 129,
+
+        // E = Electric
+        // G = Gasoline
+        // H = Hybrid
+        // D = Diesel
+
     }
     public class Stopover
     {
@@ -17,11 +33,7 @@
         public string Start { get; set; }
         public string End { get; set; }
         public int Emission { get; set; }
-        public int CalculateEmission(int Emission, int Distance)
-        {
-            //Work in progress..
-            return Emission * Distance;
-        }
-        public Journey Journey { get; set; } //Add this property to hold the Journey information
+
+        // Emission = Distance * VehicleID
     }
 }
