@@ -1,4 +1,5 @@
-﻿﻿using CGI.Models;
+﻿﻿using System.Diagnostics.CodeAnalysis;
+ using CGI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 
@@ -24,12 +25,14 @@ namespace CGI.Controllers
         public async Task<IActionResult> CreateAndGetJourneyId(int userId)
         {
             int newJourneyId;
+            DateTime now = DateTime.Now;
 
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
-                using (SqlCommand cmd = new SqlCommand("INSERT INTO Journeys (User_ID) OUTPUT INSERTED.Journey_ID VALUES (@User_ID)", conn))
+                using (SqlCommand cmd = new SqlCommand("INSERT INTO Journeys (User_ID, Date) OUTPUT INSERTED.Journey_ID VALUES (@User_ID, @Date)", conn))
                 {
                     cmd.Parameters.AddWithValue("@User_ID", userId);
+                    cmd.Parameters.AddWithValue("@Date", now);
 
                     conn.Open();
                     newJourneyId = (int)await cmd.ExecuteScalarAsync();
@@ -78,31 +81,31 @@ namespace CGI.Controllers
                 }
             }
 
+            // Add stopovers to the database
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+
+                foreach (var stopover in stopovers)
+                {
+                    using (SqlCommand cmd = new SqlCommand("INSERT INTO Stopovers (Vehicle_ID, Journey_ID, Distance, Start, [End], Emission) VALUES (@Vehicle_ID, @Journey_ID, @Distance, @Start, @End, @Emission)", conn))
+                    {
+                        cmd.Parameters.AddWithValue("@Vehicle_ID", (int)stopover.VehicleType);
+                        cmd.Parameters.AddWithValue("@Journey_ID", journeyId);
+                        cmd.Parameters.AddWithValue("@Distance", stopover.Distance);
+                        cmd.Parameters.AddWithValue("@Start", stopover.Start);
+                        cmd.Parameters.AddWithValue("@End", stopover.End);
+                        cmd.Parameters.AddWithValue("@Emission", stopover.Emission);
+
+                        await cmd.ExecuteNonQueryAsync();
+                    }
+                }
+
+            }
+
             return Json(new { success = true });
         }
 
-
-        [HttpPost]
-        public async Task<IActionResult> Create(Journey journey)
-        {
-            using (SqlConnection conn = new SqlConnection(_connectionString))
-            {
-                using (SqlCommand cmd = new SqlCommand("INSERT INTO Journeys (User_ID, Total_Distance, Total_Emission, Start, End, Date) VALUES (@User_ID, @Total_Distance, @Total_Emission, @Start, @End, @Date)", conn))
-                {
-                    cmd.Parameters.AddWithValue("@User_ID", journey.User_ID);
-                    cmd.Parameters.AddWithValue("@Total_Distance", journey.Total_Distance);
-                    cmd.Parameters.AddWithValue("@Total_Emission", journey.Total_Emission);
-                    cmd.Parameters.AddWithValue("@Start", journey.Start);
-                    cmd.Parameters.AddWithValue("@End", journey.End);
-                    cmd.Parameters.AddWithValue("@Date", journey.Date);
-
-                    conn.Open();
-                    await cmd.ExecuteNonQueryAsync();
-                }
-            }
-
-            return RedirectToAction("Index");
-        }
 
         public async Task<IActionResult> Index()
         {
@@ -188,69 +191,9 @@ namespace CGI.Controllers
 
             return View(model);
         }
-
-        // Update
-        public async Task<IActionResult> Edit(int id)
-        {
-            Journey journey;
-
-            using (SqlConnection conn = new SqlConnection(_connectionString))
-            {
-                using (SqlCommand cmd = new SqlCommand("SELECT * FROM Journeys WHERE Journey_ID = @Journey_ID", conn))
-                {
-                    cmd.Parameters.AddWithValue("@Journey_ID", id);
-
-                    conn.Open();
-                    using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
-                    {
-                        if (!await reader.ReadAsync())
-                        {
-                            return NotFound();
-                        }
-
-                        journey = new Journey
-                        {
-                            Journey_ID = reader.GetInt32(0),
-                            User_ID = reader.GetInt32(1),
-                            Total_Distance = reader.GetInt32(2),
-                            Total_Emission = reader.GetInt32(3),
-                            Start = reader.GetString(4),
-                            End = reader.GetString(5),
-                            Date = reader.GetDateTime(6)
-                        };
-                    }
-                }
-            }
-
-            return View(journey);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Edit(Journey journey)
-        {
-            using (SqlConnection conn = new SqlConnection(_connectionString))
-        {
-                using (SqlCommand cmd = new SqlCommand("UPDATE Journeys SET User_ID = @User_ID, Total_Distance = @Total_Distance, Total_Emission = @Total_Emission, Start = @Start, End = @End, Date = @Date WHERE Journey_ID = @Journey_ID", conn))
-                {
-                    cmd.Parameters.AddWithValue("@Journey_ID", journey.Journey_ID);
-                    cmd.Parameters.AddWithValue("@User_ID", journey.User_ID);
-                    cmd.Parameters.AddWithValue("@Total_Distance", journey.Total_Distance);
-                    cmd.Parameters.AddWithValue("@Total_Emission", journey.Total_Emission);
-                    cmd.Parameters.AddWithValue("@Start", journey.Start);
-                    cmd.Parameters.AddWithValue("@End", journey.End);
-                    cmd.Parameters.AddWithValue("@Date", journey.Date);
-
-                    conn.Open();
-                    await cmd.ExecuteNonQueryAsync();
-                }
-            }
-
-
-            return RedirectToAction("Index");
-        }
+        
 
         // Delete
-
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
@@ -267,23 +210,7 @@ namespace CGI.Controllers
 
             return RedirectToAction("Index");
         }
-
-        public int CalculateScore()
-        {
-            int Score = 500;
-
-            // TODO - Select Journey
-            Journey journey = null;
-
-            int RealEmission = journey.Total_Emission;
-            int MaxEmissionOfVehicles = Enum.GetValues(typeof(Stopover)).Cast<int>().Max();
-            int TotalEmissionPossible = journey.Total_Distance * MaxEmissionOfVehicles;
-            int ScoreRetrieved = (int)Math.Round((RealEmission / (double)TotalEmissionPossible) * 500);
-
-            Score -= ScoreRetrieved;
-
-            return Score;
-        }
+        
     }
 
 }
