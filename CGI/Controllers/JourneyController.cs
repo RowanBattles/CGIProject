@@ -245,6 +245,7 @@ namespace CGI.Controllers
                 }
             }
 
+
             return RedirectToAction("Index");
         }
 
@@ -265,6 +266,23 @@ namespace CGI.Controllers
             }
 
             return RedirectToAction("Index");
+        }
+
+        public int CalculateScore()
+        {
+            int Score = 500;
+
+            // TODO - Select Journey
+            Journey journey = null;
+
+            int RealEmission = journey.Total_Emission;
+            int MaxEmissionOfVehicles = Enum.GetValues(typeof(Stopover)).Cast<int>().Max();
+            int TotalEmissionPossible = journey.Total_Distance * MaxEmissionOfVehicles;
+            int ScoreRetrieved = (int)Math.Round((RealEmission / (double)TotalEmissionPossible) * 500);
+
+            Score -= ScoreRetrieved;
+
+            return Score;
         }
     }
 
