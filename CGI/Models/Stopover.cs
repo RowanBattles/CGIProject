@@ -16,24 +16,27 @@
         Bus = 96,
         Tram = 96,
         Metro = 96,
-        GMotorcycle = 129,
+        GMotorcycle = 129
 
         // E = Electric
         // G = Gasoline
         // H = Hybrid
         // D = Diesel
-
     }
+
     public class Stopover
     {
         public int StopoverID { get; set; }
-        public int VehicleID { get; set; }
+        public Vehicle VehicleType { get; set; }
         public int JourneyID { get; set; }
         public int Distance { get; set; }
         public string Start { get; set; }
         public string End { get; set; }
         public int Emission { get; set; }
 
-        // Emission = Distance * VehicleID
+        public void CalculateEmission()
+        {
+            Emission = Distance * (int)VehicleType;
+        }
     }
 }
