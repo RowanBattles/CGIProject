@@ -1,0 +1,59 @@
+﻿﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - ERT</title>
+
+    <environment names="Development">
+        <script type="module" src="http://localhost:5173/@@vite/client"></script>
+        <script type="module" src="http://localhost:5173/wwwroot/js/site.js"></script>
+    </environment>
+
+    <environment names="Staging,Production">
+        <script type="module" asp-src-include="~/build/assets/main-*.js"></script>
+        <link rel="stylesheet" asp-href-include="~/build/assets/site-*.css">
+    </environment>
+</head>
+<body>
+    <main>
+        <div class="flex flex-row">
+            <nav class="w-52 bg-green-600 text-gray-100 h-screen">
+                <div class="h-16 bg-green-700 shadow flex w-52">
+                    <h2 class="m-auto ml-8 text-white">ERT</h2>
+                </div>
+                <ul>
+                    <li>
+                        <a asp-controller="Home" asp-action="Index" class="hover:bg-green-500 hover:text-white my-2 block mx-4 py-2 rounded">
+                            <h3 class="ml-4">Home</h3>
+                        </a>
+                    </li>
+                    <li>
+                        <a asp-controller="Journey" asp-action="Index" class="hover:bg-green-500 hover:text-white my-2 block mx-4 py-2 rounded">
+                            <h3 class="ml-4">Journeys</h3>
+                        </a>
+                    </li>
+                    <li>
+                        <a asp-controller="Journey" asp-action="Create" class="hover:bg-green-500 hover:text-white my-2 block mx-4 py-2 rounded">
+                            <h3 class="ml-4">Create Journey</h3>
+                        </a>
+                    </li>
+                    <li>
+                        <a asp-controller="" asp-action="" class="hover:bg-green-500 hover:text-white my-2 block mx-4 py-2 rounded">
+                            <h3 class="ml-4">Manage Groups</h3>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="~/account/logout" class="hover:bg-green-500 hover:text-white my-2 block mx-4 py-2 rounded">
+                            <h3 class="ml-4">Logout</h3>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="flex flex-col w-full">
+                @RenderBody()
+            </div>
+        </div>
+    </main>
+</body>
+</html>

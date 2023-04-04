@@ -1,0 +1,16 @@
+{
+    "Logging": {
+        "LogLevel": {
+            "Default": "Information",
+            "Microsoft.AspNetCore": "Warning"
+        }
+    },
+    "AllowedHosts": "*",
+    "Auth0": {
+        "Domain": "dev-0phd8ugabhvbcwel.us.auth0.com",
+        "ClientId": "aUkbnaKOtCSpDGJYgBlryAg05mElJY5m"
+    },
+    "ConnectionStrings": {
+        "DefaultConnection": "Server=.\\SqlExpress;Database=evv;Integrated Security=true;TrustServerCertificate=True;"
+    }
+}
