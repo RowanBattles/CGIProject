@@ -1,4 +1,3 @@
-CREATE DATABASE evv;
 
 USE evv;
 
@@ -11,12 +10,12 @@ CREATE TABLE Categories (
 CREATE TABLE Journeys (
     Journey_ID int IDENTITY(1,1) PRIMARY KEY,
     User_ID int NOT NULL,
-    Total_Distance int NOT NULL,
-    Total_Emission int NOT NULL,
-    [Start] varchar(255) NOT NULL,
-    [End] varchar(255) NOT NULL,
+    Total_Distance int,
+    Total_Emission int,
+    [Start] varchar(255),
+    [End] varchar(255),
     Date date NOT NULL,
-	Score int NOT NULL
+	Score int 
 );
 
 CREATE TABLE Stopovers (

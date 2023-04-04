@@ -37,3 +37,11 @@
         @apply text-xs font-thin;
     }
 }
+
+@layer components {
+    .striped {
+        tr:nth-child(even) {
+            @apply bg-gray-100;
+        }
+    }
+}
