@@ -3,8 +3,8 @@
         ViewData["Title"] = "Journeys";
 }
 
-<div class="flex flex-columns gap-16">
-    <ul class="overflow-auto h-screen w-96">
+<div class="flex flex-columns gap-8">
+    <ul class="overflow-auto h-screen w-96 bg-gray-50 border-r">
         @foreach (var journey in Model.Journeys)
         {
             <a href="~/journey?id=@journey.Journey_ID">           
@@ -19,67 +19,76 @@
         }
     </ul>
     <div>
-        <h1>Stopovers</h1>
+        <h1 class="m-4 ml-8">Stopovers</h1>
         @if (Model.Stopovers.Count > 0)
         {
-            <table>
-                <thead>
-                    <tr>
-                        <th>Start</th>
-                        <th>End</th>
-                        <th>Vehicle</th>
-                        <th>Distance</th>
-                        <th>Emission</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var stopover in Model.Stopovers)
-                    {
-                        <tr>
-                            <td>@stopover.Start</td>
-                            <td>@stopover.End</td>
-                            <td>@stopover.VehicleType</td>
-                            <td>@stopover.Distance</td>
-                            <td>@stopover.Emission</td>
-                            <td class="grid grid-cols-2">
-                                <a asp-controller="stopover" asp-action="edit" asp-route-id="@Model.Id">
-                                    <button class="py-2 px-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg shadow-md transition duration-300">Edit</button>
-                                </a>
-                                <form asp-controller="stopover" asp-action="delete" asp-route-id="@stopover.StopoverID" class="destroy">
-                                    <input type="hidden" name="StopoverID" value="@stopover.StopoverID" />
-                                    <button class="py-2 px-4 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg shadow-md transition duration-300" type="submit">Delete</button>
-                                </form>
-                            </td>
+            <div class="rounded relative border bg-gray-50 mx-4">
+                <table class="table-auto text-gray-600 w-full text-left">
+                    <thead class="text-gray-900 border-b">
+                        <tr class="bg-gray-200">
+                            <th scope="col" class="py-3 px-6">Start</th>
+                            <th scope="col" class="py-3 px-6">End</th>
+                            <th scope="col" class="py-3 px-6">Vehicle</th>
+                            <th scope="col" class="py-3 px-6">Distance</th>
+                            <th scope="col" class="py-3 px-6">Emission</th>
+                            <th scope="col" class="py-3 px-6">Actions</th>
                         </tr>
-                    }
-                    <tr class="border-t">
-                        @foreach (var journey in Model.Journeys)
+                    </thead>
+                    <tbody class="striped">
+                        @foreach (var stopover in Model.Stopovers)
                         {
-                            @if (@Model.Id == @journey.Journey_ID)
-                            {
-                                <td>@journey.Start</td>
-                                <td>@journey.End</td>
-                                <td></td>
-                                <td>@journey.Total_Distance</td>
-                                <td>@journey.Total_Emission</td>
-                                <td class="grid grid-cols-2">
-                                    <a asp-controller="journey" asp-action="edit" asp-route-id="@Model.Id">
+                            <tr class="border-t">
+                                <td scope="row" class="py-4 px-6">@stopover.Start</td>
+                                <td class="py-4 px-6">@stopover.End</td>
+                                <td class="py-4 px-6">@stopover.VehicleType</td>
+                                <td class="py-4 px-6">@stopover.Distance km</td>
+                                <td class="py-4 px-6">@stopover.Emission gr</td>
+                                <td class="py-4 px-6 grid grid-cols-2">
+                                    <a asp-controller="stopover" asp-action="edit" asp-route-id="@Model.Id">
                                         <button class="py-2 px-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg shadow-md transition duration-300">Edit</button>
                                     </a>
-                                    <form asp-controller="journey" asp-action="Delete" asp-route-id="@Model.Id" class="destroy">    
+                                    <form asp-controller="stopover" asp-action="delete" asp-route-id="@stopover.StopoverID" class="destroy">
+                                        <input type="hidden" name="StopoverID" value="@stopover.StopoverID" />
                                         <button class="py-2 px-4 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg shadow-md transition duration-300" type="submit">Delete</button>
                                     </form>
                                 </td>
-                            }
+                            </tr>
                         }
-                    </tr>
-                </tbody>
-            </table>                
+                    </tbody>
+                </table>
+            </div>                
         } 
         else
         {
-            <p>No stopovers found</p>
+            <p class="ml-8">No stopovers found</p>
         }
+        <h1 class="m-4 ml-8">Journey</h1>
+            <div class="rounded relative border bg-gray-50 mx-4">
+                <table class="table-auto text-gray-600 w-full text-left">
+                    <thead class="text-gray-900 border-b">
+                       <tr class="bg-gray-200">
+                            @foreach (var journey in Model.Journeys)
+                            {
+                                @if (@Model.Id == @journey.Journey_ID)
+                                {
+                                    <th scope="col" class="py-3 px-6">@journey.Start</th>
+                                    <th scope="col" class="py-3 px-6">@journey.End</th>
+                                    <th scope="col" class="py-3 px-6"></th>
+                                    <th scope="col" class="py-3 px-6">@journey.Total_Distance km</th>
+                                    <th scope="col" class="py-3 px-6">@journey.Total_Emission gr</th>
+                                    <th scope="col" class="py-3 px-6 grid grid-cols-2">
+                                        <a asp-controller="journey" asp-action="edit" asp-route-id="@Model.Id">
+                                            <button class="py-2 px-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg shadow-md transition duration-300">Edit</button>
+                                        </a>
+                                        <form asp-controller="journey" asp-action="Delete" asp-route-id="@Model.Id" class="destroy">    
+                                            <button class="py-2 px-4 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg shadow-md transition duration-300" type="submit">Delete</button>
+                                        </form>
+                                    </th>
+                                }
+                            }
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
     </div>
 </div>
