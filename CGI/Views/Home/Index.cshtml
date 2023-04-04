@@ -12,7 +12,7 @@
             if (ranking <= 3)
             {
                 <div class="mx-4">
-                    <div class="text-center">
+                    <div class="text-center @(@ranking == 1 ? "text-[#D4AF36]" : "") @(@ranking == 2 ? "text-[#C0C0C0]" : "")@(@ranking == 3 ? "text-[#9F7A34]" : "")">
                         <div class="text-4xl font-bold">
                             @ranking
                         </div>
@@ -36,26 +36,27 @@
     <div class="mt-8 border border-gray-400">
         <table class="table-auto w-full text-center">
             <thead>
-            <tr>
-                <th class="px-4 py-2">Rank</th>
-                <th class="px-4 py-2">Player</th>
-                <th class="px-4 py-2">Score</th>
-            </tr>
+                <tr>
+                    <th class="px-4 py-2">Rank</th>
+                    <th class="px-4 py-2">Player</th>
+                    <th class="px-4 py-2">Score</th>
+                </tr>
             </thead>
             <tbody>
-            @foreach (var leaderboardViewModel in Model.Skip(3))
-            {
-                ranking++;
-                <tr>
-                    <td class="text-l px-4 py-2">@ranking</td>
-                    <td class="text-l px-4 py-2">@leaderboardViewModel.userName</td>
-                    <td class="text-l px-4 py-2">@leaderboardViewModel.score</td>
-                </tr>
-                if (ranking == 10)
+                @{ ranking = 3;}
+                @foreach (var leaderboardViewModel in Model.Skip(3))
                 {
-                    break;
+                    ranking++;
+                    <tr>
+                        <td class="text-l px-4 py-2">@ranking</td>
+                        <td class="text-l px-4 py-2">@leaderboardViewModel.userName</td>
+                        <td class="text-l px-4 py-2">@leaderboardViewModel.score</td>
+                    </tr>
+                    if (ranking == 10)
+                    {
+                        break;
+                    }
                 }
-            }
             </tbody>
         </table>
     </div>
