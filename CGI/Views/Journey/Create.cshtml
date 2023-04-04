@@ -121,14 +121,14 @@
             <div class="text-lg">Register new stopover:</div>
             <br>
             <div class="block bg-slate-50 p-6 rounded-lg shadow-md shadow-slate-300 w-90">
-                <form action="">
+                <form action="" onsubmit="return AddStopoverToList()">
                     
                     <label>Starting Location:</label><br>
-                    <input asp-for="Start" class="shadow appearance-none border border-black rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="startinglocation" placeholder="Input starting location.">
+                    <input asp-for="Start" class="shadow appearance-none border border-black rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="startinglocation" placeholder="Input starting location." required>
                     <label>End Location:</label><br>
-                    <input asp-for="End" class="shadow appearance-none border border-black rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="endlocation" placeholder="Input end location.">
+                    <input asp-for="End" class="shadow appearance-none border border-black rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="endlocation" placeholder="Input end location." required>
                     <label>Vehicle:</label><br>
-                    <select asp-for="VehicleType" class="shadow appearance-none border border-black rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="vehicle">
+                    <select asp-for="VehicleType" class="shadow appearance-none border border-black rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="vehicle" required>
                         <option value="Walking">Walking</option>
                         <option value="Bicycle">Bicycle</option>
                         <option value="EBicycle">E-Bicycle</option>
@@ -147,8 +147,8 @@
                     </select>
 
                     <label>Distance in km:</label><br>
-                    <input asp-for="Distance" class="shadow appearance-none border border-black rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="distance" placeholder="Input distance in km.">
-                    <button class="bg-blue-700 rounded-lg w-full text-white min-h-fit" onclick="AddStopoverToList()">Add</button>
+                    <input asp-for="Distance" class="shadow appearance-none border border-black rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="distance" placeholder="Input distance in km." required>
+                    <button class="bg-blue-700 rounded-lg w-full text-white min-h-fit" >Add</button>
                 </form>
             </div>
             <div class="block bg-slate-50 p-6 rounded-lg shadow-md shadow-slate-300 w-90 flex flex-col">
