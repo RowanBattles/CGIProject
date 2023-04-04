@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Newtonsoft.Json;
+using System.Data;
 
 namespace CGI.Controllers
 {
@@ -44,21 +45,19 @@ namespace CGI.Controllers
 
             return Json(new { success = true });
         }
-
-
         public async Task<IActionResult> Edit(Stopover stopover)
         {
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
-                using (SqlCommand cmd = new SqlCommand("UPDATE Stopovers SET StopoverID = @StopoverID, VehicleID = @VehicleID, JourneyID = @JourneyID, Distance = @Distance, Start = @Start, End = @End, Emission = @Emission WHERE StopoverID = @StopoverID", conn))
+                using (SqlCommand cmd = new SqlCommand("UPDATE Stopovers SET Vehicle_ID = @Vehicle_ID, Journey_ID = @Journey_ID, Distance = @Distance, Start = @Start, [End] = @End, Emission = @Emission WHERE Stopover_ID = @Stopover_ID", conn))
                 {
-                    cmd.Parameters.AddWithValue("@StopoverID", stopover.StopoverID);
-                    cmd.Parameters.AddWithValue("@VehicleID", stopover.VehicleType);
-                    cmd.Parameters.AddWithValue("@JourneyID", stopover.JourneyID);
-                    cmd.Parameters.AddWithValue("@Distance", stopover.Distance);
-                    cmd.Parameters.AddWithValue("@Start", stopover.Start);
-                    cmd.Parameters.AddWithValue("@End", stopover.End);
-                    cmd.Parameters.AddWithValue("@Emission", stopover.Emission);
+                    cmd.Parameters.Add("@Vehicle_ID", SqlDbType.Int).Value = stopover.VehicleType;
+                    cmd.Parameters.Add("@Journey_ID", SqlDbType.Int).Value = stopover.JourneyID;
+                    cmd.Parameters.Add("@Distance", SqlDbType.Int).Value = stopover.Distance;
+                    cmd.Parameters.Add("@Start", SqlDbType.VarChar).Value = stopover.Start ?? "";
+                    cmd.Parameters.Add("@End", SqlDbType.VarChar).Value = stopover.End ?? "";
+                    cmd.Parameters.Add("@Emission", SqlDbType.Float).Value = stopover.Emission;
+                    cmd.Parameters.Add("@Stopover_ID", SqlDbType.Int).Value = stopover.StopoverID;
 
                     conn.Open();
                     await cmd.ExecuteNonQueryAsync();

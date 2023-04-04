@@ -10,7 +10,7 @@ DBCC CHECKIDENT ('[dbo].[Journeys]', RESEED, 0);
 DBCC CHECKIDENT ('[dbo].[Stopovers]', RESEED, 0);
 DBCC CHECKIDENT ('[dbo].[Users]', RESEED, 0);
 
-INSERT INTO [dbo].[Users] ([UUID], [FullName], [Points])
+INSERT INTO [dbo].[Users] ([UUID], [FullName], [Score])
 VALUES 
 ('Billy-277a-4d11-9c85-9ae01d06df43', 'Billy Hofland', 20),
 ('Rowan-5e4f-4b4d-bb81-9e9f9d56f59c', 'Rowan Battles', 0),
