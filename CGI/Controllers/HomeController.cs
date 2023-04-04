@@ -52,7 +52,7 @@ namespace CGI.Controllers
             {
                 connection.Open();
 
-                string sqlSelectUsers = "SELECT u.User_ID, u.FullName, SUM(j.Score) AS UserScore FROM Journeys j, Users u WHERE j.User_ID = u.User_ID GROUP BY u.User_ID, u.FullName ORDER BY UserScore DESC";
+                string sqlSelectUsers = "SELECT User_ID, FullName, Score FROM Users GROUP BY User_ID, FullName, Score ORDER BY Score DESC";
 
                 using (SqlCommand command = new SqlCommand(sqlSelectUsers, connection))
                 {
@@ -67,9 +67,9 @@ namespace CGI.Controllers
                             leaderboardViewModel.userName = (string)reader["Fullname"];
                         }
 
-                        if (!reader.IsDBNull(reader.GetOrdinal("UserScore")))
+                        if (!reader.IsDBNull(reader.GetOrdinal("Score")))
                         {
-                            leaderboardViewModel.score = (int)reader["UserScore"];
+                            leaderboardViewModel.score = (int)reader["Score"];
                         }
 
                         leaderboardViewModels.Add(leaderboardViewModel);
