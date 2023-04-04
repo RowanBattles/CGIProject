@@ -120,9 +120,8 @@
         <div class="block bg-slate-100 p-6 rounded-lg shadow-md shadow-slate-300 w-90 grid grid-cols-2 gap-4">
             <div class="text-lg">Register new stopover:</div>
             <br>
-            <div class="block bg-slate-50 p-6 rounded-lg shadow-md shadow-slate-300 w-90">
-                <form action="">
-                    
+            <div class="block bg-slate-50 p-6 rounded-lg shadow-md shadow-slate-300 w-90 max-h-96">
+                <form>
                     <label>Starting Location:</label><br>
                     <input asp-for="Start" class="shadow appearance-none border border-black rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="startinglocation" placeholder="Input starting location.">
                     <label>End Location:</label><br>
@@ -151,10 +150,10 @@
                     <button class="bg-blue-700 rounded-lg w-full text-white min-h-fit" onclick="AddStopoverToList()">Add</button>
                 </form>
             </div>
-            <div class="block bg-slate-50 p-6 rounded-lg shadow-md shadow-slate-300 w-90 flex flex-col">
+            <div class="block bg-slate-50 p-6 rounded-lg shadow-md shadow-slate-300 w-90 flex-none flex-col max-h-96">
                 <div>Stopovers:</div>
-                <div class="overflow-y-scroll overflow-y-hidden" id="StopoverList"></div>
-                <button id="submitJourneyBtn" class="bg-green-700 rounded-lg w-full text-white min-h-fit hidden mt-auto" onclick="submitJourney()">Submit Journey</button>
+                <div class="overflow-y-scroll h-5/6" id="StopoverList"></div>
+                <button id="submitJourneyBtn" class="bg-green-700 rounded-lg w-full text-white hidden" onclick="submitJourney()">Submit Journey</button>
             </div>
         </div>
     </div>
