@@ -43,23 +43,5 @@ namespace CGI.Controllers
 
             return View(users);
         }
-
-        public int CalculateScore()
-        {
-            int score = 0;
-
-            // Select UserID
-            User user = null;
-
-            // Select every Journey for that user
-            List<Journey> AllJourneys = null;
-
-            foreach (Journey journey in AllJourneys)
-            {
-                score += journey.Score;
-            }
-
-            return score;
-        }
     }
 }
