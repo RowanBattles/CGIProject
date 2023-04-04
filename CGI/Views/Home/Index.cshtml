@@ -12,7 +12,7 @@
             if (ranking <= 3)
             {
                 <div class="mx-4">
-                    <div class="text-center">
+                    <div class="text-center @(@ranking == 1 ? "text-[#D4AF36]" : "") @(@ranking == 2 ? "text-[#C0C0C0]" : "")@(@ranking == 3 ? "text-[#9F7A34]" : "")">
                         <div class="text-4xl font-bold">
                             @ranking
                         </div>
