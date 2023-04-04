@@ -20,21 +20,28 @@ namespace CGI.Controllers
 
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
-                using (SqlCommand cmd = new SqlCommand("SELECT User_ID FROM Users WHERE UUID = @UserId", conn))
+                using (SqlCommand cmd = new SqlCommand("SELECT User_ID, FullName FROM Users WHERE UUID = @UserId", conn))
                 {
                     cmd.Parameters.AddWithValue("@UserId", userId);
                     await conn.OpenAsync();
-                    var result = await cmd.ExecuteScalarAsync();
-                    if (result != null)
+                    using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
                     {
-                        int userIdFromDb = (int)result;
-                        return Json(new { success = true, userId = userIdFromDb });
+                        if (reader.HasRows)
+                        {
+                            while (await reader.ReadAsync())
+                            {
+                                int userIdFromDb = reader.GetInt32(0);
+                                string fullName = reader.GetString(1);
+                                return Json(new { success = true, userId = userIdFromDb, fullName = fullName });
+                            }
+                        }
                     }
                 }
             }
 
             return Json(new { success = false });
         }
+
 
 
         public HomeController(ILogger<HomeController> logger, IConfiguration configuration)
@@ -83,17 +90,7 @@ namespace CGI.Controllers
 
             return View(leaderboardViewModels);
         }
-        [Authorize]
-        public IActionResult Privacy()
-        {
-            return View();
-        }
 
-        [Authorize]
-        public IActionResult UserTest()
-        {
-            return View();
-        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

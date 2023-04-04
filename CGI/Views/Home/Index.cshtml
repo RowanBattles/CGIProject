@@ -4,74 +4,53 @@
 	var ranking = 0;
 }
 
-
-<script>
-	// Get the User_ID from the server and store it in localStorage
-	if (!localStorage.getItem("User_ID")) {
-		localStorage.removeItem("JourneyID");
-		localStorage.removeItem("Stopovers");
-		// Get the User_ID from the server and store it in localStorage
-		fetch("/Home/GetUserId")
-			.then(response => response.json())
-			.then(data => {
-				localStorage.setItem("User_ID", data.userId);
-			});
-	}
-
-</script>
-
-@*<div class="grid grid-cols-2 gap-5">
-    <div class="cols-span-1 text-4xl text-center">
-        <p class="mt-10">Welcome</p>
-        <p class="">@User.Identity.Name</p>
+<div class="p-4">
+    <div class="flex justify-center">
+        @foreach (var leaderboardViewModel in Model)
+        {
+            ranking++;
+            if (ranking <= 3)
+            {
+                <div class="mx-4">
+                    <div class="text-center">
+                        <div class="text-4xl font-bold">
+                            @ranking
+                        </div>
+                        <p class="text-xl">
+                            @leaderboardViewModel.userName
+                        </p>
+                        <p>
+                            Score: @leaderboardViewModel.score
+                        </p>
+                    </div>
+                    <div class="h-@(20 * (4 - ranking)) bg-gradient-to-t from-gray-400 via-gray-200 to-transparent"></div>
+                </div>
+            }
+            else
+            {
+                break;
+            }
+        }
     </div>
 
-
-    <div class="cols-span-1">
-        <table class="table-auto w-full bg-transparent h-screen border-black border-4 text-center">
+    <div class="mt-8 border border-gray-400">
+        <table class="table-auto w-full text-center">
             <thead>
-            <tr class="border-b-4 border-black">
+            <tr>
                 <th class="px-4 py-2">Rank</th>
                 <th class="px-4 py-2">Player</th>
                 <th class="px-4 py-2">Score</th>
             </tr>
             </thead>
             <tbody>
-            @foreach (var leaderboardViewModel in Model)
+            @foreach (var leaderboardViewModel in Model.Skip(3))
             {
                 ranking++;
-                if (ranking == 1)
-                {
-                    <tr>
-                        <td class="text-3xl px-4 py-2 text-amber-500">@ranking</td>
-                        <td class="text-3xl px-4 py-2 text-amber-500">@leaderboardViewModel.userName</td>
-                        <td class="text-3xl px-4 py-2 text-amber-500">@leaderboardViewModel.score</td>
-                    </tr>
-                }
-                else if (ranking == 2)
-                {
-                    <tr>
-                        <td class="text-2xl px-4 py-2 text-stone-400">@ranking</td>
-                        <td class="text-2xl px-4 py-2 text-stone-400">@leaderboardViewModel.userName</td>
-                        <td class="text-2xl px-4 py-2 text-stone-400">@leaderboardViewModel.score</td>
-                    </tr>
-                }
-                else if (ranking == 3)
-                {
-                    <tr>
-                        <td class="text-xl px-4 py-2 text-amber-800">@ranking</td>
-                        <td class="text-xl px-4 py-2 text-amber-800">@leaderboardViewModel.userName</td>
-                        <td class="text-xl px-4 py-2 text-amber-800">@leaderboardViewModel.score</td>
-                    </tr>
-                }
-                else
-                {
-                    <tr>
-                        <td class="text-l px-4 py-2">@ranking</td>
-                        <td class="text-l px-4 py-2">@leaderboardViewModel.userName</td>
-                        <td class="text-l px-4 py-2">@leaderboardViewModel.score</td>
-                    </tr>
-                }
+                <tr>
+                    <td class="text-l px-4 py-2">@ranking</td>
+                    <td class="text-l px-4 py-2">@leaderboardViewModel.userName</td>
+                    <td class="text-l px-4 py-2">@leaderboardViewModel.score</td>
+                </tr>
                 if (ranking == 10)
                 {
                     break;
@@ -80,55 +59,4 @@
             </tbody>
         </table>
     </div>
-</div>*@
-
-<div class="flex h-screen">
-	<div class="basis-2/5 text-4xl text-center p-5 pt-10">
-		<p>Welcome</p>
-		<p>@User.Identity.Name</p>
-	</div>
-	<div class="basis-3/5 p-5">
-		<div class="h-1/6 text-center text-4xl justify-center items-center flex">
-			LEADERBORD
-		</div>
-        <div class="h-1/3 p-3 relative">
-            <div class="relative h-full">
-                <img src="~/img/Leaderbord.png" class="absolute bottom-0 left-1/2 transform -translate-x-1/2 h-1/2 w-2/3 object-full">
-            </div>
-            <div class="absolute top-1/4 left-1/2 transform -translate-x-1/2 text-center text-yellow-500">
-                <div>@Model[0].userName</div>
-                <div>@Model[0].score</div>
-            </div>
-            <div class="absolute top-20 left-36 transform -translate-x-1/2 text-center">
-                <div>@Model[1].userName</div>
-                <div>@Model[1].score</div>
-            </div>
-            <div class="absolute top-24 right-16 transform -translate-x-1/2 text-center">
-                <div>@Model[2].userName</div>
-                <div>@Model[2].score</div>
-            </div>
-        </div>
-		<div class="h-1/2">
-			<table class="table-auto w-full h-full bg-transparent border-black border-4 text-center">
-				<tbody>
-					@foreach (var leaderboardViewModel in Model)
-					{
-						ranking++;
-						if (ranking >= 4)
-						{
-							<tr>
-								<td class="text-l px-4 py-2">@ranking</td>
-								<td class="text-l px-4 py-2">@leaderboardViewModel.userName</td>
-								<td class="text-l px-4 py-2">@leaderboardViewModel.score</td>
-							</tr>
-						}
-						if (ranking == 10)
-						{
-							break;
-						}
-					}
-				</tbody>
-			</table>
-		</div>
-	</div>
 </div>
