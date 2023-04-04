@@ -49,10 +49,11 @@ public class AccountController : Controller
                 }
             }
 
-            await using (SqlCommand insertCommand = new SqlCommand("INSERT INTO Users (UUID, FullName) VALUES (@userId, @name)", connection))
+            await using (SqlCommand insertCommand = new SqlCommand("INSERT INTO Users (UUID, FullName, Score) VALUES (@userId, @name, @score)", connection))
             {
                 insertCommand.Parameters.AddWithValue("@userId", userId);
                 insertCommand.Parameters.AddWithValue("@name", name);
+                insertCommand.Parameters.AddWithValue("@score", 0);
                 await insertCommand.ExecuteNonQueryAsync();
             }
 
