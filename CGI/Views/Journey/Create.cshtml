@@ -120,7 +120,7 @@
         <div class="block bg-slate-100 p-6 rounded-lg shadow-md shadow-slate-300 w-90 grid grid-cols-2 gap-4">
             <div class="text-lg">Register new stopover:</div>
             <br>
-            <div class="block bg-slate-50 p-6 rounded-lg shadow-md shadow-slate-300 w-90">
+            <div class="block bg-slate-50 p-6 rounded-lg shadow-md shadow-slate-300 w-90 max-h-96">
                 <form action="" onsubmit="return AddStopoverToList()">
                     
                     <label>Starting Location:</label><br>
@@ -151,10 +151,10 @@
                     <button class="bg-blue-700 rounded-lg w-full text-white min-h-fit" >Add</button>
                 </form>
             </div>
-            <div class="block bg-slate-50 p-6 rounded-lg shadow-md shadow-slate-300 w-90 flex flex-col">
+            <div class="block bg-slate-50 p-6 rounded-lg shadow-md shadow-slate-300 w-90 flex-none flex-col max-h-96">
                 <div>Stopovers:</div>
-                <div class="overflow-y-scroll overflow-y-hidden" id="StopoverList"></div>
-                <button id="submitJourneyBtn" class="bg-green-700 rounded-lg w-full text-white min-h-fit hidden mt-auto" onclick="submitJourney()">Submit Journey</button>
+                <div class="overflow-y-scroll h-5/6" id="StopoverList"></div>
+                <button id="submitJourneyBtn" class="bg-green-700 rounded-lg w-full text-white hidden" onclick="submitJourney()">Submit Journey</button>
             </div>
         </div>
     </div>
