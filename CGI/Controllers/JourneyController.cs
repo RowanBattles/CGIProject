@@ -27,9 +27,9 @@ namespace CGI.Controllers
             int newJourneyId;
             DateTime now = DateTime.Now;
 
-            using (SqlConnection conn = new SqlConnection(_connectionString))
+            using (SqlConnection conn = new(_connectionString))
             {
-                using (SqlCommand cmd = new SqlCommand("INSERT INTO Journeys (User_ID, Date) OUTPUT INSERTED.Journey_ID VALUES (@User_ID, @Date)", conn))
+                using (SqlCommand cmd = new("INSERT INTO Journeys (User_ID, Date) OUTPUT INSERTED.Journey_ID VALUES (@User_ID, @Date)", conn))
                 {
                     cmd.Parameters.AddWithValue("@User_ID", userId);
                     cmd.Parameters.AddWithValue("@Date", now);
@@ -60,9 +60,9 @@ namespace CGI.Controllers
             string end = stopovers[^1].End;
 
             // Update the journey in the database
-            using (SqlConnection conn = new SqlConnection(_connectionString))
+            using (SqlConnection conn = new(_connectionString))
             {
-                using (SqlCommand cmd = new SqlCommand("UPDATE Journeys SET Total_Distance = @Total_Distance, Total_Emission = @Total_Emission, Start = @Start, [End] = @End WHERE Journey_ID = @Journey_ID AND User_ID = @User_ID", conn))
+                using (SqlCommand cmd = new("UPDATE Journeys SET Total_Distance = @Total_Distance, Total_Emission = @Total_Emission, Start = @Start, [End] = @End WHERE Journey_ID = @Journey_ID AND User_ID = @User_ID", conn))
                 {
                     cmd.Parameters.AddWithValue("@Journey_ID", journeyId);
                     cmd.Parameters.AddWithValue("@User_ID", userId);
@@ -82,13 +82,13 @@ namespace CGI.Controllers
             }
 
             // Add stopovers to the database
-            using (SqlConnection conn = new SqlConnection(_connectionString))
+            using (SqlConnection conn = new(_connectionString))
             {
                 conn.Open();
 
                 foreach (var stopover in stopovers)
                 {
-                    using (SqlCommand cmd = new SqlCommand("INSERT INTO Stopovers (Vehicle_ID, Journey_ID, Distance, Start, [End], Emission) VALUES (@Vehicle_ID, @Journey_ID, @Distance, @Start, @End, @Emission)", conn))
+                    using (SqlCommand cmd = new("INSERT INTO Stopovers (Vehicle_ID, Journey_ID, Distance, Start, [End], Emission) VALUES (@Vehicle_ID, @Journey_ID, @Distance, @Start, @End, @Emission)", conn))
                     {
                         cmd.Parameters.AddWithValue("@Vehicle_ID", (int)stopover.VehicleType);
                         cmd.Parameters.AddWithValue("@Journey_ID", journeyId);
@@ -109,11 +109,11 @@ namespace CGI.Controllers
 
         public async Task<IActionResult> Index()
         {
-            List<Journey> journeys = new List<Journey>();
+            List<Journey> journeys = new();
 
-            using (SqlConnection conn = new SqlConnection(_connectionString))
+            using (SqlConnection conn = new(_connectionString))
             {
-                using (SqlCommand cmd = new SqlCommand("SELECT * FROM Journeys", conn))
+                using (SqlCommand cmd = new("SELECT * FROM Journeys", conn))
                 {
                     conn.Open();
                     using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
@@ -123,7 +123,7 @@ namespace CGI.Controllers
                             if (!reader.IsDBNull(0) && !reader.IsDBNull(1) && !reader.IsDBNull(2) &&
                                 !reader.IsDBNull(3) && !reader.IsDBNull(4) && !reader.IsDBNull(5) && !reader.IsDBNull(6))
                             {
-                                Journey journey = new Journey
+                                Journey journey = new()
                                 {
                                     Journey_ID = reader.GetInt32(0),
                                     User_ID = reader.GetInt32(1),
@@ -149,11 +149,11 @@ namespace CGI.Controllers
                 id = "0";
             }
 
-            List<Stopover> stopovers = new List<Stopover>();
+            List<Stopover> stopovers = new();
 
-            using (SqlConnection conn = new SqlConnection(_connectionString))
+            using (SqlConnection conn = new(_connectionString))
             {
-                using (SqlCommand cmd = new SqlCommand("SELECT * FROM Stopovers WHERE Journey_ID = @Journey_ID", conn))
+                using (SqlCommand cmd = new("SELECT * FROM Stopovers WHERE Journey_ID = @Journey_ID", conn))
                 {
                     cmd.Parameters.AddWithValue("@Journey_ID", id);
 
@@ -165,7 +165,7 @@ namespace CGI.Controllers
                             if (!reader.IsDBNull(0) && !reader.IsDBNull(1) && !reader.IsDBNull(2) &&
                                 !reader.IsDBNull(3) && !reader.IsDBNull(4) && !reader.IsDBNull(5) && !reader.IsDBNull(6))
                             {
-                                Stopover stopover = new Stopover
+                                Stopover stopover = new()
                                 {
                                     StopoverID = reader.GetInt32(0),
                                     VehicleType = (Vehicle)reader.GetInt32(1),
@@ -191,15 +191,14 @@ namespace CGI.Controllers
 
             return View(model);
         }
-        
 
         // Delete
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
-            using (SqlConnection conn = new SqlConnection(_connectionString))
+            using (SqlConnection conn = new(_connectionString))
             {
-                using (SqlCommand cmd = new SqlCommand("DELETE FROM Journeys WHERE Journey_ID = @Journey_ID", conn))
+                using (SqlCommand cmd = new("DELETE FROM Journeys WHERE Journey_ID = @Journey_ID", conn))
                 {
                     cmd.Parameters.AddWithValue("@Journey_ID", id);
 
@@ -207,10 +206,7 @@ namespace CGI.Controllers
                     await cmd.ExecuteNonQueryAsync();
                 }
             }
-
             return RedirectToAction("Index");
         }
-        
     }
-
 }
