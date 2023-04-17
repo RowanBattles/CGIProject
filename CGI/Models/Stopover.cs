@@ -26,7 +26,7 @@
 
     public class Stopover
     {
-        public int StopoverID { get; set; }
+        public int Stopover_ID { get; set; }
         public Vehicle VehicleType { get; set; }
         public int JourneyID { get; set; }
         public int Distance { get; set; }

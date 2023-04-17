@@ -31,24 +31,30 @@
                             <th scope="col" class="py-3 px-6">Vehicle</th>
                             <th scope="col" class="py-3 px-6">Distance</th>
                             <th scope="col" class="py-3 px-6">Emission</th>
-                            <th scope="col" class="py-3 px-6">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="striped">
                         @foreach (var stopover in Model.Stopovers)
                         {
+                        
                             <tr class="border-t">
-                                <td scope="row" class="py-4 px-6">@stopover.Start</td>
+                                <td class="py-4 px-6">@stopover.Start</td>
                                 <td class="py-4 px-6">@stopover.End</td>
                                 <td class="py-4 px-6">@stopover.VehicleType</td>
                                 <td class="py-4 px-6">@stopover.Distance km</td>
                                 <td class="py-4 px-6">@stopover.Emission gr</td>
-                                <td class="py-4 px-6 grid grid-cols-2">
-                                    <form asp-controller="stopover" asp-action="edit" asp-route-id="@Model.Id">
-                                        <button class="py-2 px-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg shadow-md transition duration-300">Edit</button>
-                                    </form>
-                                    <form asp-controller="stopover" asp-action="delete" asp-route-id="@stopover.StopoverID" class="destroy">
-                                        <input type="hidden" name="StopoverID" value="@stopover.StopoverID" />
+                                <td class="py-4 px-6 grid grid-cols-2">   
+                                    @*ZELFDE PAGINA EDITEN:
+                                    <form method="post">
+                                        @(EditPressed = true)
+                                        <button class="py-2 px-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg shadow-md transition duration-300" type="submit">Edit</button>
+                                    </form>*@
+                                   @* VOOR NAAR EEN ANDERE PAGINA TE GAAN:*@
+                                    <a href="@Url.Action("Edit", "StopOver", new { id = stopover.Stopover_ID } )" >
+                                        <button class="py-2 px-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg shadow-md transition duration-300" type="submit">Edit</button>
+                                    </a>
+                                    <form asp-controller="stopover" asp-action="delete" asp-route-id="@stopover.Stopover_ID" class="destroy">
+                                        <input type="hidden" name="StopoverID" value="@stopover.Stopover_ID" />
                                         <button class="py-2 px-4 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg shadow-md transition duration-300" type="submit">Delete</button>
                                     </form>
                                 </td>
@@ -66,6 +72,7 @@
             <div class="rounded relative border bg-gray-50 mx-4">
                 <table class="table-auto text-gray-600 w-full text-left">
                     <thead class="text-gray-900 border-b">
+                        <tbody class="striped">
                        <tr class="bg-gray-200">
                             @foreach (var journey in Model.Journeys)
                             {
@@ -73,7 +80,6 @@
                                 {
                                     <th scope="col" class="py-3 px-6">@journey.Start</th>
                                     <th scope="col" class="py-3 px-6">@journey.End</th>
-                                    <th scope="col" class="py-3 px-6"></th>
                                     <th scope="col" class="py-3 px-6">@journey.Total_Distance km</th>
                                     <th scope="col" class="py-3 px-6">@journey.Total_Emission gr</th>
                                     <th scope="col" class="py-3 px-6 grid grid-cols-2">
