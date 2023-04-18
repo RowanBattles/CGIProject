@@ -168,7 +168,7 @@ namespace CGI.Controllers
                                 Stopover stopover = new()
                                 {
                                     Stopover_ID = reader.GetInt32(0),
-                                    VehicleType = (Vehicle)reader.GetInt32(1),
+                                    VehicleType = (Vehicle_ID)reader.GetInt32(1),
                                     JourneyID = reader.GetInt32(2),
                                     Distance = reader.GetInt32(3),
                                     Start = reader.GetString(4),
