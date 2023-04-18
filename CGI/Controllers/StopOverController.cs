@@ -115,9 +115,9 @@ namespace CGI.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(Stopover stopover)
         {
-            using (SqlConnection conn = new SqlConnection(_connectionString))
+            using (SqlConnection conn = new(_connectionString))
             {
-                using (SqlCommand cmd = new SqlCommand("UPDATE Stopovers SET Vehicle_ID = @Vehicle_ID, Distance = @Distance, Start = @Start, [End] = @End, Emission = @Emission WHERE Stopover_ID = @Stopover_ID", conn))
+                using (SqlCommand cmd = new("UPDATE Stopovers SET Vehicle_ID = @Vehicle_ID, Distance = @Distance, Start = @Start, [End] = @End, Emission = @Emission WHERE Stopover_ID = @Stopover_ID", conn))
                 {
 
                     cmd.Parameters.Add("@Vehicle_ID", SqlDbType.Int).Value = stopover.VehicleType;
@@ -137,9 +137,9 @@ namespace CGI.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(int stopoverid)
         {
-            using (SqlConnection conn = new SqlConnection(_connectionString))
+            using (SqlConnection conn = new(_connectionString))
             {
-                using (SqlCommand cmd = new SqlCommand("DELETE FROM Stopovers WHERE Stopover_ID = @StopoverID", conn))
+                using (SqlCommand cmd = new("DELETE FROM Stopovers WHERE Stopover_ID = @StopoverID", conn))
                 {
                     cmd.Parameters.AddWithValue("@StopoverID", stopoverid);
 

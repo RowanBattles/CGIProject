@@ -1,6 +1,6 @@
 ﻿namespace CGI.Models
 {
-    public enum Vehicle
+    public enum Vehicle_Emission
     {
         Walking = 1,
         Bicycle = 1,
@@ -24,12 +24,30 @@
         // D = Diesel
     }
 
-
+    public enum Vehicle_ID
+    {
+        Walking = 0,
+        Bicycle,
+        ETrain,
+        EBicycle,
+        EScooter,
+        ECar,
+        GScooter,
+        DTrain,
+        Tram,
+        Bus,
+        Metro,
+        HCar,
+        GMotorcycle,
+        DCar,
+        GCar,
+    }
 
     public class Stopover
     {
         public int Stopover_ID { get; set; }
-        public Vehicle VehicleType { get; set; }
+        public Vehicle_ID VehicleType { get; set; }
+        public Vehicle_Emission VehicleEmission { get; set; }
         public int JourneyID { get; set; }
         public int Distance { get; set; }
         public string Start { get; set; }
