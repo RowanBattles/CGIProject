@@ -35,13 +35,13 @@ VALUES
 ('B-Car', 224),
 ('Motorcycle', 137);
 
-INSERT INTO [dbo].[Journeys] ([User_ID], [Total_Distance], [Total_Emission], [Start], [End], [Date])
+INSERT INTO [dbo].[Journeys] ([User_ID], [Total_Distance], [Total_Emission], [Start], [End], [Date], [Score])
 VALUES 
-(1, 23.75, 3080, 'Thuis', 'Fontys ICT', '2023-03-20'),
-(2, 2.8, 0, 'Thuis', 'Fontys ICT', '2023-03-20'),
-(3, 14.3, 0, 'Thuis', 'Fontys ICT', '2022-03-03'),
-(4, 96.5, 0, 'Thuis', 'Fontys ICT', '2022-03-03'),
-(5, 55, 0, 'Thuis', 'Fontys ICT', '2022-03-03');
+(1, 23.75, 3080, 'Thuis', 'Fontys ICT', '2023-03-20', 500),
+(2, 2.8, 0, 'Thuis', 'Fontys ICT', '2023-03-20', 400),
+(3, 14.3, 0, 'Thuis', 'Fontys ICT', '2022-03-03', 300),
+(4, 96.5, 0, 'Thuis', 'Fontys ICT', '2022-03-03', 200),
+(5, 55, 0, 'Thuis', 'Fontys ICT', '2022-03-03', 100);
 
 INSERT INTO [dbo].[Stopovers] ([Vehicle_ID], [Journey_ID], [Distance], [Start], [End], [Emission])
 VALUES 

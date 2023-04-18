@@ -16,7 +16,7 @@ CREATE TABLE Journeys (
     [Start] varchar(255) NULL,
     [End] varchar(255) NULL,
     Date date NOT NULL,
-	Score int NOT NULL
+	Score int,
 );
 
 CREATE TABLE Stopovers (
