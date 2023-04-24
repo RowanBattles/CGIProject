@@ -28,8 +28,15 @@
             GetStopovers();
         }
 
-        function getEmission(vehicleType, distance) {
-            return distance * parseInt(vehicleType);
+        async function getEmission(vehicleType, distance) {
+            let response = await fetch(`/StopOver/CalculateEmission?vehicleType=${vehicleType}&distance=${distance}`);
+            if (response.ok) {
+                let jsonResponse = await response.json();
+                return jsonResponse.emission;
+            } else {
+                console.error("Failed to get emission:", response.statusText);
+                return 0;
+            }
         }
 
         function GetStopovers() {
@@ -75,12 +82,12 @@
             }
         }
 
-        function AddStopoverToList() {
+        async function AddStopoverToList() {
             let start = document.getElementById('startinglocation').value;
             let end = document.getElementById('endlocation').value;
             let vehicle = document.getElementById('vehicle').value;
             let distance = document.getElementById('distance').value;
-            let emission = getEmission(vehicle, distance);
+            let emission = await getEmission(vehicle, distance);
 
 
             if (start != "" || end != "" || distance != 0) {
@@ -97,6 +104,7 @@
                 GetStopovers();
             }
         }
+
     </script>
     <div class="flex justify-center items-center h-screen bg-slate-200">
         <div class="block bg-slate-100 p-6 rounded-lg shadow-md shadow-slate-300 w-90 grid grid-cols-2 gap-4">
