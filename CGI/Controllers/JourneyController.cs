@@ -1,5 +1,5 @@
 ﻿﻿using System.Diagnostics.CodeAnalysis;
- using CGI.Models;
+using CGI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 

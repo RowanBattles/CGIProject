@@ -38,9 +38,9 @@ namespace CGI.Controllers
             {
                 foreach (var stopover in stopovers)
                 {
-                    using (SqlCommand cmd = new SqlCommand("INSERT INTO Stopovers (VehicleID, JourneyID, Distance, Start, End, Emission) VALUES (@VehicleID, @JourneyID, @Distance, @Start, @End, @Emission)", conn))
+                    using (SqlCommand cmd = new SqlCommand("INSERT INTO Stopovers (Vehicle_ID, Journey_ID, Distance, Start, End, Emission) VALUES (@VehicleID, @JourneyID, @Distance, @Start, @End, @Emission)", conn))
                     {
-                        cmd.Parameters.AddWithValue("@VehicleID", stopover.VehicleType);
+                        cmd.Parameters.AddWithValue("@VehicleID", (int)stopover.VehicleType);
                         cmd.Parameters.AddWithValue("@JourneyID", stopover.JourneyID);
                         cmd.Parameters.AddWithValue("@Distance", stopover.Distance);
                         cmd.Parameters.AddWithValue("@Start", stopover.Start);
