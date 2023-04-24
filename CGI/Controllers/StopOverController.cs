@@ -15,20 +15,6 @@ namespace CGI.Controllers
             _connectionString = configuration.GetConnectionString("DefaultConnection");
         }
 
-        [HttpGet]
-        public IActionResult CalculateEmission(Vehicle_ID vehicleType, int distance)
-        {
-            Stopover stopover = new Stopover
-            {
-                VehicleType = vehicleType,
-                Distance = distance
-            };
-            stopover.CalculateEmission();
-            return Json(new { emission = stopover.Emission });
-        }
-
-
-
         [HttpPost]
         public async Task<IActionResult> SubmitStopovers(string stopoversJson)
         {
@@ -38,7 +24,8 @@ namespace CGI.Controllers
             {
                 foreach (var stopover in stopovers)
                 {
-                    using (SqlCommand cmd = new SqlCommand("INSERT INTO Stopovers (VehicleID, JourneyID, Distance, Start, End, Emission) VALUES (@VehicleID, @JourneyID, @Distance, @Start, @End, @Emission)", conn))
+                    Console.WriteLine(stopover.VehicleType);
+                    using (SqlCommand cmd = new SqlCommand("INSERT INTO Stopovers (VehicleID, JourneyID, Distance, [Start], [End], Emission) VALUES (@VehicleID, @JourneyID, @Distance, @Start, @End, @Emission)", conn))
                     {
                         cmd.Parameters.AddWithValue("@VehicleID", stopover.VehicleType);
                         cmd.Parameters.AddWithValue("@JourneyID", stopover.JourneyID);
@@ -46,6 +33,7 @@ namespace CGI.Controllers
                         cmd.Parameters.AddWithValue("@Start", stopover.Start);
                         cmd.Parameters.AddWithValue("@End", stopover.End);
                         cmd.Parameters.AddWithValue("@Emission", stopover.Emission);
+                        
 
                         conn.Open();
                         await cmd.ExecuteNonQueryAsync();
@@ -56,6 +44,7 @@ namespace CGI.Controllers
 
             return Json(new { success = true });
         }
+
         [HttpGet]
         public async Task<IActionResult> Index(int id)
         {
