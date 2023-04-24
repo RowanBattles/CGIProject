@@ -83,9 +83,9 @@
                                     <th scope="col" class="py-3 px-6">@journey.Total_Distance km</th>
                                     <th scope="col" class="py-3 px-6">@journey.Total_Emission gr</th>
                                     <th scope="col" class="py-3 px-6 grid grid-cols-2">
-                                        <a asp-controller="journey" asp-action="edit" asp-route-id="@Model.Id">
-                                            <button class="py-2 px-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg shadow-md transition duration-300">Edit</button>
-                                        </a>
+                                    <a href="@Url.Action("Edit", "Journey", new { JourneyID = journey.Journey_ID } )">
+                                        <button class="py-2 px-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg shadow-md transition duration-300" type="submit">Edit</button>
+                                    </a>
                                         <form asp-controller="journey" asp-action="Delete" asp-route-id="@Model.Id" class="destroy">    
                                             <button class="py-2 px-4 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg shadow-md transition duration-300" type="submit">Delete</button>
                                         </form>
