@@ -84,8 +84,6 @@ namespace CGI.Controllers
                             End = reader.GetString(5),
                             Emission = reader.GetInt32(6)
                         };
-
-
                     }
                 }
             }

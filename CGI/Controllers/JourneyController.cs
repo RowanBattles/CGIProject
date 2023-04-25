@@ -55,6 +55,8 @@ namespace CGI.Controllers
                 totalEmission += stopover.Emission;
             }
 
+            int score = 500 - (int)(totalEmission / (double)(totalDistance * Enum.GetValues(typeof(Vehicle_Emission)).Cast<int>().Max()) * 500);
+
             // Get the Start and End from the first and last stopovers
             string start = stopovers[0].Start;
             string end = stopovers[^1].End;
@@ -62,7 +64,7 @@ namespace CGI.Controllers
             // Update the journey in the database
             using (SqlConnection conn = new(_connectionString))
             {
-                using (SqlCommand cmd = new("UPDATE Journeys SET Total_Distance = @Total_Distance, Total_Emission = @Total_Emission, Start = @Start, [End] = @End WHERE Journey_ID = @Journey_ID AND User_ID = @User_ID", conn))
+                using (SqlCommand cmd = new("UPDATE Journeys SET Total_Distance = @Total_Distance, Score = @Score, Total_Emission = @Total_Emission, Start = @Start, [End] = @End WHERE Journey_ID = @Journey_ID AND User_ID = @User_ID", conn))
                 {
                     cmd.Parameters.AddWithValue("@Journey_ID", journeyId);
                     cmd.Parameters.AddWithValue("@User_ID", userId);
@@ -70,6 +72,7 @@ namespace CGI.Controllers
                     cmd.Parameters.AddWithValue("@Total_Emission", totalEmission);
                     cmd.Parameters.AddWithValue("@Start", start);
                     cmd.Parameters.AddWithValue("@End", end);
+                    cmd.Parameters.AddWithValue("@Score", score);
 
                     conn.Open();
                     int rowsAffected = await cmd.ExecuteNonQueryAsync();
@@ -121,7 +124,8 @@ namespace CGI.Controllers
                         while (await reader.ReadAsync())
                         {
                             if (!reader.IsDBNull(0) && !reader.IsDBNull(1) && !reader.IsDBNull(2) &&
-                                !reader.IsDBNull(3) && !reader.IsDBNull(4) && !reader.IsDBNull(5) && !reader.IsDBNull(6))
+                                !reader.IsDBNull(3) && !reader.IsDBNull(4) && !reader.IsDBNull(5) && 
+                                !reader.IsDBNull(6) && !reader.IsDBNull(7))
                             {
                                 Journey journey = new()
                                 {
@@ -131,7 +135,8 @@ namespace CGI.Controllers
                                     Total_Emission = reader.GetInt32(3),
                                     Start = reader.GetString(4),
                                     End = reader.GetString(5),
-                                    Date = reader.GetDateTime(6)
+                                    Date = reader.GetDateTime(6),
+                                    Score = reader.GetInt32(7)
                                 };
                                 journeys.Add(journey);
                             }
