@@ -45,13 +45,13 @@
             let html = "";
             for (let i = 0; i < stopovers.length; i++) {
                 let stopover = stopovers[i];
-                html += "<td>" + stopover.start + " - " + stopover.end + " (" + stopover.vehicle + ", " + stopover.distance + "km)" + "</td><br>";
+                html += "<div><span>" + stopover.start + " - " + stopover.end + " (" + stopover.vehicle + ", " + stopover.distance + "km)</span><button onclick='DeleteStopoverFromList(" + i + ")'>Delete</button></div>";
             }
             div.innerHTML = html;
 
             if (stopovers.length > 0) {
                 document.getElementById("submitJourneyBtn").classList.remove("hidden");
-                } else {
+            } else {
                 document.getElementById("submitJourneyBtn").classList.add("hidden");
             }
         }
@@ -103,6 +103,13 @@
                 localStorage.setItem('Stopovers', JSON.stringify(stopovers));
                 GetStopovers();
             }
+        }
+
+        function DeleteStopoverFromList(index) {
+            let stopovers = JSON.parse(localStorage.getItem('Stopovers')) || [];
+            stopovers.splice(index, 1);
+            localStorage.setItem('Stopovers', JSON.stringify(stopovers));
+            GetStopovers();
         }
 
     </script>
