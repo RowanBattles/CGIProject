@@ -1,0 +1,36 @@
+﻿@model CGI.Models.Journey
+
+
+<div class="bg-gray-200 min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+        <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+            <h2 class="text-2xl font-bold mb-4">Edit Journey</h2>
+
+            <form method="post" action="@Url.Action("Edit")" class="space-y-6">
+                @Html.AntiForgeryToken()
+
+                <div class="space-y-1">
+                    <label for="Distance" class="font-medium block">Distance:</label>
+                    <input type="text" name="Distance" id="Distance" value="@Model.Total_Distance" class="px-2 form-input rounded-md shadow-sm w-full" />
+                </div>
+
+                <div class="space-y-1">
+                    <label for="StartingLocation" class="font-medium block">Starting Location:</label>
+                    <input type="text" name="Start" id="Start" value="@Model.Start" class="px-2 form-input rounded-md shadow-sm w-full" />
+                </div>
+
+                <div class="space-y-1">
+                    <label for="EndLocation" class="font-medium block">End Location:</label>
+                    <input type="text" name="End" id="End" value="@Model.End" class="px-2 form-input rounded-md shadow-sm w-full" />
+                </div>
+
+                <input type="hidden" name="Journey_ID" value="@Model.Journey_ID" />
+                <input type="hidden" name="User_ID" value="@Model.User_ID" />
+
+                <div>
+                    <button type="submit" class="bg-bl ue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

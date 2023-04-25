@@ -1,5 +1,5 @@
 ﻿﻿using System.Diagnostics.CodeAnalysis;
- using CGI.Models;
+using CGI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 
@@ -40,6 +40,47 @@ namespace CGI.Controllers
             }
 
             return Json(new { success = true, journeyId = newJourneyId });
+        }
+        [HttpGet]
+        public async Task<IActionResult> Edit(int JourneyID)
+        {
+
+            Journey journey;
+
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("SELECT * FROM Journeys WHERE Journey_ID = @Journeyid ", conn))
+                {
+                    cmd.Parameters.AddWithValue("@Journeyid", JourneyID);
+
+                    conn.Open();
+
+
+
+                    using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+                    {
+                        if (reader.HasRows)
+                        {
+                            await reader.ReadAsync();
+                            journey = new Journey
+                            {
+                                Journey_ID = reader.GetInt32(0),
+                                User_ID = reader.GetInt32(1),
+                                Total_Distance = reader.GetInt32(2),
+                                Total_Emission = reader.GetInt32(3),
+                                Start = reader.GetString(4),
+                                End = reader.GetString(5),
+                                Score = reader.GetInt32(7),
+                            };
+                        }
+                        else
+                        {
+                            return NotFound();
+                        }
+                    }
+                }
+            }
+            return View(journey);
         }
 
         [HttpPost]
@@ -193,6 +234,7 @@ namespace CGI.Controllers
                 Journeys = journeys,
                 Stopovers = stopovers,
             };
+
 
             return View(model);
         }
