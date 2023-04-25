@@ -1,0 +1,63 @@
+Notule oplevering 3:
+
+Emission zit op het randje, doet het net niet.
+Berekening score doet het nog niet.
+
+Unit tests
+voor volgend project vanaf begin.
+-> Werkt ook voor het fixen van merge conflicts
+
+Als je iets hebt voorbereid aan de Demo, 
+niks meer laatste moment weizigen
+
+Nog een tip om te testen is zelf elke dag een reis invullen
+
+Notificatie of een teken wanneer je je reis hebt toegevoegd.
+-> wanneer je je reis maakt naar de journeys pagina of error pagina.
+
+Als je inlogt dan gelijk naar journeys pagina.
+In de sidebar een highlight van op welke pagina wij zijn
+
+Op de Journeys pagina beter laten zien, zorgen dat we niet horizontaal gaan scrollen
+Journeys op de volledige breedte, stopovers eronder
+
+Arne is blij om feedback te geven.
+
+UX design aanpassen op wat wij zelf doen.
+
+Vehicle dropdown duidelijk zeggen welk voertuig welk is.
+Volgorde misschien veranderen op alfabetische volgorde.
+
+Geen verschil maken tussen trein.
+Voor de verschillende soorten bv. auto's, tussen haakjes erachter
+Car (gas), Car (elektrisch), Car (Hydrogen)
+
+Proactief naar de opdrachtgever voor het lijstje van voertuigen
+
+Drag en Drop van Create journey is gebruikersvriendelijk
+
+Algemene opmerking: Als je met zelfverzonnen afkortingen gebruikt, beter niet toepassen.
+(bv. DCar)
+
+Datumnotatie / talen / eenheden van verschillende landen.
+DD-MM-YYYY, of MM-DD-YYYY als voorbeeld.
+Als je onbewuste aannamen maakt, toch ff checken met opdrachtgever.
+
+Manage Groups is niet van toepassing (nog), is voor outsourcing als dat lukt.
+
+Met een project bezig voor een bepaalde tijd, niet teveel plannen, kan altijd meer.
+Planningsmanagement.
+
+Rekening houden met de planning en oplevering.
+Als er iets niet is gelukt, dan het liefst als eerst melden.
+
+Goede sfeer :)
+Team effort voor het project.
+
+Arne mail sturen voor vragen en UX voorbeelden.
+
+Kan iedereen de presentatie in hun eentje geven. 
+Ons antwoord: Ja, we nemen alles samen door van de presentatie.
+
+Volgende Oplevering bij CGI op kantoor
+Nog even afspreken voor preciese data en tijd.

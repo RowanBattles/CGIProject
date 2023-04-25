@@ -81,10 +81,11 @@
                             {
                                 @if (@Model.Id == @journey.Journey_ID)
                                 {
-                                    <th scope="col" class="py-3 px-6">@journey.Score</th>
+                                    <th scope="col" class="py-3 px-6">@journey.Start</th>
                                     <th scope="col" class="py-3 px-6">@journey.End</th>
                                     <th scope="col" class="py-3 px-6">@journey.Total_Distance km</th>
                                     <th scope="col" class="py-3 px-6">@journey.Total_Emission gr</th>
+                                    <th scope="col" class="py-3 px-6">@journey.Score</th>
                                     <th scope="col" class="py-3 px-6 grid grid-cols-2">
 
                                     <button class="py-2 px-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg shadow-md transition duration-300" type="submit" onclick="toggleEdit(@totalstopovers)">Edit</button>
