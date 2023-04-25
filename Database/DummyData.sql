@@ -64,3 +64,4 @@ SELECT * FROM [dbo].[Users];
 SELECT * FROM [dbo].[Categories];
 SELECT * FROM [dbo].[Journeys];
 SELECT * FROM [dbo].[Stopovers];
+SELECT * FROM Journeys WHERE Journey_ID = 1
