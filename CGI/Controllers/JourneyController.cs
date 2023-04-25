@@ -118,6 +118,7 @@ namespace CGI.Controllers
                     conn.Open();
                     int rowsAffected = await cmd.ExecuteNonQueryAsync();
 
+
                     if (rowsAffected == 0)
                     {
                         return Json(new { success = false, message = "Failed to update journey" });

@@ -15,6 +15,18 @@ namespace CGI.Controllers
             _connectionString = configuration.GetConnectionString("DefaultConnection");
         }
 
+        [HttpGet]
+        public IActionResult CalculateEmission(Vehicle_ID vehicleType, int distance)
+        {
+            Stopover stopover = new Stopover
+            {
+                VehicleType = vehicleType,
+                Distance = distance
+            };
+            stopover.CalculateEmission();
+            return Json(new { emission = stopover.Emission });
+        }
+
         [HttpPost]
         public async Task<IActionResult> SubmitStopovers(string stopoversJson)
         {
@@ -34,7 +46,6 @@ namespace CGI.Controllers
                         cmd.Parameters.AddWithValue("@Start", stopover.Start);
                         cmd.Parameters.AddWithValue("@End", stopover.End);
                         cmd.Parameters.AddWithValue("@Emission", stopover.Emission);
-                        
 
                         conn.Open();
                         await cmd.ExecuteNonQueryAsync();
