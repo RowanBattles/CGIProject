@@ -230,6 +230,7 @@ namespace CGI.Controllers
                 Stopovers = stopovers,
             };
 
+
             return View(model);
         }
 
