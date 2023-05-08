@@ -4,22 +4,7 @@
 	var ranking = 0;
 }
 
-<head>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
-    <script>
-        let journeyAddedNotification = localStorage.getItem('JourneyAddedNotification');
-        if (journeyAddedNotification) {
-            // Remove the stored notification from localStorage
-            localStorage.removeItem('JourneyAddedNotification');
-
-            // Show success notification
-            toastr.success('Journey added', 'Successfully added journey');
-        }
-    </script>
-</head>
 
 <div class="p-4">
     <div class="flex justify-center">

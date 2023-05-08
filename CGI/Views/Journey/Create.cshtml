@@ -162,10 +162,10 @@
                 localStorage.removeItem('JourneyID');
 
                 // Redirect the user to the Index.cshtml in the Home controller
+                
                 localStorage.setItem('JourneyAddedNotification', 'Journey added successfully');
-
+                window.location.href = '/Journey/Index';
                 // Redirect the user to the Index.cshtml in the Home controller after a delay
-                window.location.href = '/Home/Index';
             } else {
                 toastr.error('Failed to submit journey', 'Error');
                 console.error('Failed to submit journey:', response.statusText);
