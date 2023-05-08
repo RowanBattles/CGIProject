@@ -2,258 +2,126 @@
 @model Stopover
 
 @{
-    ViewData["Title"] = "Register Journey";
+    ViewData["Title"] = "Create Stopovers for Journey";
 }
-<head>
-    <!-- Importing necessary libraries -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
-    <script src="https://SortableJS.github.io/Sortable/Sortable.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-</head>
-<style>
-    .ui-state-default {
-        padding: 5px;
-        margin: 3px;
-        background-color: #f5f5f5;
-        border: 1px solid #ccc;
-        cursor: move;
-    }
-
-    .edit-btn, .remove-btn {
-        margin-left: 10px;
-        padding: 2px 5px;
-    }
-</style>
-
 <body>
+<style>
+        #StopoverList::-webkit-scrollbar {
+            width: 8px
+               </style>
+
 <script>
-        // Function to edit a stopover based on its index
-        function editStopover(index) {
-            let stopovers = JSON.parse(localStorage.getItem('Stopovers')) || [];
-            let stopover = stopovers[index];
+        document.addEventListener("DOMContentLoaded", function () {
+            const stopoverList = document.getElementById("StopoverList");
+            const submitJourneyBtn = document.getElementById("submitJourneyBtn");
+            const form = document.querySelector("form");
 
-            // Set the form values to the selected stopover
-            document.getElementById('startinglocation').value = stopover.start;
-            document.getElementById('endlocation').value = stopover.end;
-            document.getElementById('vehicle').value = stopover.vehicle;
-            document.getElementById('distance').value = stopover.distance;
+            function createStopoverElement(stopover) {
+                const div = document.createElement("div");
+                div.classList.add("bg-white", "rounded", "shadow", "p-2", "mb-2", "border", "border-black");
+                div.textContent = `Start: ${stopover.start}, End: ${stopover.end}, Vehicle: ${stopover.vehicle}, Distance: ${stopover.distance} km`;
+                return div;
+            }
 
-            // Remove the stopover from the list
-            stopovers.splice(index, 1);
-            localStorage.setItem('Stopovers', JSON.stringify(stopovers));
-            GetStopovers();
-        }
+            async function addStopover() {
+                const stopover = {
+                    start: form.startinglocation.value,
+                    end: form.endlocation.value,
+                    vehicle: form.vehicle.selectedOptions[0].text,
+                    vehicleId: form.vehicle.value,
+                    distance: form.distance.value,
+                    journeyId: localStorage.getItem("JourneyID"),
+                };
 
-        // Function to remove a stopover based on its index
-        function removeStopover(index) {
-            let stopovers = JSON.parse(localStorage.getItem('Stopovers')) || [];
-            stopovers.splice(index, 1);
-            localStorage.setItem('Stopovers', JSON.stringify(stopovers));
-            GetStopovers();
-        }
-        // Initialize jQuery UI sortable list and disable text selection
-        $(function () {
-            $("#StopoverList").sortable();
-            $("#StopoverList").disableSelection();
-        });
-        
-        // Function to check if a journey exists and create one if it doesn't
-        async function checkAndCreateJourney() {
-            let journeyId = localStorage.getItem('JourneyID');
-            let userId = localStorage.getItem('User_ID');
-            if (!journeyId) {
-                let response = await fetch('/Journey/CreateAndGetJourneyId?userId=' + userId);
+                // Replace this URL with the correct API endpoint for creating the stopover
+                const response = await fetch("/StopOver/create", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(stopover),
+                });
+
                 if (response.ok) {
-                    let jsonResponse = await response.json();
-                    if (jsonResponse.success) {
-                        localStorage.setItem('JourneyID', jsonResponse.journeyId);
-                    }
+                    stopoverList.appendChild(createStopoverElement(stopover));
+                    submitJourneyBtn.classList.remove("hidden");
                 } else {
-                    console.error('Failed to create a new journey:', response.statusText);
+                    alert("Error adding stopover!");
                 }
             }
-        }
 
-        // Load the required data when the window is loaded
-        window.onload = function () {
-            checkAndCreateJourney();
-            GetStopovers();
-        }
 
-        // Function to get the emission based on vehicle type and distance
-        async function getEmission(vehicleType, distance) {
-            let response = await fetch(`/StopOver/CalculateEmission?vehicleType=${vehicleType}&distance=${distance}`);
-            if (response.ok) {
-                let jsonResponse = await response.json();
-                return jsonResponse.emission;
-            } else {
-                console.error("Failed to get emission:", response.statusText);
-                return 0;
-            }
-        }
+            async function submitJourney() {
+                const stopovers = [];
+                for (const option of stopoverList.children) {
+                    const stopover = {
+                        start: option.start,
+                        end: option.end,
+                        vehicleId: option.vehicleId,
+                        distance: option.distance,
+                    };
+                    stopovers.push(stopover);
+                }
 
-        // Function to get stopovers from localStorage and display them in the list
-        function GetStopovers() {
-            let stopovers = JSON.parse(localStorage.getItem('Stopovers')) || [];
-            let list = document.getElementById("StopoverList");
-            list.innerHTML = "";
-            for (let i = 0; i < stopovers.length; i++) {
-                let stopover = stopovers[i];
-                let listItem = document.createElement('li');
-                listItem.classList.add('ui-state-default');
-                listItem.innerHTML = stopover.start + " - " + stopover.end + " (" + stopover.vehicle + ", " + stopover.distance + "km)"
-                    + '<button class="edit-btn" onclick="editStopover(' + i + ')">Edit</button>'
-                    + '<button class="remove-btn" onclick="removeStopover(' + i + ')">Remove</button>';
-                list.appendChild(listItem);
+                // Replace this URL with the correct API endpoint for submitting the journey
+                const response = await fetch("/api/journey", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ stopovers }),
+                });
+
+                if (response.ok) {
+                    alert("Journey submitted successfully!");
+                    window.location.href = "/"; // Redirect to a different page if necessary
+                } else {
+                    alert("Error submitting journey!");
+                }
             }
 
-            let stopoverList = document.getElementById("StopoverList");
-            new Sortable(stopoverList, {
-                onEnd: function (evt) {
-                    saveSortedStopovers(); // Save the sorted stopovers in LocalStorage
-                },
+            form.addEventListener("submit", (event) => {
+                event.preventDefault();
+                addStopover();
             });
 
+            submitJourneyBtn.addEventListener("click", submitJourney);
+        });
+    </script>
 
-            if (stopovers.length > 0) {
-                document.getElementById("submitJourneyBtn").classList.remove("hidden");
-            } else {
-                document.getElementById("submitJourneyBtn").classList.add("hidden");
-            }
-        }
-
-        // Function to submit the journey with the sorted stopovers
-        async function submitJourney() {
-            let journeyId = localStorage.getItem('JourneyID');
-            let userId = localStorage.getItem('User_ID');
-
-            // Get the sorted stopovers from the list
-            let sortedStopovers = [];
-            let listItems = document.querySelectorAll('#StopoverList li');
-            listItems.forEach(item => {
-                let start = item.textContent.match(/[^-]+/)[0].trim();
-                let end = item.textContent.match(/- ([^(]+)/)[1].trim();
-                let vehicle = item.textContent.match(/\(([^,]+),/)[1].trim();
-                let distance = parseFloat(item.textContent.match(/, ([^k]+)/)[1].trim());
-                let stopover = {
-                    start: start,
-                    end: end,
-                    vehicle: vehicle,
-                    distance: distance
-                };
-                sortedStopovers.push(stopover);
-            });
-
-
-            // Update the journey in the database
-            let response = await fetch('/Journey/UpdateJourney?journeyId=' + journeyId + '&userId=' + userId, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(sortedStopovers)
-            });
-
-            if (response.ok) {
-                // Remove stopovers and journey ID from LocalStorage
-                localStorage.removeItem('Stopovers');
-                localStorage.removeItem('JourneyID');
-
-                // Redirect the user to the Index.cshtml in the Home controller
-                
-                localStorage.setItem('JourneyAddedNotification', 'Journey added successfully');
-                window.location.href = '/Journey/Index';
-                // Redirect the user to the Index.cshtml in the Home controller after a delay
-            } else {
-                toastr.error('Failed to submit journey', 'Error');
-                console.error('Failed to submit journey:', response.statusText);
-            }
-        }
-
-        // Function to save the sorted stopovers in localStorage
-        function saveSortedStopovers() {
-            let sortedStopovers = [];
-            let listItems = document.querySelectorAll('#StopoverList li');
-            listItems.forEach(item => {
-                let start = item.textContent.match(/Start: (.*?),/)[1].trim();
-                let end = item.textContent.match(/End: (.*?),/)[1].trim();
-                let vehicle = item.textContent.match(/Vehicle: (.*?),/)[1].trim();
-                let distance = parseFloat(item.textContent.match(/Distance: (\d+(\.\d+)?)/)[1].trim());
-                let emission = parseFloat(item.textContent.match(/Emission: (\d+)/)[1].trim());
-                let stopover = {
-                    start: start,
-                    end: end,
-                    vehicle: vehicle,
-                    distance: distance,
-                    emission: emission
-                };
-                sortedStopovers.push(stopover);
-            });
-
-            localStorage.setItem('Stopovers', JSON.stringify(sortedStopovers));
-        }
-
-        // Function to add a new stopover to the list
-        async function AddStopoverToList() {
-            let start = document.getElementById('startinglocation').value;
-            let end = document.getElementById('endlocation').value;
-            let vehicle = document.getElementById('vehicle').value;
-            let distance = document.getElementById('distance').value;
-            let emission = await getEmission(vehicle, distance);
-
-
-            if (start != "" || end != "" || distance != 0) {
-                let stopovers = JSON.parse(localStorage.getItem('Stopovers')) || [];
-                let stopover = {
-                    start: start,
-                    end: end,
-                    vehicle: vehicle,
-                    distance: distance,
-                    emission: emission
-                };
-                stopovers.push(stopover);
-                localStorage.setItem('Stopovers', JSON.stringify(stopovers));
-                GetStopovers();
-            }
-        }
-
-    
-
-</script>
-    <!-- Main layout of the page -->
-    <div class="flex justify-center items-center h-screen bg-slate-200">
-        <div class="block bg-slate-100 p-6 rounded-lg shadow-md shadow-slate-300 w-90 grid grid-cols-2 gap-4">
-            <div class=text-lg>Register new stopover:</div>
-            <br>
-            <div class="block bg-slate-50 p-6 rounded-lg shadow-md shadow-slate-300 w-90 max-h-96">
-                <!-- Form for adding a new stopover -->
-                <form onsubmit="return AddStopoverToList()">
-                    <!-- Input fields for starting location, end location, vehicle, and distance -->
-                    <label>Starting Location:</label>
-                    <br>
-                    <input asp-for="Start" class="shadow appearance-none border border-black rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="startinglocation" placeholder="Input starting location." required>
-                    <label>End Location:</label>
-                    <br>
-                    <input asp-for="End" class="shadow appearance-none border border-black rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="endlocation" placeholder="Input end location." required>
-                    <label>Vehicle:</label>
-                    <br>
-                    <select id="vehicle" asp-for="VehicleType" asp-items="Html.GetEnumSelectList<Vehicle_ID>()" class="shadow appearance-none border border-black rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" required>
-                    </select>
-                    <label>Distance in km:</label>
-                    <br>
-                    <input asp-for="Distance" class="shadow appearance-none border border-black rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="distance" placeholder="Input distance in km." required>
-                    <!-- Add button to submit the form -->
-                    <button class="bg-blue-700 rounded-lg w-full text-white min-h-fit">Add</button>
-                </form>
-            </div>
-            <div class="block bg-slate-50 p-6 rounded-lg shadow-md shadow-slate-300 w-90 flex-none flex-col max-h-96">
-                <div>Stopovers:</div>
-                <!-- List to display stopovers -->
-                <div class="overflow-y-scroll h-5/6" id="StopoverList"></div>
-                <button id="submitJourneyBtn" class="bg-green-700 rounded-lg w-full text-white hidden" onclick="submitJourney()">Submit Journey</button>
-            </div>
+<!-- Main layout of the page -->
+<div class="flex justify-center items-center h-screen bg-slate-200">
+    <div class="block bg-slate-100 p-6 rounded-lg shadow-md shadow-slate-300 w-90 grid grid-cols-2 gap-4">
+        <div class=text-lg>Register new stopover:</div>
+        <br>
+        <div class="block bg-slate-50 p-6 rounded-lg shadow-md shadow-slate-300 w-90 max-h-96">
+            <!-- Form for adding a new stopover -->
+            <form>
+                <!-- Input fields for starting location, end location, vehicle, and distance -->
+                <label>Starting Location:</label>
+                <br>
+                <input asp-for="Start" class="shadow appearance-none border border-black rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="startinglocation" placeholder="Input starting location." required>
+                <label>End Location:</label>
+                <br>
+                <input asp-for="End" class="shadow appearance-none border border-black rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="endlocation" placeholder="Input end location." required>
+                <label>Vehicle:</label>
+                <br>
+                <select id="vehicle" asp-for="VehicleType" asp-items="Html.GetEnumSelectList<Vehicle_ID>()" class="shadow appearance-none border border-black rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" required>
+                </select>
+                <label>Distance in km:</label>
+                <br>
+                <input asp-for="Distance" class="shadow appearance-none border border-black rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="distance" placeholder="Input distance in km." required>
+                <!-- Add button to submit the form -->
+                <button class="bg-blue-700 rounded-lg w-full text-white min-h-fit">Add</button>
+            </form>
+        </div>
+        <div class="block bg-slate-50 p-6 rounded-lg shadow-md shadow-slate-300 w-90 flex-none flex-col max-h-96">
+            <div>Stopovers:</div>
+            <!-- List to display stopovers -->
+            <div class="overflow-y-scroll h-5/6" id="StopoverList"></div>
+            <button id="submitJourneyBtn" class="bg-green-700 rounded-lg w-full text-white hidden">Submit Journey</button>
         </div>
     </div>
+</div>
+
 </body>
