@@ -3,7 +3,22 @@
 	ViewData["Title"] = "Home Page CGI";
 	var ranking = 0;
 }
-
+<style>
+  .btn {
+    background-color: #4a86e8;
+    color: #fff;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 0.25rem;
+    transition: all 0.2s ease;
+  }
+  
+  .btn:focus,
+  .btn:active {
+    background-color: #00196c;
+    outline: none;
+  }
+</style>
 
 
 <div class="p-4">
@@ -62,4 +77,32 @@
             </tbody>
         </table>
     </div>
+    <div class="">
+        <div>
+            <label><h1 class="text-2xl font-bold text-center">Choose Distance Range (km)</h1></label>
+        </div>
+        <div class="flex justify-center min-h-screen">
+            <form id="myForm" action="@Url.Action("Index", "Home")" method="get">
+                <input type="hidden" name="lowerbound" id="lowerbound" value="0">
+                <input type="hidden" name="upperbound" id="upperbound" value="500">
+                <button type="submit" class="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2" >0 - 500</button>
+            </form>
+            <form id="myForm" action="@Url.Action("Index", "Home")" method="get">
+                <input type="hidden" name="lowerbound" id="lowerbound" value="500">
+                <input type="hidden" name="upperbound" id="upperbound" value="1000">
+                <button type="submit" class="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mx-2" >500 - 1000</button>
+            </form>
+            <form id="myForm" action="@Url.Action("Index", "Home")" method="get">
+                <input type="hidden" name="lowerbound" id="lowerbound" value="1000">
+                <input type="hidden" name="upperbound" id="upperbound" value="1500">
+                <button type="submit" class="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mx-2" >1000 - 1500</button>
+            </form>
+            <form id="myForm" action="@Url.Action("Index", "Home")" method="get">
+                <input type="hidden" name="lowerbound" id="lowerbound" value="1500">
+                <input type="hidden" name="upperbound" id="upperbound" value="2000">
+                <button type="submit" class="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-2" >1500 - 2000</button>
+            </form>
+        </div>
+    </div>
 </div>
+

@@ -51,19 +51,21 @@ namespace CGI.Controllers
         }
 
         [Authorize]
-        public IActionResult Index()
+        public IActionResult Index(int lowerbound, int upperbound)
         {
             List<LeaderboardViewModel> leaderboardViewModels = new List<LeaderboardViewModel>();
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
-
-                string sqlSelectUsers = "SELECT User_ID, FullName, Score FROM Users GROUP BY User_ID, FullName, Score ORDER BY Score DESC";
+                string sqlSelectUsers = "SELECT Users.Score, FullName, SUM(journeys.total_distance) AS total_user_distance, Users.User_ID FROM Users, (SELECT User_ID, SUM(total_distance) AS total_distance FROM Journeys GROUP BY User_ID) journeys WHERE Users.User_ID = journeys.User_ID AND total_distance > @lowerbounddistance AND total_distance < @upperbounddistance GROUP BY Users.User_ID, FullName, Users.Score";
 
                 using (SqlCommand command = new SqlCommand(sqlSelectUsers, connection))
                 {
+                    command.Parameters.AddWithValue("@lowerbounddistance", lowerbound);
+                    command.Parameters.AddWithValue("@upperbounddistance", upperbound);
                     SqlDataReader reader = command.ExecuteReader();
+
 
                     while (reader.Read())
                     {
@@ -72,11 +74,13 @@ namespace CGI.Controllers
                         if (!reader.IsDBNull(reader.GetOrdinal("Fullname")))
                         {
                             leaderboardViewModel.userName = (string)reader["Fullname"];
+                            
                         }
 
                         if (!reader.IsDBNull(reader.GetOrdinal("Score")))
                         {
                             leaderboardViewModel.score = (int)reader["Score"];
+                            Console.WriteLine(leaderboardViewModel.userName);
                         }
 
                         leaderboardViewModels.Add(leaderboardViewModel);
@@ -87,7 +91,7 @@ namespace CGI.Controllers
                 }
 
             }
-
+            Console.WriteLine(lowerbound);
             return View(leaderboardViewModels);
         }
 
