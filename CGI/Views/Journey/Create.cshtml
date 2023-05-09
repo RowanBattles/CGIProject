@@ -5,87 +5,36 @@
     ViewData["Title"] = "Create Stopovers for Journey";
 }
 <body>
-<style>
-        #StopoverList::-webkit-scrollbar {
-            width: 8px
-               </style>
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const stopoverList = document.getElementById("StopoverList");
-            const submitJourneyBtn = document.getElementById("submitJourneyBtn");
-            const form = document.querySelector("form");
+        $(function () {
+            // Get the JourneyID from LocalStorage
+            var journeyId = localStorage.getItem('JourneyID');
 
-            function createStopoverElement(stopover) {
-                const div = document.createElement("div");
-                div.classList.add("bg-white", "rounded", "shadow", "p-2", "mb-2", "border", "border-black");
-                div.textContent = `Start: ${stopover.start}, End: ${stopover.end}, Vehicle: ${stopover.vehicle}, Distance: ${stopover.distance} km`;
-                return div;
-            }
+            // Set the value of the hidden field
+            $('#journeyId').val(journeyId);
 
-            async function addStopover() {
-                const stopover = {
-                    start: form.startinglocation.value,
-                    end: form.endlocation.value,
-                    vehicle: form.vehicle.selectedOptions[0].text,
-                    vehicleId: form.vehicle.value,
-                    distance: form.distance.value,
-                    journeyId: localStorage.getItem("JourneyID"),
-                };
-
-                // Replace this URL with the correct API endpoint for creating the stopover
-                const response = await fetch("/StopOver/create", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(stopover),
-                });
-
-                if (response.ok) {
-                    stopoverList.appendChild(createStopoverElement(stopover));
-                    submitJourneyBtn.classList.remove("hidden");
-                } else {
-                    alert("Error adding stopover!");
-                }
-            }
-
-
-            async function submitJourney() {
-                const stopovers = [];
-                for (const option of stopoverList.children) {
-                    const stopover = {
-                        start: option.start,
-                        end: option.end,
-                        vehicleId: option.vehicleId,
-                        distance: option.distance,
-                    };
-                    stopovers.push(stopover);
-                }
-
-                // Replace this URL with the correct API endpoint for submitting the journey
-                const response = await fetch("/api/journey", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ stopovers }),
-                });
-
-                if (response.ok) {
-                    alert("Journey submitted successfully!");
-                    window.location.href = "/"; // Redirect to a different page if necessary
-                } else {
-                    alert("Error submitting journey!");
-                }
-            }
-
-            form.addEventListener("submit", (event) => {
+            $("form").on("submit", function (event) {
                 event.preventDefault();
-                addStopover();
+
+                var formData = $(this).serialize();
+
+                $.post("/StopOver/CreateStopOver", formData, function (response) {
+                    if (response.success) {
+                        var stopover = response.stopover;
+                        var stopoverItem = "<p>Start: " + stopover.start + ", End: " + stopover.end + ", Vehicle: " + stopover.vehicleType + ", Distance: " + stopover.distance + "km</p>";
+                        $("#StopoverList").append(stopoverItem);
+                        $("#submitJourneyBtn").removeClass("hidden");
+                        $("form").trigger("reset");
+                    } else {
+                        alert("Error: Could not create stopover");
+                    }
+                });
             });
 
-            submitJourneyBtn.addEventListener("click", submitJourney);
+            $("#submitJourneyBtn").on("click", function () {
+                // Your code to handle the submission of the journey data to the server
+            });
         });
     </script>
 
@@ -96,7 +45,8 @@
         <br>
         <div class="block bg-slate-50 p-6 rounded-lg shadow-md shadow-slate-300 w-90 max-h-96">
             <!-- Form for adding a new stopover -->
-            <form>
+            <form method="post" action="/StopOver/CreateStopOver">
+                <input type="hidden" name="journeyId" id="journeyId" value="">
                 <!-- Input fields for starting location, end location, vehicle, and distance -->
                 <label>Starting Location:</label>
                 <br>

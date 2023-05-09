@@ -16,6 +16,42 @@ namespace CGI.Controllers
         }
 
         [HttpPost]
+        public async Task<IActionResult> CreateStopOver(Stopover stopover)
+        {
+            if (ModelState.IsValid)
+            {
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    connection.Open();
+                    try
+                    {
+                        using (SqlCommand command = new SqlCommand("INSERT INTO Stopovers (JourneyId, [Start], [End], VehicleType, Distance) OUTPUT INSERTED.ID VALUES (@JourneyId, @Start, @End, @VehicleType, @Distance)", connection))
+                        {
+                            command.Parameters.AddWithValue("@JourneyId", stopover.JourneyID);
+                            command.Parameters.AddWithValue("@Start", stopover.Start);
+                            command.Parameters.AddWithValue("@End", stopover.End);
+                            command.Parameters.AddWithValue("@VehicleType", (int)stopover.VehicleType);
+                            command.Parameters.AddWithValue("@Distance", stopover.Distance);
+
+                            stopover.Stopover_ID = (int)await command.ExecuteScalarAsync();
+                        }
+
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                        throw;
+                    }
+
+                }
+
+                return Json(new { success = true, stopover });
+            }
+
+            return Json(new { success = false });
+        }
+
+        [HttpPost]
         public async Task<IActionResult> Create(Stopover stopover)
         {
             stopover.CalculateEmission();
