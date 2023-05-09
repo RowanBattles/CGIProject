@@ -408,3 +408,4 @@ FodyWeavers.xsd
 # Lock files
 *.lock
 *-lock.json
+*.gitignore

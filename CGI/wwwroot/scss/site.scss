@@ -44,4 +44,8 @@
             @apply bg-gray-100;
         }
     }
+
+    .active {
+        @apply bg-green-500;
+    }
 }
