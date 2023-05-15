@@ -23,8 +23,6 @@
                 // Set the value of the hidden field to the enum value
                 $('#VehicleType').val(vehicleType);
 
-                console.log(vehicleType);
-
                 var formData = $(this).serialize();
 
                 $.post("/StopOver/CreateStopOver", formData, function (response) {
@@ -44,11 +42,15 @@
                 // Get the JourneyID from LocalStorage
                 var journeyId = localStorage.getItem('JourneyID');
 
+                console.log(journeyId);
+
                 // Send a POST request to submit the journey data to the server
                 $.post("/Journey/SubmitJourney", { journeyId: journeyId }, function (response) {
                     if (response.success) {
+                        print("yes");
                         alert("Journey submitted successfully");
                     } else {
+                        print("no");
                         alert("Error: Could not submit journey");
                     }
                 });

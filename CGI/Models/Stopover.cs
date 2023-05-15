@@ -26,21 +26,21 @@
 
     public enum Vehicle_ID
     {
-        Walking = 0,
-        Bicycle = 1,
-        ETrain = 2,
-        EBicycle = 3,
-        EScooter = 4,
-        ECar = 5,
-        GScooter = 6,
-        DTrain = 7,
-        Tram = 8,
-        Bus = 9,
-        Metro = 10,
-        HCar = 11,
-        GMotorcycle = 12,
-        DCar = 13,
-        GCar = 14,
+        Walking = 1,
+        Bicycle = 2,
+        ETrain = 3,
+        EBicycle = 4,
+        EScooter = 5,
+        ECar = 6,
+        GScooter = 7,
+        DTrain = 8,
+        Tram = 9,
+        Bus = 10,
+        Metro = 11,
+        HCar = 12,
+        GMotorcycle = 13,
+        DCar = 14,
+        GCar = 15,
     }
 
 

@@ -25,7 +25,7 @@ namespace CGI.Controllers
                     connection.Open();
                     try
                     {
-                        using (SqlCommand command = new SqlCommand("INSERT INTO Stopovers (Journey_ID, [Start], [End], Vehicle_ID, Distance) OUTPUT INSERTED.ID VALUES (@JourneyId, @Start, @End, @VehicleType, @Distance)", connection))
+                        using (SqlCommand command = new SqlCommand("INSERT INTO Stopovers (Journey_ID, [Start], [End], Vehicle_ID, Distance) OUTPUT INSERTED.Stopover_ID VALUES (@JourneyId, @Start, @End, @VehicleType, @Distance)", connection))
                         {
                             command.Parameters.AddWithValue("@JourneyId", stopover.JourneyID);
                             command.Parameters.AddWithValue("@Start", stopover.Start);
