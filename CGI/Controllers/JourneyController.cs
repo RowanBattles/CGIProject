@@ -41,6 +41,7 @@ namespace CGI.Controllers
 
             return Json(new { success = true, journeyId = newJourneyId });
         }
+        
         [HttpGet]
         public async Task<IActionResult> Edit(int JourneyID)
         {

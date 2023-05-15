@@ -20,18 +20,20 @@ namespace CGI.Controllers
         {
             if (ModelState.IsValid)
             {
+                stopover.CalculateEmission();
                 using (SqlConnection connection = new SqlConnection(_connectionString))
                 {
                     connection.Open();
                     try
                     {
-                        using (SqlCommand command = new SqlCommand("INSERT INTO Stopovers (Journey_ID, [Start], [End], Vehicle_ID, Distance) OUTPUT INSERTED.Stopover_ID VALUES (@JourneyId, @Start, @End, @VehicleType, @Distance)", connection))
+                        using (SqlCommand command = new SqlCommand("INSERT INTO Stopovers (Journey_ID, [Start], [End], Vehicle_ID, Distance, Emission) OUTPUT INSERTED.Stopover_ID VALUES (@JourneyId, @Start, @End, @VehicleType, @Distance, @Emission)", connection))
                         {
                             command.Parameters.AddWithValue("@JourneyId", stopover.JourneyID);
                             command.Parameters.AddWithValue("@Start", stopover.Start);
                             command.Parameters.AddWithValue("@End", stopover.End);
                             command.Parameters.AddWithValue("@VehicleType", (int)stopover.VehicleType);
                             command.Parameters.AddWithValue("@Distance", stopover.Distance);
+                            command.Parameters.AddWithValue("@Emission", stopover.Emission);
 
                             stopover.Stopover_ID = (int)await command.ExecuteScalarAsync();
                         }
