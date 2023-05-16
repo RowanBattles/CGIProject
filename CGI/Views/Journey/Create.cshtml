@@ -4,6 +4,20 @@
 @{
     ViewData["Title"] = "Create Stopovers for Journey";
 }
+<style>
+    .stopover-item {
+        background: #f8f8f8;
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+    }
+
+    .stopover-start, .stopover-end, .stopover-vehicle, .stopover-distance {
+        display: block;
+        margin-bottom: 5px;
+    }
+</style>
 <body>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
@@ -28,7 +42,14 @@
                 $.post("/StopOver/CreateStopOver", formData, function (response) {
                     if (response.success) {
                         var stopover = response.stopover;
-                        var stopoverItem = "<p>Start: " + stopover.start + ", End: " + stopover.end + ", Vehicle: " + vehicleType + ", Distance: " + stopover.distance + "km</p>";
+                        var stopoverItem = `
+        <div class="stopover-item">
+            <span class="stopover-start">Start: ${stopover.start}</span>
+            <span class="stopover-end">End: ${stopover.end}</span>
+            <span class="stopover-vehicle">Vehicle: ${vehicleType}</span>
+            <span class="stopover-distance">Distance: ${stopover.distance}km</span>
+        </div>`;
+
                         $("#StopoverList").append(stopoverItem);
                         $("#submitJourneyBtn").removeClass("hidden");
                         $("form").trigger("reset");
@@ -47,7 +68,7 @@
                 $.post("/Journey/SubmitJourney", { journeyId: journeyId, userId: userId }, function (response) {
                     if (response.success) {
                         alert("Journey submitted successfully");
-                        localStorage.removeItem('JournedID');
+                        localStorage.removeItem('JourneyID');
                         window.location.href = '/Journey/Index';
                     } else {
                         alert("Error: Could not submit journey");
@@ -113,7 +134,7 @@
         <div class="block bg-slate-50 p-6 rounded-lg shadow-md shadow-slate-300 w-90 flex-none flex-col max-h-96">
             <div>Stopovers:</div>
             <!-- List to display stopovers -->
-            <div class="overflow-y-scroll h-5/6" id="StopoverList"></div>
+            <div class="h-5/6" id="StopoverList"></div>
             <button id="submitJourneyBtn" class="bg-green-700 rounded-lg w-full text-white hidden">Submit Journey</button>
         </div>
     </div>
