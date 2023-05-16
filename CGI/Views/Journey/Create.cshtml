@@ -41,21 +41,41 @@
             $("#submitJourneyBtn").on("click", function () {
                 // Get the JourneyID from LocalStorage
                 var journeyId = localStorage.getItem('JourneyID');
-
-                console.log(journeyId);
+                var userId = localStorage.getItem('User_ID');
 
                 // Send a POST request to submit the journey data to the server
-                $.post("/Journey/SubmitJourney", { journeyId: journeyId }, function (response) {
+                $.post("/Journey/SubmitJourney", { journeyId: journeyId, userId: userId }, function (response) {
                     if (response.success) {
-                        print("yes");
                         alert("Journey submitted successfully");
+                        localStorage.removeItem('JournedID');
+                        window.location.href = '/Journey/Index';
                     } else {
-                        print("no");
                         alert("Error: Could not submit journey");
                     }
                 });
             });
         });
+
+        // Function to check if a journey exists and create one if it doesn't
+        async function checkAndCreateJourney() {
+            let journeyId = localStorage.getItem('JourneyID');
+            let userId = localStorage.getItem('User_ID');
+            if (!journeyId) {
+                let response = await fetch('/Journey/CreateAndGetJourneyId?userId=' + userId);
+                if (response.ok) {
+                    let jsonResponse = await response.json();
+                    if (jsonResponse.success) {
+                        localStorage.setItem('JourneyID', jsonResponse.journeyId);
+                    }
+                } else {
+                    console.error('Failed to create a new journey:', response.statusText);
+                }
+            }
+        }
+
+        window.onload = function() {
+            checkAndCreateJourney();
+        };
 </script>
 
 <!-- Main layout of the page -->

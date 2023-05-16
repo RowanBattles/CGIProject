@@ -42,6 +42,84 @@ namespace CGI.Controllers
             return Json(new { success = true, journeyId = newJourneyId });
         }
         
+        [HttpPost]
+        public async Task<IActionResult> SubmitJourney(int journeyId, int userId)
+        {
+            List<Stopover> stopovers = new();
+
+            using (SqlConnection conn = new(_connectionString))
+            {
+                using (SqlCommand cmd = new("SELECT * FROM Stopovers WHERE Journey_ID = @Journey_ID", conn))
+                {
+                    cmd.Parameters.AddWithValue("@Journey_ID", journeyId);
+
+                    conn.Open();
+                    using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            if (!reader.IsDBNull(0) && !reader.IsDBNull(1) && !reader.IsDBNull(2) &&
+                                !reader.IsDBNull(3) && !reader.IsDBNull(4) && !reader.IsDBNull(5) && !reader.IsDBNull(6))
+                            {
+                                Stopover stopover = new()
+                                {
+                                    Stopover_ID = reader.GetInt32(0),
+                                    VehicleType = (Vehicle_ID)reader.GetInt32(1),
+                                    JourneyID = reader.GetInt32(2),
+                                    Distance = reader.GetInt32(3),
+                                    Start = reader.GetString(4),
+                                    End = reader.GetString(5),
+                                    Emission = reader.GetInt32(6)
+                                };
+                                stopovers.Add(stopover);
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Calculate total distance and total emission from the stopovers
+            int totalDistance = 0;
+            int totalEmission = 0;
+
+            foreach (var stopover in stopovers)
+            {
+                totalDistance += stopover.Distance;
+                totalEmission += stopover.Emission;
+            }
+
+            int score = 500 - (int)(totalEmission / (double)(totalDistance * Enum.GetValues(typeof(Vehicle_Emission)).Cast<int>().Max()) * 500);
+
+            // Get the Start and End from the first and last stopovers
+            string start = stopovers[0].Start;
+            string end = stopovers[^1].End;
+
+            // Update the journey in the database
+            using (SqlConnection conn = new(_connectionString))
+            {
+                using (SqlCommand cmd = new("UPDATE Journeys SET Total_Distance = @Total_Distance, Score = @Score, Total_Emission = @Total_Emission, Start = @Start, [End] = @End WHERE Journey_ID = @Journey_ID AND User_ID = @User_ID", conn))
+                {
+                    cmd.Parameters.AddWithValue("@Journey_ID", journeyId);
+                    cmd.Parameters.AddWithValue("@User_ID", userId);
+                    cmd.Parameters.AddWithValue("@Total_Distance", totalDistance);
+                    cmd.Parameters.AddWithValue("@Total_Emission", totalEmission);
+                    cmd.Parameters.AddWithValue("@Start", start);
+                    cmd.Parameters.AddWithValue("@End", end);
+                    cmd.Parameters.AddWithValue("@Score", score);
+
+                    conn.Open();
+                    int rowsAffected = await cmd.ExecuteNonQueryAsync();
+
+                    if (rowsAffected == 0)
+                    {
+                        return Json(new { success = false, message = "Failed to update journey" });
+                    }
+                }
+            }
+
+            return Json(new { success = true });
+        }
+
         [HttpGet]
         public async Task<IActionResult> Edit(int JourneyID)
         {
