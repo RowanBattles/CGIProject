@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using CGI.Extensions
 @model Stopover
 
 @{
@@ -31,24 +32,33 @@
             $("form").on("submit", function (event) {
                 event.preventDefault();
 
-                // Get the selected option value
-                var vehicleType = $("#vehicle option:selected").val();
+                // Get the value of the selected option in the #vehicle dropdown
+                var vehicleType = $("#vehicle").val();
 
-                // Set the value of the hidden field to the enum value
                 $('#VehicleType').val(vehicleType);
-
                 var formData = $(this).serialize();
-
                 $.post("/StopOver/CreateStopOver", formData, function (response) {
                     if (response.success) {
                         var stopover = response.stopover;
+
+                        // Use the vehicleTypeName property from the response object
+                        var vehicleTypeName = response.vehicleTypeName;
+
+                        // Create a stopover item and show the emission for each stopover
                         var stopoverItem = `
-        <div class="stopover-item">
-            <span class="stopover-start">Start: ${stopover.start}</span>
-            <span class="stopover-end">End: ${stopover.end}</span>
-            <span class="stopover-vehicle">Vehicle: ${vehicleType}</span>
-            <span class="stopover-distance">Distance: ${stopover.distance}km</span>
-        </div>`;
+                        <div class="stopover-item p-4 rounded-lg shadow-md bg-white mb-4">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-lg font-semibold">${vehicleTypeName}</span>
+                                <span class="text-sm text-gray-600">${stopover.distance} km</span>
+                            </div>
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-sm text-gray-600">Start: ${stopover.start}</span>
+                                <span class="text-sm text-gray-600">End: ${stopover.end}</span>
+                            </div>
+                            <div class="flex justify-end items-center">
+                                <span class="text-sm text-gray-600">Emission: ${stopover.emission}</span>
+                            </div>
+                        </div>`;
 
                         $("#StopoverList").append(stopoverItem);
                         $("#submitJourneyBtn").removeClass("hidden");
@@ -58,6 +68,9 @@
                     }
                 });
             });
+
+
+
 
             $("#submitJourneyBtn").on("click", function () {
                 // Get the JourneyID from LocalStorage
@@ -119,11 +132,33 @@
                 <br>
                 <input type="hidden" asp-for="VehicleType" id="VehicleType"/>
                 <select id="vehicle" class="shadow appearance-none border border-black rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" required>
-                    @foreach (var item in Html.GetEnumSelectList<Vehicle_ID>())
-                    {
-                        <option value="@item.Value">@item.Text</option>
-                    }
+                    <optgroup label="Electric">
+                        <option value="@Vehicle_ID.ETrain">@Vehicle_ID.ETrain.GetDisplayName()</option>
+                        <option value="@Vehicle_ID.EBicycle">@Vehicle_ID.EBicycle.GetDisplayName()</option>
+                        <option value="@Vehicle_ID.EScooter">@Vehicle_ID.EScooter.GetDisplayName()</option>
+                        <option value="@Vehicle_ID.ECar">@Vehicle_ID.ECar.GetDisplayName()</option>
+                    </optgroup>
+                    <optgroup label="Gasoline">
+                        <option value="@Vehicle_ID.GScooter">@Vehicle_ID.GScooter.GetDisplayName()</option>
+                        <option value="@Vehicle_ID.GMotorcycle">@Vehicle_ID.GMotorcycle.GetDisplayName()</option>
+                        <option value="@Vehicle_ID.GCar">@Vehicle_ID.GCar.GetDisplayName()</option>
+                    </optgroup>
+                    <optgroup label="Hybrid">
+                        <option value="@Vehicle_ID.HCar">@Vehicle_ID.HCar.GetDisplayName()</option>
+                    </optgroup>
+                    <optgroup label="Diesel">
+                        <option value="@Vehicle_ID.DTrain">@Vehicle_ID.DTrain.GetDisplayName()</option>
+                        <option value="@Vehicle_ID.DCar">@Vehicle_ID.DCar.GetDisplayName()</option>
+                    </optgroup>
+                    <optgroup label="Other">
+                        <option value="@Vehicle_ID.Walking">@Vehicle_ID.Walking.GetDisplayName()</option>
+                        <option value="@Vehicle_ID.Bicycle">@Vehicle_ID.Bicycle.GetDisplayName()</option>
+                        <option value="@Vehicle_ID.Tram">@Vehicle_ID.Tram.GetDisplayName()</option>
+                        <option value="@Vehicle_ID.Bus">@Vehicle_ID.Bus.GetDisplayName()</option>
+                        <option value="@Vehicle_ID.Metro">@Vehicle_ID.Metro.GetDisplayName()</option>
+                    </optgroup>
                 </select>
+
                 <label>Distance in km:</label>
                 <br>
                 <input asp-for="Distance" class="shadow appearance-none border border-black rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="distance" placeholder="Input distance in km." required>

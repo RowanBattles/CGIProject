@@ -1,4 +1,5 @@
-﻿using CGI.Models;
+﻿using CGI.Extensions;
+using CGI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
@@ -15,6 +16,7 @@ namespace CGI.Controllers
             _connectionString = configuration.GetConnectionString("DefaultConnection");
         }
 
+        [HttpPost]
         [HttpPost]
         public async Task<IActionResult> CreateStopOver(Stopover stopover)
         {
@@ -48,7 +50,11 @@ namespace CGI.Controllers
 
                 }
 
-                return Json(new { success = true, stopover });
+                // Get the display name of the VehicleType property
+                string vehicleTypeName = stopover.VehicleType.GetDisplayName();
+
+                // Include the display name of the VehicleType property in the response object
+                return Json(new { success = true, stopover, vehicleTypeName });
             }
 
             return Json(new { success = false });
