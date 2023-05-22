@@ -44,7 +44,7 @@
                         // Use the vehicleTypeName property from the response object
                         var vehicleTypeName = response.vehicleTypeName;
 
-                        // Create a stopover item and show the emission for each stopover
+                        // Create a more visually appealing stopover item and show the emission for each stopover
                         var stopoverItem = `
                         <div class="stopover-item p-4 rounded-lg shadow-md bg-white mb-4">
                             <div class="flex justify-between items-center mb-2">
@@ -55,12 +55,30 @@
                                 <span class="text-sm text-gray-600">Start: ${stopover.start}</span>
                                 <span class="text-sm text-gray-600">End: ${stopover.end}</span>
                             </div>
-                            <div class="flex justify-end items-center">
+                            <div class="flex justify-between items-center">
                                 <span class="text-sm text-gray-600">Emission: ${stopover.emission}</span>
+                                <div>
+                                    <button class="edit-stopover-btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded mr-2">Edit</button>
+                                    <button class="remove-stopover-btn bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded">Remove</button>
+                                </div>
                             </div>
                         </div>`;
 
-                        $("#StopoverList").append(stopoverItem);
+                        var $stopoverItem = $(stopoverItem);
+
+                        // Add a click event handler for the Edit button
+                        $stopoverItem.find(".edit-stopover-btn").on("click", function () {
+                            // TODO: Implement editing a stopover
+                            alert("Edit stopover not implemented");
+                        });
+
+                        // Add a click event handler for the Remove button
+                        $stopoverItem.find(".remove-stopover-btn").on("click", function () {
+                            // TODO: Implement removing a stopover
+                            alert("Remove stopover not implemented");
+                        });
+
+                        $("#StopoverList").append($stopoverItem);
                         $("#submitJourneyBtn").removeClass("hidden");
                         $("form").trigger("reset");
                     } else {
@@ -68,6 +86,7 @@
                     }
                 });
             });
+
 
 
 
