@@ -1,0 +1,39 @@
+Oplevering 4 - Notule
+22/05/2023
+
+Eindoplevering hebben weten niet iedereen waar het project over gaat
+uitleg geven over wat we aan het maken zijn.
+
+Knoppen kleur:
+Blauw zie je duidelijk dat het blauw is
+rood is gevaarlijk
+Groene knop blauw maken.
+zelfde kleur gebruiken voor zelfde opties
+
+Nieuwste reis bovenaan list
+
+Factsheet maken
+- alle feiten van de opdracht
+- soort flyer
+
+Goede demo maken voor de eindevent/oplevering.
+Mensen zonder technische achtergrond moeten het kunnen begrijpen.
+
+Werkende Scenario toevoegen aan de Demo,
+Testdata in database
+
+filteren van de lijst is een goed idee en het moet wel werken
+Nice to have dingen als alles werkt.
+
+Gebruiker verwacht dat ie iets toevoegd, dan moet het duidelijk zijn
+bovenaan de lijst van journeys
+dus filteren wordt minder belangrijk
+kan verwarrend zijn voor de gebruiker
+
+extraatjes kunnen altijd later.
+Op een gegevenmoment moet je je code freezen en bugless laten presenteren.
+
+beter weinig features en goede uitleg en veel features en slechte uitleg.
+
+Denken over hoe presenteren
+
