@@ -24,7 +24,12 @@
 <div class="flex justify-center items-start h-screen bg-slate-200 overflow-auto scrollbar-hide">
     <div class="bg-slate-100 w-3/4 p-6 rounded-xl shadow-xl mt-20 h-auto mb-10">
         <ul>
-            @foreach (var journey in Model.Journeys)
+            @{
+                List<Journey> orderedJourneys = (from journey in Model.Journeys
+                                                 orderby journey.Date descending
+                                                 select journey).ToList();
+            }
+            @foreach (var journey in orderedJourneys)
             {
                 <li class="pb-3 px-8">
                     <div class="bg-white rounded-lg shadow-md p-6">
