@@ -54,7 +54,10 @@ namespace CGI.Controllers
         public IActionResult Index(int lowerbound, int upperbound)
         {
             List<LeaderboardViewModel> leaderboardViewModels = new List<LeaderboardViewModel>();
-
+            if (upperbound == 0)
+            {
+                upperbound = 500;
+            }
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
