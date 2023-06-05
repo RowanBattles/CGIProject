@@ -1,4 +1,4 @@
-﻿﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using CGI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
@@ -41,6 +41,7 @@ namespace CGI.Controllers
 
             return Json(new { success = true, journeyId = newJourneyId });
         }
+
         [HttpGet]
         public async Task<IActionResult> Edit(int JourneyID)
         {
@@ -166,7 +167,7 @@ namespace CGI.Controllers
                         while (await reader.ReadAsync())
                         {
                             if (!reader.IsDBNull(0) && !reader.IsDBNull(1) && !reader.IsDBNull(2) &&
-                                !reader.IsDBNull(3) && !reader.IsDBNull(4) && !reader.IsDBNull(5) && 
+                                !reader.IsDBNull(3) && !reader.IsDBNull(4) && !reader.IsDBNull(5) &&
                                 !reader.IsDBNull(6) && !reader.IsDBNull(7))
                             {
                                 Journey journey = new()
@@ -189,55 +190,76 @@ namespace CGI.Controllers
                 }
             }
 
-            string id = Request.Query["id"];
+            return View(journeys);
+        }
 
-            if (string.IsNullOrEmpty(id))
-            {
-                id = "0";
-            }
-
+        public IActionResult Details(int id)
+        {
             List<Stopover> stopovers = new();
+            Journey journey = null;
 
             using (SqlConnection conn = new(_connectionString))
             {
+                conn.Open();
                 using (SqlCommand cmd = new("SELECT * FROM Stopovers WHERE Journey_ID = @Journey_ID", conn))
                 {
                     cmd.Parameters.AddWithValue("@Journey_ID", id);
 
-                    conn.Open();
-                    using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+                    using (SqlDataReader reader = cmd.ExecuteReader())
                     {
-                        while (await reader.ReadAsync())
+                        while (reader.Read())
                         {
-                            if (!reader.IsDBNull(0) && !reader.IsDBNull(1) && !reader.IsDBNull(2) &&
-                                !reader.IsDBNull(3) && !reader.IsDBNull(4) && !reader.IsDBNull(5) && !reader.IsDBNull(6))
+                            Stopover stopover = new()
                             {
-                                Stopover stopover = new()
-                                {
-                                    Stopover_ID = reader.GetInt32(0),
-                                    VehicleType = (Vehicle_ID)reader.GetInt32(1),
-                                    JourneyID = reader.GetInt32(2),
-                                    Distance = reader.GetInt32(3),
-                                    Start = reader.GetString(4),
-                                    End = reader.GetString(5),
-                                    Emission = reader.GetInt32(6)
-                                };
-                                stopovers.Add(stopover);
-                            }
+                                Stopover_ID = reader.GetInt32(0),
+                                VehicleType = (Vehicle_ID)reader.GetInt32(1),
+                                JourneyID = reader.GetInt32(2),
+                                Distance = reader.GetInt32(3),
+                                Start = reader.GetString(4),
+                                End = reader.GetString(5),
+                                Emission = reader.GetInt32(6)
+                            };
+                            stopovers.Add(stopover);
                         }
                     }
                 }
             }
 
-            JourneyViewModel model = new()
+            using (SqlConnection conn = new(_connectionString))
             {
-                Id = int.Parse(id),
-                Journeys = journeys,
-                Stopovers = stopovers,
-            };
+                conn.Open();
+                using (SqlCommand cmd = new("SELECT * FROM Journeys WHERE Journey_ID = @Journey_ID", conn))
+                {
+                    cmd.Parameters.AddWithValue("@Journey_ID", id);
 
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            journey = new Journey();
+                            journey.Journey_ID = reader.GetInt32(0);
+                            journey.User_ID = reader.GetInt32(1);
+                            journey.Total_Distance = reader.GetInt32(2);
+                            journey.Total_Emission = reader.GetInt32(3);
+                            journey.Start = reader.GetString(4);
+                            journey.End = reader.GetString(5);
+                            journey.Date = reader.GetDateTime(6);
+                            journey.Score = reader.GetInt32(7);
+                        }
+                    }
+                }
+            }
 
-            return View(model);
+            if (journey == null)
+            {
+                return RedirectToAction("Index", "Journey");
+            }
+
+            JourneyViewModel ViewModel = new();
+            ViewModel.Journey = journey;
+            ViewModel.Stopovers = stopovers;
+
+            return View(ViewModel);
         }
 
         // Delete
