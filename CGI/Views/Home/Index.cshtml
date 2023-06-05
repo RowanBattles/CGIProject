@@ -1,56 +1,176 @@
 ﻿@model List<LeaderboardViewModel>
 @{
-	ViewData["Title"] = "Home Page CGI";
-	var ranking = 0;
+    ViewData["Title"] = "Home Page CGI";
+    var ranking = 0;
 }
 <style>
-  .btn {
-    background-color: #4a86e8;
-    color: #fff;
-    padding: 0.5rem 1rem;
-    border: none;
-    border-radius: 0.25rem;
-    transition: all 0.2s ease;
-  }
-  
-  .btn:focus,
-  .btn:active {
-    background-color: #00196c;
-    outline: none;
-  }
+    .btn {
+        background-color: #4a86e8;
+        color: #fff;
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 0.25rem;
+    }
+
+    .btn:focus,
+    .btn:active {
+        background-color: #00196c;
+        outline: none;
+    }
+
+    .first {
+        color: gold;
+        display: inline-block;
+        text-align: center;
+    }
+    
+    .second {
+        color: silver;
+        display: inline-block;
+        text-align: center;
+        left: 200px;
+        position: absolute;
+        bottom: 440px;
+
+    }
+    .third {
+        color: #a05822;
+        display: inline-block;
+        text-align: center;
+        right: 220px;
+        position: absolute;
+        bottom: 410px;
+    }
+    .centered { 
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        height: 600px;
+        width: 800px;
+        align-items: center;
+    }
+    .top-float {
+        top: 30px;
+    }
+    .colored-btn{
+        background-color: yellow;
+    }
+
 </style>
 
+@if (Model.Count == 0)
+{
+    <div class="bg-slate-400 h-16 shadow">
+        <h1 class="text-center">
+            No Entries
+        </h1>
+    </div>
+}
+else if (Model.First().upperbound == 999999)
+{
+    <div class="bg-slate-400 h-16 shadow">
+        <h1 class="text-center">
+            ALL
+        </h1>
+    </div>
+}
+else
+{
+    <div class="bg-slate-400 h-16 shadow">
+        <h1 class="text-center">
+            @Model.First().lowerbound - @Model.First().upperbound
+        </h1>
+    </div>
+}
 
-<div class="p-4">
+
+<div class="">
+    <div>
+        <label>
+            <h1 class="text-2xl font-bold text-center">Choose Distance Range (km)</h1>
+        </label>
+    </div>
     <div class="flex justify-center">
+        <form id="myForm" action="@Url.Action("Index", "Home")" method="get">
+            <input type="hidden" name="lowerbound" id="lowerbound" value="0">
+            <input type="hidden" name="upperbound" id="upperbound" value="500">
+            <button type="submit" id="button0-05" class="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2">0 - 500</button>
+        </form>
+        <form id="myForm" action="@Url.Action("Index", "Home")" method="get">
+            <input type="hidden" name="lowerbound" id="lowerbound" value="500">
+            <input type="hidden" name="upperbound" id="upperbound" value="1000">
+            <button type="submit" id="button05-10" class="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mx-2">500 -
+                1000</button>
+        </form>
+        <form id="myForm" action="@Url.Action("Index", "Home")" method="get">
+            <input type="hidden" name="lowerbound" id="lowerbound" value="1000">
+            <input type="hidden" name="upperbound" id="upperbound" value="1500">
+            <button type="submit" id="button10-15" class="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mx-2">1000 -
+                1500</button>
+        </form>
+        <form id="myForm" action="@Url.Action("Index", "Home")" method="get">
+            <input type="hidden" name="lowerbound" id="lowerbound" value="1500">
+            <input type="hidden" name="upperbound" id="upperbound" value="2000">
+            <button type="submit" id="button15-20" class="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-2">1500 -
+                2000</button>
+        </form>
+        <form id="myForm" action="@Url.Action("Index", "Home")" method="get">
+            <input type="hidden" name="lowerbound" id="lowerbound" value="0">
+            <input type="hidden" name="upperbound" id="upperbound" value="999999">
+            <button type="submit" id="buttonAll" class="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-2">ALL</button>
+        </form>
+    </div>
+    <div class="block bg-slate-100 p-6 rounded-lg shadow-md shadow-slate-300 centered mx-auto my-auto mt-5">
+        <div>
         @foreach (var leaderboardViewModel in Model)
         {
             ranking++;
-            if (ranking <= 3)
+            if (ranking == 1)
             {
-                <div class="mx-4">
-                    <div class="text-center @(@ranking == 1 ? "text-[#D4AF36]" : "") @(@ranking == 2 ? "text-[#C0C0C0]" : "")@(@ranking == 3 ? "text-[#9F7A34]" : "")">
-                        <div class="text-4xl font-bold">
-                            @ranking
-                        </div>
-                        <p class="text-xl">
-                            @leaderboardViewModel.userName
-                        </p>
-                        <p>
-                            Score: @leaderboardViewModel.score
-                        </p>
-                    </div>
-                    <div class="h-@(20 * (4 - ranking)) bg-gradient-to-t from-gray-400 via-gray-200 to-transparent"></div>
+                <div class="first">
+                    <div class="text-3xl font-bold">
+                        @ranking
+                    </div>  
+                    <p class="text-xl">
+                        @leaderboardViewModel.userName
+                    </p>
+                    <p>
+                        Score: @leaderboardViewModel.score
+                    </p>
                 </div>
             }
-            else
+            if (ranking == 2)
             {
-                break;
+                <div class="second">
+                    <div class="text-3xl font-bold">
+                        @ranking
+                    </div>  
+                    <p class="text-xl">
+                        @leaderboardViewModel.userName
+                    </p>
+                    <p>
+                        Score: @leaderboardViewModel.score
+                    </p>
+                </div>
             }
+            if (ranking == 3)
+            {
+                <div class="third">
+                    <div class="text-3xl font-bold">
+                        @ranking
+                    </div>  
+                    <p class="text-xl">
+                        @leaderboardViewModel.userName
+                    </p>
+                    <p>
+                        Score: @leaderboardViewModel.score
+                    </p>
+                </div>
+            }
+            
         }
-    </div>
-
-    <div class="mt-8 border border-gray-400">
+        </div>
+        <div class="mt-8 border border-gray-400 mt-20">
         <table class="table-auto w-full text-center">
             <thead>
                 <tr>
@@ -60,7 +180,9 @@
                 </tr>
             </thead>
             <tbody>
-                @{ ranking = 3;}
+                @{
+                    ranking = 3;
+                }
                 @foreach (var leaderboardViewModel in Model.Skip(3))
                 {
                     ranking++;
@@ -77,37 +199,5 @@
             </tbody>
         </table>
     </div>
-    <div class="">
-        <div>
-            <label><h1 class="text-2xl font-bold text-center">Choose Distance Range (km)</h1></label>
-        </div>
-        <div class="flex justify-center min-h-screen">
-            <form id="myForm" action="@Url.Action("Index", "Home")" method="get">
-                <input type="hidden" name="lowerbound" id="lowerbound" value="0">
-                <input type="hidden" name="upperbound" id="upperbound" value="500">
-                <button type="submit" class="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2" >0 - 500</button>
-            </form>
-            <form id="myForm" action="@Url.Action("Index", "Home")" method="get">
-                <input type="hidden" name="lowerbound" id="lowerbound" value="500">
-                <input type="hidden" name="upperbound" id="upperbound" value="1000">
-                <button type="submit" class="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mx-2" >500 - 1000</button>
-            </form>
-            <form id="myForm" action="@Url.Action("Index", "Home")" method="get">
-                <input type="hidden" name="lowerbound" id="lowerbound" value="1000">
-                <input type="hidden" name="upperbound" id="upperbound" value="1500">
-                <button type="submit" class="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mx-2" >1000 - 1500</button>
-            </form>
-            <form id="myForm" action="@Url.Action("Index", "Home")" method="get">
-                <input type="hidden" name="lowerbound" id="lowerbound" value="1500">
-                <input type="hidden" name="upperbound" id="upperbound" value="2000">
-                <button type="submit" class="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-2" >1500 - 2000</button>
-            </form>
-            <form id="myForm" action="@Url.Action("Index", "Home")" method="get">
-                <input type="hidden" name="lowerbound" id="lowerbound" value="0">
-                <input type="hidden" name="upperbound" id="upperbound" value="999999">
-                <button type="submit" class="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-2" >ALL</button>
-            </form>
-        </div>
-    </div>
+    </div> 
 </div>
-
