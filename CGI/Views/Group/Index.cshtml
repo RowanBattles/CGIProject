@@ -1,0 +1,118 @@
+@model GroupViewModel
+@{
+    ViewData["Title"] = "Groups";
+    var ranking = 0;
+}
+
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+    <script>
+        let journeyAddedNotification = localStorage.getItem('JourneyAddedNotification');
+        if (journeyAddedNotification) {
+            // Remove the stored notification from localStorage
+            localStorage.removeItem('JourneyAddedNotification');
+
+            // Show success notification
+            toastr.success('Journey added', 'Successfully added journey');
+        }
+    </script>
+</head>
+
+<div class="flex gap-8 me-8">
+    <div class="flex flex-col bg-gray-50 border-r overflow-auto h-screen w-96">
+        <button class="self-end m-3 py-1 px-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg shadow-md transition duration-300" onclick="toggleCreate()">+</button>
+        <ul>
+            @foreach (var group in Model.Groups)
+            {
+                <li class="flex justify-between border-gray-200 border-b @(@Model.Id == @group.Id ? "bg-green-200" : "bg-gray-50 hover:bg-gray-100")">
+                    <a class="w-full h-full p-2" href="~/group/Details?id=@group.Id">
+                        <h2>@group.Name</h2>
+                    </a>
+                    @using (Html.BeginForm("Join", "Group", FormMethod.Post))
+                    {
+                        @Html.Hidden("groupId", group.Id)
+                        <button type="submit" class="px-2 py-1 hover:font-bold @(group.UserIsInGroup ? "hidden" : "")">join</button>
+                    }
+                </li>
+            }
+        </ul>
+    </div>
+    <div class="w-full h-full">
+        <div id="groupCreateDiv" class="flex items-center justify-center flex-grow hidden h-full">
+            <div class="flex flex-col">
+                <h1 class="m-4 ml-8">Create group</h1>
+                <form asp-action="Create" asp-controller="Group">
+                    <!-- Input fields for name -->
+                    <label>Name:</label>
+                    <br>
+                    <input name="groupName" class="shadow appearance-none border border-black rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" placeholder="name" required>
+                    <!-- Add button to submit the form -->
+                    <button class="bg-blue-700 rounded-lg text-white px-5 py-2">Add</button>
+                </form>
+            </div>
+        </div>
+        <div id="groupInfoDiv" class="flex flex-col">
+            <div class="flex justify-between items-center mt-8">
+                <h1 id="groupInfoDiv">Group information</h1>
+                @if (Model.UserIsPartOfGroup && !Model.UserIsGroupAdmin)
+                {
+                    using (Html.BeginForm("Leave", "Group", FormMethod.Post))
+                    {
+                        @Html.Hidden("groupId", Model.Id)
+                        <button type="submit" class="self-end py-1 px-3 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg shadow-md transition duration-300">Leave</button>
+                    }
+                }
+            </div>
+            <div class="mt-8 border border-gray-400">
+                <table class="table-auto w-full text-center">
+                    <thead>
+                    <tr>
+                        <th class="px-4 py-2">Rank</th>
+                        <th class="px-4 py-2">Player</th>
+                        <th class="px-4 py-2">Score</th>
+                        <th class="px-4 py-2">Acties</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var user in Model.Leaderboards)
+                    {
+                        ranking++;
+                        <tr>
+                            <td class="text-l px-4 py-2">@ranking</td>
+                            <td class="text-l px-4 py-2">@user.userName @(user.UserIsGroupAdmin ? "(admin)" : "")</td>
+                            <td class="text-l px-4 py-2">@user.score</td>
+                            <td class="text-l px-4 py-2">
+                                @if (!user.UserIsGroupAdmin && Model.UserIsGroupAdmin)
+                                {
+                                    using (Html.BeginForm("RemoveUser", "Group", FormMethod.Post))
+                                    {
+                                        @Html.Hidden("userId", user.Id)
+                                        @Html.Hidden("groupId", Model.Id)
+
+                                        <button type="submit" class="self-end m-3 py-1 px-3 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg shadow-md transition duration-300">Remove user</button>
+                                    }
+                                }
+                            </td>
+                        </tr>
+                        if (ranking == 10)
+                        {
+                            break;
+                        }
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<script>
+function toggleCreate() {
+    document.getElementById("groupCreateDiv").classList.remove("hidden");
+    document.getElementById("groupInfoDiv").classList.add("hidden");
+}
+</script>
