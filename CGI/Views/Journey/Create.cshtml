@@ -1,64 +1,217 @@
 ﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using CGI.Extensions
 @model Stopover
 
 @{
-    ViewData["Title"] = "Register Journey";
+    ViewData["Title"] = "Create Stopovers for Journey";
 }
-<head>
-    <!-- Importing necessary libraries -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
-    <script src="https://SortableJS.github.io/Sortable/Sortable.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-</head>
 <style>
-    .ui-state-default {
-        padding: 5px;
-        margin: 3px;
-        background-color: #f5f5f5;
+    .stopover-item {
+        background: #f8f8f8;
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 5px;
         border: 1px solid #ccc;
-        cursor: move;
     }
 
-    .edit-btn, .remove-btn {
-        margin-left: 10px;
-        padding: 2px 5px;
+    .stopover-start, .stopover-end, .stopover-vehicle, .stopover-distance {
+        display: block;
+        margin-bottom: 5px;
     }
 </style>
-
 <body>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-        // Function to edit a stopover based on its index
-        function editStopover(index) {
-            let stopovers = JSON.parse(localStorage.getItem('Stopovers')) || [];
-            let stopover = stopovers[index];
+    $(function () {
+        // Get the JourneyID from LocalStorage
+        var journeyId = localStorage.getItem('JourneyID');
 
-            // Set the form values to the selected stopover
-            document.getElementById('startinglocation').value = stopover.start;
-            document.getElementById('endlocation').value = stopover.end;
-            document.getElementById('vehicle').value = stopover.vehicle;
-            document.getElementById('distance').value = stopover.distance;
+        // Set the value of the hidden field
+        $('#journeyId').val(journeyId);
 
-            // Remove the stopover from the list
-            stopovers.splice(index, 1);
-            localStorage.setItem('Stopovers', JSON.stringify(stopovers));
-            GetStopovers();
-        }
+        $("form").on("submit", function (event) {
+            event.preventDefault();
 
-        // Function to remove a stopover based on its index
-        function removeStopover(index) {
-            let stopovers = JSON.parse(localStorage.getItem('Stopovers')) || [];
-            stopovers.splice(index, 1);
-            localStorage.setItem('Stopovers', JSON.stringify(stopovers));
-            GetStopovers();
-        }
-        // Initialize jQuery UI sortable list and disable text selection
-        $(function () {
-            $("#StopoverList").sortable();
-            $("#StopoverList").disableSelection();
+            // Get the value of the selected option in the #vehicle dropdown
+            var vehicleType = $("#vehicle").val();
+
+            $('#VehicleType').val(vehicleType);
+            var formData = $(this).serialize();
+            $.post("/StopOver/CreateStopOver", formData, function (response) {
+                if (response.success) {
+                    var stopover = response.stopover;
+                    console.log("haha idd; " + stopover.stopover_ID);
+                    console.log("yes: " + stopover);
+
+                    // Use the vehicleTypeName property from the response object
+                    var vehicleTypeName = response.vehicleTypeName;
+
+                    // Create a more visually appealing stopover item and show the emission for each stopover
+                    var stopoverItem = generateStopoverItem({
+                        id: stopover.stopover_ID,
+                        vehicleTypeName: vehicleTypeName,
+                        distance: stopover.distance,
+                        start: stopover.start,
+                        end: stopover.end,
+                        emission: stopover.emission
+                    });
+
+                    var $stopoverItem = $(stopoverItem);
+
+                    $("#StopoverList").append($stopoverItem);
+                    $("#submitJourneyBtn").removeClass("hidden");
+                    $("form").trigger("reset");
+
+                    // Attach event handlers for edit and remove buttons
+                    attachStopoverEventHandlers();
+                } else {
+                    alert("Error: Could not create stopover");
+                }
+            });
         });
-        
+
+        $("#submitJourneyBtn").on("click", function () {
+            // Get the JourneyID from LocalStorage
+            var journeyId = localStorage.getItem('JourneyID');
+            var userId = localStorage.getItem('User_ID');
+
+            // Send a POST request to submit the journey data to the server
+            $.post("/Journey/SubmitJourney", { journeyId: journeyId, userId: userId }, function (response) {
+                if (response.success) {
+                    alert("Journey submitted successfully");
+                    localStorage.removeItem('JourneyID');
+                    window.location.href = '/Journey/Index';
+                } else {
+                    alert("Error: Could not submit journey");
+                }
+            });
+        });
+
+        // Function to edit a stopover when the Edit button is clicked
+        function handleEditStopover() {
+            var stopoverItem = $(this).closest('.stopover-item');
+            var stopoverId = $(this).closest('.stopover-item').attr('data-stopover-id');
+            var startLocation = stopoverItem.find('.stopover-start').text().replace('Start: ', '');
+            var endLocation = stopoverItem.find('.stopover-end').text().replace('End: ', '');
+            var distance = stopoverItem.find('.stopover-distance').text().replace('Emission: ', '').replace(' km', '');
+
+            console.log("Ilk dacht da da kon: " + stopoverId);
+
+            // Create the edit form HTML
+            var editForm = `
+                <div class="edit-stopover-form">
+                    <label>Starting Location:</label>
+                    <br>
+                    <input class="stopover-start-input shadow appearance-none border border-black rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" value="${startLocation}" required>
+                    <label>End Location:</label>
+                    <br>
+                    <input class="stopover-end-input shadow appearance-none border border-black rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" value="${endLocation}" required>
+                    <label>Distance in km:</label>
+                    <br>
+                    <input class="stopover-distance-input shadow appearance-none border border-black rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" value="${distance}" required>
+                    <button class="save-stopover-btn bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded">Save</button>
+                    <button class="cancel-stopover-btn bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded">Cancel</button>
+                </div>`;
+
+            // Replace the stopover item with the edit form
+            stopoverItem.replaceWith(editForm);
+
+            // Add a click event handler for the Save button
+           $('.save-stopover-btn').on('click', function () {
+                var updatedStartLocation = $('.stopover-start-input').val();
+                var updatedEndLocation = $('.stopover-end-input').val();
+                var updatedDistance = $('.stopover-distance-input').val();
+                var stopoverId = $(this).closest('.stopover-item').attr('data-stopover-id');
+                var stopoverItem = $(this).closest('.stopover-item');
+
+                console.log(stopoverId);
+
+                // Update the stopover item with the new values
+                var updatedStopoverItem = generateStopoverItem({
+                    id: stopoverId,
+                    vehicleTypeName: stopoverItem.find('.vehicle-type').text(),
+                    distance: updatedDistance,
+                    start: updatedStartLocation,
+                    end: updatedEndLocation,
+                    emission: stopoverItem.find('.stopover-emission').text()
+                });
+
+                // Replace the edit form with the updated stopover item
+                $('.edit-stopover-form').replaceWith(updatedStopoverItem);
+
+                // Re-attach the event handlers
+                attachStopoverEventHandlers();
+
+                // Send the updated stopover data to the server
+                var stopoverData = {
+                    Stopover_ID: stopoverId,
+                    VehicleType: stopoverItem.find('.vehicle-type').text(),
+                    Distance: updatedDistance,
+                    Start: updatedStartLocation,
+                    End: updatedEndLocation,
+                    Emission: stopoverItem.find('.stopover-emission').text(),
+                    JourneyID: $('#journeyId').val()
+                };
+
+                $.post('/Stopover/Edit', stopoverData, function (response) {
+                    if (response.success) {
+                        alert('Stopover updated successfully');
+                    } else {
+                        alert('Failed to update stopover');
+                    }
+                });
+            });
+
+            // Add a click event handler for the Cancel button
+            $('.cancel-stopover-btn').on('click', function () {
+                // Replace the edit form with the original stopover item
+                $('.edit-stopover-form').replaceWith(stopoverItem);
+
+                // Re-attach the event handlers
+                attachStopoverEventHandlers();
+            });
+        }
+
+        // Function to remove a stopover when the Remove button is clicked
+        function handleRemoveStopover() {
+            var stopoverId = document.querySelector('.stopover-item').getAttribute('data-stopover-id');
+            var stopoverItem = $(this).closest('.stopover-item');
+
+            // TODO: Implement removing a stopover
+            alert('Remove stopover not implemented');
+        }
+
+        // Function to attach event handlers for edit and remove buttons
+        function attachStopoverEventHandlers() {
+            $('.edit-stopover-btn').on('click', handleEditStopover);
+            $('.remove-stopover-btn').on('click', handleRemoveStopover);
+        }
+
+        // Generate the HTML for a stopover item
+        function generateStopoverItem(stopover) {
+            console.log(stopover.id);
+            var stopoverItem = `
+                <div class="stopover-item p-4 rounded-lg shadow-md bg-white mb-4" data-stopover-id="${stopover.id}">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-lg font-semibold vehicle-type">${stopover.vehicleTypeName}</span>
+                        <span class="text-sm text-gray-600 stopover-distance">${stopover.distance} km</span>
+                    </div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-sm text-gray-600 stopover-start">Start: ${stopover.start}</span>
+                        <span class="text-sm text-gray-600 stopover-end">End: ${stopover.end}</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-600 stopover-emission">Emission: ${stopover.emission}</span>
+                        <div>
+                            <button class="edit-stopover-btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded mr-2">Edit</button>
+                            <button class="remove-stopover-btn bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded">Remove</button>
+                        </div>
+                    </div>
+                </div>`;
+
+            return stopoverItem;
+        }
+
         // Function to check if a journey exists and create one if it doesn't
         async function checkAndCreateJourney() {
             let journeyId = localStorage.getItem('JourneyID');
@@ -76,184 +229,75 @@
             }
         }
 
-        // Load the required data when the window is loaded
         window.onload = function () {
             checkAndCreateJourney();
-            GetStopovers();
-        }
 
-        // Function to get the emission based on vehicle type and distance
-        async function getEmission(vehicleType, distance) {
-            let response = await fetch(`/StopOver/CalculateEmission?vehicleType=${vehicleType}&distance=${distance}`);
-            if (response.ok) {
-                let jsonResponse = await response.json();
-                return jsonResponse.emission;
-            } else {
-                console.error("Failed to get emission:", response.statusText);
-                return 0;
-            }
-        }
-
-        // Function to get stopovers from localStorage and display them in the list
-        function GetStopovers() {
-            let stopovers = JSON.parse(localStorage.getItem('Stopovers')) || [];
-            let list = document.getElementById("StopoverList");
-            list.innerHTML = "";
-            for (let i = 0; i < stopovers.length; i++) {
-                let stopover = stopovers[i];
-                let listItem = document.createElement('li');
-                listItem.classList.add('ui-state-default');
-                listItem.innerHTML = stopover.start + " - " + stopover.end + " (" + stopover.vehicle + ", " + stopover.distance + "km)"
-                    + '<button class="edit-btn" onclick="editStopover(' + i + ')">Edit</button>'
-                    + '<button class="remove-btn" onclick="removeStopover(' + i + ')">Remove</button>';
-                list.appendChild(listItem);
-            }
-
-            let stopoverList = document.getElementById("StopoverList");
-            new Sortable(stopoverList, {
-                onEnd: function (evt) {
-                    saveSortedStopovers(); // Save the sorted stopovers in LocalStorage
-                },
-            });
-
-
-            if (stopovers.length > 0) {
-                document.getElementById("submitJourneyBtn").classList.remove("hidden");
-            } else {
-                document.getElementById("submitJourneyBtn").classList.add("hidden");
-            }
-        }
-
-        // Function to submit the journey with the sorted stopovers
-        async function submitJourney() {
-            let journeyId = localStorage.getItem('JourneyID');
-            let userId = localStorage.getItem('User_ID');
-
-            // Get the sorted stopovers from the list
-            let sortedStopovers = [];
-            let listItems = document.querySelectorAll('#StopoverList li');
-            listItems.forEach(item => {
-                let start = item.textContent.match(/[^-]+/)[0].trim();
-                let end = item.textContent.match(/- ([^(]+)/)[1].trim();
-                let vehicle = item.textContent.match(/\(([^,]+),/)[1].trim();
-                let distance = parseFloat(item.textContent.match(/, ([^k]+)/)[1].trim());
-                let stopover = {
-                    start: start,
-                    end: end,
-                    vehicle: vehicle,
-                    distance: distance
-                };
-                sortedStopovers.push(stopover);
-            });
-
-
-            // Update the journey in the database
-            let response = await fetch('/Journey/UpdateJourney?journeyId=' + journeyId + '&userId=' + userId, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(sortedStopovers)
-            });
-
-            if (response.ok) {
-                // Remove stopovers and journey ID from LocalStorage
-                localStorage.removeItem('Stopovers');
-                localStorage.removeItem('JourneyID');
-
-                // Redirect the user to the Index.cshtml in the Home controller
-                
-                localStorage.setItem('JourneyAddedNotification', 'Journey added successfully');
-                window.location.href = '/Journey/Index';
-                // Redirect the user to the Index.cshtml in the Home controller after a delay
-            } else {
-                toastr.error('Failed to submit journey', 'Error');
-                console.error('Failed to submit journey:', response.statusText);
-            }
-        }
-
-        // Function to save the sorted stopovers in localStorage
-        function saveSortedStopovers() {
-            let sortedStopovers = [];
-            let listItems = document.querySelectorAll('#StopoverList li');
-            listItems.forEach(item => {
-                let start = item.textContent.match(/Start: (.*?),/)[1].trim();
-                let end = item.textContent.match(/End: (.*?),/)[1].trim();
-                let vehicle = item.textContent.match(/Vehicle: (.*?),/)[1].trim();
-                let distance = parseFloat(item.textContent.match(/Distance: (\d+(\.\d+)?)/)[1].trim());
-                let emission = parseFloat(item.textContent.match(/Emission: (\d+)/)[1].trim());
-                let stopover = {
-                    start: start,
-                    end: end,
-                    vehicle: vehicle,
-                    distance: distance,
-                    emission: emission
-                };
-                sortedStopovers.push(stopover);
-            });
-
-            localStorage.setItem('Stopovers', JSON.stringify(sortedStopovers));
-        }
-
-        // Function to add a new stopover to the list
-        async function AddStopoverToList() {
-            let start = document.getElementById('startinglocation').value;
-            let end = document.getElementById('endlocation').value;
-            let vehicle = document.getElementById('vehicle').value;
-            let distance = document.getElementById('distance').value;
-            let emission = await getEmission(vehicle, distance);
-
-
-            if (start != "" || end != "" || distance != 0) {
-                let stopovers = JSON.parse(localStorage.getItem('Stopovers')) || [];
-                let stopover = {
-                    start: start,
-                    end: end,
-                    vehicle: vehicle,
-                    distance: distance,
-                    emission: emission
-                };
-                stopovers.push(stopover);
-                localStorage.setItem('Stopovers', JSON.stringify(stopovers));
-                GetStopovers();
-            }
-        }
-
-    
-
+            // Attach event handlers for edit and remove buttons
+            attachStopoverEventHandlers();
+        };
+    });
 </script>
-    <!-- Main layout of the page -->
-    <div class="flex justify-center items-center h-screen bg-slate-200">
-        <div class="block bg-slate-100 p-6 rounded-lg shadow-md shadow-slate-300 w-90 grid grid-cols-2 gap-4">
-            <div class=text-lg>Register new stopover:</div>
-            <br>
-            <div class="block bg-slate-50 p-6 rounded-lg shadow-md shadow-slate-300 w-90 max-h-96">
-                <!-- Form for adding a new stopover -->
-                <form onsubmit="return AddStopoverToList()">
-                    <!-- Input fields for starting location, end location, vehicle, and distance -->
-                    <label>Starting Location:</label>
-                    <br>
-                    <input asp-for="Start" class="shadow appearance-none border border-black rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="startinglocation" placeholder="Input starting location." required>
-                    <label>End Location:</label>
-                    <br>
-                    <input asp-for="End" class="shadow appearance-none border border-black rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="endlocation" placeholder="Input end location." required>
-                    <label>Vehicle:</label>
-                    <br>
-                    <select id="vehicle" asp-for="VehicleType" asp-items="Html.GetEnumSelectList<Vehicle_ID>()" class="shadow appearance-none border border-black rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" required>
-                    </select>
-                    <label>Distance in km:</label>
-                    <br>
-                    <input asp-for="Distance" class="shadow appearance-none border border-black rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="distance" placeholder="Input distance in km." required>
-                    <!-- Add button to submit the form -->
-                    <button class="bg-blue-700 rounded-lg w-full text-white min-h-fit">Add</button>
-                </form>
-            </div>
-            <div class="block bg-slate-50 p-6 rounded-lg shadow-md shadow-slate-300 w-90 flex-none flex-col max-h-96">
-                <div>Stopovers:</div>
-                <!-- List to display stopovers -->
-                <div class="overflow-y-scroll h-5/6" id="StopoverList"></div>
-                <button id="submitJourneyBtn" class="bg-green-700 rounded-lg w-full text-white hidden" onclick="submitJourney()">Submit Journey</button>
-            </div>
+
+<!-- Main layout of the page -->
+<div class="flex justify-center items-center h-screen bg-slate-200">
+    <div class="block bg-slate-100 p-6 rounded-lg shadow-md shadow-slate-300 w-90 grid grid-cols-2 gap-4">
+        <div class=text-lg>Register new stopover:</div>
+        <br>
+        <div class="block bg-slate-50 p-6 rounded-lg shadow-md shadow-slate-300 w-90 max-h-96">
+            <!-- Form for adding a new stopover -->
+            <form method="post" action="/StopOver/CreateStopOver">
+                <input type="hidden" name="journeyId" id="journeyId" value="">
+                <!-- Input fields for starting location, end location, vehicle, and distance -->
+                <label>Starting Location:</label>
+                <br>
+                <input asp-for="Start" class="shadow appearance-none border border-black rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="startinglocation" placeholder="Input starting location." required>
+                <label>End Location:</label>
+                <br>
+                <input asp-for="End" class="shadow appearance-none border border-black rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="endlocation" placeholder="Input end location." required>
+                <label>Vehicle:</label>
+                <br>
+                <input type="hidden" asp-for="VehicleType" id="VehicleType"/>
+                <select id="vehicle" class="shadow appearance-none border border-black rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" required>
+                    <optgroup label="Electric">
+                        <option value="@Vehicle_ID.ETrain">@Vehicle_ID.ETrain.GetDisplayName()</option>
+                        <option value="@Vehicle_ID.EBicycle">@Vehicle_ID.EBicycle.GetDisplayName()</option>
+                        <option value="@Vehicle_ID.EScooter">@Vehicle_ID.EScooter.GetDisplayName()</option>
+                        <option value="@Vehicle_ID.ECar">@Vehicle_ID.ECar.GetDisplayName()</option>
+                    </optgroup>
+                    <optgroup label="Gasoline">
+                        <option value="@Vehicle_ID.GScooter">@Vehicle_ID.GScooter.GetDisplayName()</option>
+                        <option value="@Vehicle_ID.GMotorcycle">@Vehicle_ID.GMotorcycle.GetDisplayName()</option>
+                        <option value="@Vehicle_ID.GCar">@Vehicle_ID.GCar.GetDisplayName()</option>
+                    </optgroup>
+                    <optgroup label="Hybrid">
+                        <option value="@Vehicle_ID.HCar">@Vehicle_ID.HCar.GetDisplayName()</option>
+                    </optgroup>
+                    <optgroup label="Diesel">
+                        <option value="@Vehicle_ID.DTrain">@Vehicle_ID.DTrain.GetDisplayName()</option>
+                        <option value="@Vehicle_ID.DCar">@Vehicle_ID.DCar.GetDisplayName()</option>
+                    </optgroup>
+                    <optgroup label="Other">
+                        <option value="@Vehicle_ID.Walking">@Vehicle_ID.Walking.GetDisplayName()</option>
+                        <option value="@Vehicle_ID.Bicycle">@Vehicle_ID.Bicycle.GetDisplayName()</option>
+                        <option value="@Vehicle_ID.Tram">@Vehicle_ID.Tram.GetDisplayName()</option>
+                        <option value="@Vehicle_ID.Bus">@Vehicle_ID.Bus.GetDisplayName()</option>
+                        <option value="@Vehicle_ID.Metro">@Vehicle_ID.Metro.GetDisplayName()</option>
+                    </optgroup>
+                </select>
+
+                <label>Distance in km:</label>
+                <br>
+                <input asp-for="Distance" class="shadow appearance-none border border-black rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="distance" placeholder="Input distance in km." required>
+                <!-- Add button to submit the form -->
+                <button class="bg-blue-700 rounded-lg w-full text-white min-h-fit">Add</button>
+            </form>
+        </div>
+        <div class="block bg-slate-50 p-6 rounded-lg shadow-md shadow-slate-300 w-90 flex-none flex-col max-h-96">
+            <div>Stopovers:</div>
+            <!-- List to display stopovers -->
+            <div class="h-5/6" id="StopoverList"></div>
+            <button id="submitJourneyBtn" class="bg-green-700 rounded-lg w-full text-white hidden">Submit Journey</button>
         </div>
     </div>
+</div>
 </body>

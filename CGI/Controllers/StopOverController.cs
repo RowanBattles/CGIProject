@@ -1,4 +1,5 @@
-﻿using CGI.Models;
+﻿using CGI.Extensions;
+using CGI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
@@ -15,47 +16,84 @@ namespace CGI.Controllers
             _connectionString = configuration.GetConnectionString("DefaultConnection");
         }
 
-        [HttpGet]
-        public IActionResult CalculateEmission(Vehicle_ID vehicleType, int distance)
+        [HttpPost]
+        [HttpPost]
+        public async Task<IActionResult> CreateStopOver(Stopover stopover)
         {
-            Stopover stopover = new Stopover
+            if (ModelState.IsValid)
             {
-                VehicleType = vehicleType,
-                Distance = distance
-            };
-            stopover.CalculateEmission();
-            return Json(new { emission = stopover.Emission });
+                stopover.CalculateEmission();
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    connection.Open();
+                    try
+                    {
+                        using (SqlCommand command = new SqlCommand("INSERT INTO Stopovers (Journey_ID, [Start], [End], Vehicle_ID, Distance, Emission) OUTPUT INSERTED.Stopover_ID VALUES (@JourneyId, @Start, @End, @VehicleType, @Distance, @Emission)", connection))
+                        {
+                            command.Parameters.AddWithValue("@JourneyId", stopover.JourneyID);
+                            command.Parameters.AddWithValue("@Start", stopover.Start);
+                            command.Parameters.AddWithValue("@End", stopover.End);
+                            command.Parameters.AddWithValue("@VehicleType", (int)stopover.VehicleType);
+                            command.Parameters.AddWithValue("@Distance", stopover.Distance);
+                            command.Parameters.AddWithValue("@Emission", stopover.Emission);
+
+                            stopover.Stopover_ID = (int)await command.ExecuteScalarAsync();
+                        }
+
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                        Console.WriteLine(stopover.VehicleType);
+                        throw;
+                    }
+
+                }
+
+                // Get the display name of the VehicleType property
+                string vehicleTypeName = stopover.VehicleType.GetDisplayName();
+
+                // Include the display name of the VehicleType property in the response object
+                Console.WriteLine("Wat de frick " + stopover.Stopover_ID);
+                return Json(new { success = true, stopover = stopover, vehicleTypeName });
+            }
+
+            return Json(new { success = false });
         }
 
         [HttpPost]
-        public async Task<IActionResult> SubmitStopovers(string stopoversJson)
+        public async Task<IActionResult> Create(Stopover stopover)
         {
-            List<Stopover> stopovers = JsonConvert.DeserializeObject<List<Stopover>>(stopoversJson);
+            stopover.CalculateEmission();
 
-            using (SqlConnection conn = new SqlConnection(_connectionString))
+            try
             {
-                foreach (var stopover in stopovers)
+                using (SqlConnection conn = new(_connectionString))
                 {
-
-                    using (SqlCommand cmd = new SqlCommand("INSERT INTO Stopovers (Vehicle_ID, Journey_ID, Distance, Start, End, Emission) VALUES (@VehicleID, @JourneyID, @Distance, @Start, @End, @Emission)", conn))
-
+                    using (SqlCommand cmd = new("INSERT INTO Stopovers (Vehicle_ID, JourneyID, Distance, Start, [End], Emission) VALUES (@Vehicle_ID, @JourneyID, @Distance, @Start, @End, @Emission)", conn))
                     {
-                        cmd.Parameters.AddWithValue("@VehicleID", (int)stopover.VehicleType);
-                        cmd.Parameters.AddWithValue("@JourneyID", stopover.JourneyID);
-                        cmd.Parameters.AddWithValue("@Distance", stopover.Distance);
-                        cmd.Parameters.AddWithValue("@Start", stopover.Start);
-                        cmd.Parameters.AddWithValue("@End", stopover.End);
-                        cmd.Parameters.AddWithValue("@Emission", stopover.Emission);
+                        cmd.Parameters.Add("@Vehicle_ID", SqlDbType.Int).Value = stopover.VehicleType;
+                        cmd.Parameters.Add("@JourneyID", SqlDbType.Int).Value = stopover.JourneyID;
+                        cmd.Parameters.Add("@Distance", SqlDbType.Int).Value = stopover.Distance;
+                        cmd.Parameters.Add("@Start", SqlDbType.VarChar).Value = stopover.Start;
+                        cmd.Parameters.Add("@End", SqlDbType.VarChar).Value = stopover.End;
+                        cmd.Parameters.Add("@Emission", SqlDbType.Float).Value = stopover.Emission;
 
                         conn.Open();
                         await cmd.ExecuteNonQueryAsync();
-                        conn.Close();
                     }
                 }
             }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
 
-            return Json(new { success = true });
+            return Ok();
         }
+
+
 
         [HttpGet]
         public async Task<IActionResult> Index(int id)
@@ -90,6 +128,7 @@ namespace CGI.Controllers
             }
             return View(stopover);
         }
+
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
@@ -125,63 +164,30 @@ namespace CGI.Controllers
             }
             return View(stopover);
         }
+
         [HttpPost]
         public async Task<IActionResult> Edit(Stopover stopover, int journeyID)
         {
+            Console.WriteLine("id: " + stopover.Stopover_ID);
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
-                await conn.OpenAsync();
-
-                using (SqlCommand stopoverCmd = new SqlCommand("UPDATE Stopovers SET Vehicle_ID = @Vehicle_ID, Distance = @Distance, Start = @Start, [End] = @End, Emission = @Emission WHERE Stopover_ID = @Stopover_ID", conn))
+                using (SqlCommand cmd = new SqlCommand("UPDATE Stopovers SET Vehicle_ID = @Vehicle_ID, Distance = @Distance, Start = @Start, [End] = @End, Emission = @Emission WHERE Stopover_ID = @Stopover_ID", conn))
                 {
-                    stopoverCmd.Parameters.AddWithValue("@Vehicle_ID", (int)stopover.VehicleType);
-                    stopoverCmd.Parameters.AddWithValue("@Distance", stopover.Distance);
-                    stopoverCmd.Parameters.AddWithValue("@Start", stopover.Start);
-                    stopoverCmd.Parameters.AddWithValue("@End", stopover.End);
-                    stopoverCmd.Parameters.AddWithValue("@Emission", stopover.Emission);
-                    stopoverCmd.Parameters.AddWithValue("@Stopover_ID", stopover.Stopover_ID);
+                    cmd.Parameters.Add("@Vehicle_ID", SqlDbType.Int).Value = stopover.VehicleType;
+                    cmd.Parameters.Add("@Distance", SqlDbType.Int).Value = stopover.Distance;
+                    cmd.Parameters.Add("@Start", SqlDbType.VarChar).Value = stopover.Start;
+                    cmd.Parameters.Add("@End", SqlDbType.VarChar).Value = stopover.End;
+                    cmd.Parameters.Add("@Emission", SqlDbType.Float).Value = stopover.Emission;
+                    cmd.Parameters.Add("@Stopover_ID", SqlDbType.Int).Value = stopover.Stopover_ID;
 
-                    await stopoverCmd.ExecuteNonQueryAsync();
-                }
-
-                using (SqlCommand journeyCmd = new SqlCommand("UPDATE Journeys SET Start = @Start, [End] = @End, Total_Distance = @Total_Distance, Total_Emission = @Total_Emission WHERE Journey_ID = @Journey_ID", conn))
-                {
-                    using (SqlCommand startCmd = new SqlCommand("SELECT TOP 1 Start FROM Stopovers WHERE Journey_ID = @Journey_ID ORDER BY Stopover_ID ASC", conn))
-                    {
-                        startCmd.Parameters.AddWithValue("@Journey_ID", journeyID);
-                        string journeyStart = (string)await startCmd.ExecuteScalarAsync();
-                        journeyCmd.Parameters.AddWithValue("@Start", journeyStart);
-                    }
-
-                    using (SqlCommand endCmd = new SqlCommand("SELECT TOP 1 [End] FROM Stopovers WHERE Journey_ID = @Journey_ID ORDER BY Stopover_ID DESC", conn))
-                    {
-                        endCmd.Parameters.AddWithValue("@Journey_ID", journeyID);
-                        string journeyEnd = (string)await endCmd.ExecuteScalarAsync();
-                        journeyCmd.Parameters.AddWithValue("@End", journeyEnd);
-                    }
-
-                    using (SqlCommand distanceCmd = new SqlCommand("SELECT SUM(Distance) FROM Stopovers WHERE Journey_ID = @Journey_ID", conn))
-                    {
-                        distanceCmd.Parameters.AddWithValue("@Journey_ID", journeyID);
-                        int totalDistance = (int)await distanceCmd.ExecuteScalarAsync();
-                        journeyCmd.Parameters.AddWithValue("@Total_Distance", totalDistance);
-                    }
-
-                    using (SqlCommand emissionCmd = new SqlCommand("SELECT SUM(Emission) FROM Stopovers WHERE Journey_ID = @Journey_ID", conn))
-                    {
-                        emissionCmd.Parameters.AddWithValue("@Journey_ID", journeyID);
-                        int totalEmission = (int)await emissionCmd.ExecuteScalarAsync();
-                        journeyCmd.Parameters.AddWithValue("@Total_Emission", totalEmission);
-                    }
-
-                    journeyCmd.Parameters.AddWithValue("@Journey_ID", journeyID);
-
-                    await journeyCmd.ExecuteNonQueryAsync();
+                    await conn.OpenAsync();
+                    await cmd.ExecuteNonQueryAsync();
                 }
             }
 
             return Redirect("/journey/details/" + stopover.JourneyID);
         }
+
         [HttpPost]
         public async Task<IActionResult> Delete(int stopoverid)
         {
