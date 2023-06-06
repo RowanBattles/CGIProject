@@ -22,92 +22,195 @@
 <body>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-        $(function () {
-            // Get the JourneyID from LocalStorage
-            var journeyId = localStorage.getItem('JourneyID');
+    $(function () {
+        // Get the JourneyID from LocalStorage
+        var journeyId = localStorage.getItem('JourneyID');
 
-            // Set the value of the hidden field
-            $('#journeyId').val(journeyId);
+        // Set the value of the hidden field
+        $('#journeyId').val(journeyId);
 
-            $("form").on("submit", function (event) {
-                event.preventDefault();
+        $("form").on("submit", function (event) {
+            event.preventDefault();
 
-                // Get the value of the selected option in the #vehicle dropdown
-                var vehicleType = $("#vehicle").val();
+            // Get the value of the selected option in the #vehicle dropdown
+            var vehicleType = $("#vehicle").val();
 
-                $('#VehicleType').val(vehicleType);
-                var formData = $(this).serialize();
-                $.post("/StopOver/CreateStopOver", formData, function (response) {
-                    if (response.success) {
-                        var stopover = response.stopover;
+            $('#VehicleType').val(vehicleType);
+            var formData = $(this).serialize();
+            $.post("/StopOver/CreateStopOver", formData, function (response) {
+                if (response.success) {
+                    var stopover = response.stopover;
+                    console.log("haha idd; " + stopover.stopover_ID);
+                    console.log("yes: " + stopover);
 
-                        // Use the vehicleTypeName property from the response object
-                        var vehicleTypeName = response.vehicleTypeName;
+                    // Use the vehicleTypeName property from the response object
+                    var vehicleTypeName = response.vehicleTypeName;
 
-                        // Create a more visually appealing stopover item and show the emission for each stopover
-                        var stopoverItem = `
-                        <div class="stopover-item p-4 rounded-lg shadow-md bg-white mb-4">
-                            <div class="flex justify-between items-center mb-2">
-                                <span class="text-lg font-semibold">${vehicleTypeName}</span>
-                                <span class="text-sm text-gray-600">${stopover.distance} km</span>
-                            </div>
-                            <div class="flex justify-between items-center mb-2">
-                                <span class="text-sm text-gray-600">Start: ${stopover.start}</span>
-                                <span class="text-sm text-gray-600">End: ${stopover.end}</span>
-                            </div>
-                            <div class="flex justify-between items-center">
-                                <span class="text-sm text-gray-600">Emission: ${stopover.emission}</span>
-                                <div>
-                                    <button class="edit-stopover-btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded mr-2">Edit</button>
-                                    <button class="remove-stopover-btn bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded">Remove</button>
-                                </div>
-                            </div>
-                        </div>`;
+                    // Create a more visually appealing stopover item and show the emission for each stopover
+                    var stopoverItem = generateStopoverItem({
+                        id: stopover.stopover_ID,
+                        vehicleTypeName: vehicleTypeName,
+                        distance: stopover.distance,
+                        start: stopover.start,
+                        end: stopover.end,
+                        emission: stopover.emission
+                    });
 
-                        var $stopoverItem = $(stopoverItem);
+                    var $stopoverItem = $(stopoverItem);
 
-                        // Add a click event handler for the Edit button
-                        $stopoverItem.find(".edit-stopover-btn").on("click", function () {
-                            // TODO: Implement editing a stopover
-                            alert("Edit stopover not implemented");
-                        });
+                    $("#StopoverList").append($stopoverItem);
+                    $("#submitJourneyBtn").removeClass("hidden");
+                    $("form").trigger("reset");
 
-                        // Add a click event handler for the Remove button
-                        $stopoverItem.find(".remove-stopover-btn").on("click", function () {
-                            // TODO: Implement removing a stopover
-                            alert("Remove stopover not implemented");
-                        });
-
-                        $("#StopoverList").append($stopoverItem);
-                        $("#submitJourneyBtn").removeClass("hidden");
-                        $("form").trigger("reset");
-                    } else {
-                        alert("Error: Could not create stopover");
-                    }
-                });
-            });
-
-
-
-
-
-            $("#submitJourneyBtn").on("click", function () {
-                // Get the JourneyID from LocalStorage
-                var journeyId = localStorage.getItem('JourneyID');
-                var userId = localStorage.getItem('User_ID');
-
-                // Send a POST request to submit the journey data to the server
-                $.post("/Journey/SubmitJourney", { journeyId: journeyId, userId: userId }, function (response) {
-                    if (response.success) {
-                        alert("Journey submitted successfully");
-                        localStorage.removeItem('JourneyID');
-                        window.location.href = '/Journey/Index';
-                    } else {
-                        alert("Error: Could not submit journey");
-                    }
-                });
+                    // Attach event handlers for edit and remove buttons
+                    attachStopoverEventHandlers();
+                } else {
+                    alert("Error: Could not create stopover");
+                }
             });
         });
+
+        $("#submitJourneyBtn").on("click", function () {
+            // Get the JourneyID from LocalStorage
+            var journeyId = localStorage.getItem('JourneyID');
+            var userId = localStorage.getItem('User_ID');
+
+            // Send a POST request to submit the journey data to the server
+            $.post("/Journey/SubmitJourney", { journeyId: journeyId, userId: userId }, function (response) {
+                if (response.success) {
+                    alert("Journey submitted successfully");
+                    localStorage.removeItem('JourneyID');
+                    window.location.href = '/Journey/Index';
+                } else {
+                    alert("Error: Could not submit journey");
+                }
+            });
+        });
+
+        // Function to edit a stopover when the Edit button is clicked
+        function handleEditStopover() {
+            var stopoverItem = $(this).closest('.stopover-item');
+            var stopoverId = $(this).closest('.stopover-item').attr('data-stopover-id');
+            var startLocation = stopoverItem.find('.stopover-start').text().replace('Start: ', '');
+            var endLocation = stopoverItem.find('.stopover-end').text().replace('End: ', '');
+            var distance = stopoverItem.find('.stopover-distance').text().replace('Emission: ', '').replace(' km', '');
+
+            console.log("Ilk dacht da da kon: " + stopoverId);
+
+            // Create the edit form HTML
+            var editForm = `
+                <div class="edit-stopover-form">
+                    <label>Starting Location:</label>
+                    <br>
+                    <input class="stopover-start-input shadow appearance-none border border-black rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" value="${startLocation}" required>
+                    <label>End Location:</label>
+                    <br>
+                    <input class="stopover-end-input shadow appearance-none border border-black rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" value="${endLocation}" required>
+                    <label>Distance in km:</label>
+                    <br>
+                    <input class="stopover-distance-input shadow appearance-none border border-black rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" value="${distance}" required>
+                    <button class="save-stopover-btn bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded">Save</button>
+                    <button class="cancel-stopover-btn bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded">Cancel</button>
+                </div>`;
+
+            // Replace the stopover item with the edit form
+            stopoverItem.replaceWith(editForm);
+
+            // Add a click event handler for the Save button
+           $('.save-stopover-btn').on('click', function () {
+                var updatedStartLocation = $('.stopover-start-input').val();
+                var updatedEndLocation = $('.stopover-end-input').val();
+                var updatedDistance = $('.stopover-distance-input').val();
+                var stopoverId = $(this).closest('.stopover-item').attr('data-stopover-id');
+                var stopoverItem = $(this).closest('.stopover-item');
+
+                console.log(stopoverId);
+
+                // Update the stopover item with the new values
+                var updatedStopoverItem = generateStopoverItem({
+                    id: stopoverId,
+                    vehicleTypeName: stopoverItem.find('.vehicle-type').text(),
+                    distance: updatedDistance,
+                    start: updatedStartLocation,
+                    end: updatedEndLocation,
+                    emission: stopoverItem.find('.stopover-emission').text()
+                });
+
+                // Replace the edit form with the updated stopover item
+                $('.edit-stopover-form').replaceWith(updatedStopoverItem);
+
+                // Re-attach the event handlers
+                attachStopoverEventHandlers();
+
+                // Send the updated stopover data to the server
+                var stopoverData = {
+                    Stopover_ID: stopoverId,
+                    VehicleType: stopoverItem.find('.vehicle-type').text(),
+                    Distance: updatedDistance,
+                    Start: updatedStartLocation,
+                    End: updatedEndLocation,
+                    Emission: stopoverItem.find('.stopover-emission').text(),
+                    JourneyID: $('#journeyId').val()
+                };
+
+                $.post('/Stopover/Edit', stopoverData, function (response) {
+                    if (response.success) {
+                        alert('Stopover updated successfully');
+                    } else {
+                        alert('Failed to update stopover');
+                    }
+                });
+            });
+
+            // Add a click event handler for the Cancel button
+            $('.cancel-stopover-btn').on('click', function () {
+                // Replace the edit form with the original stopover item
+                $('.edit-stopover-form').replaceWith(stopoverItem);
+
+                // Re-attach the event handlers
+                attachStopoverEventHandlers();
+            });
+        }
+
+        // Function to remove a stopover when the Remove button is clicked
+        function handleRemoveStopover() {
+            var stopoverId = document.querySelector('.stopover-item').getAttribute('data-stopover-id');
+            var stopoverItem = $(this).closest('.stopover-item');
+
+            // TODO: Implement removing a stopover
+            alert('Remove stopover not implemented');
+        }
+
+        // Function to attach event handlers for edit and remove buttons
+        function attachStopoverEventHandlers() {
+            $('.edit-stopover-btn').on('click', handleEditStopover);
+            $('.remove-stopover-btn').on('click', handleRemoveStopover);
+        }
+
+        // Generate the HTML for a stopover item
+        function generateStopoverItem(stopover) {
+            console.log(stopover.id);
+            var stopoverItem = `
+                <div class="stopover-item p-4 rounded-lg shadow-md bg-white mb-4" data-stopover-id="${stopover.id}">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-lg font-semibold vehicle-type">${stopover.vehicleTypeName}</span>
+                        <span class="text-sm text-gray-600 stopover-distance">${stopover.distance} km</span>
+                    </div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-sm text-gray-600 stopover-start">Start: ${stopover.start}</span>
+                        <span class="text-sm text-gray-600 stopover-end">End: ${stopover.end}</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-600 stopover-emission">Emission: ${stopover.emission}</span>
+                        <div>
+                            <button class="edit-stopover-btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded mr-2">Edit</button>
+                            <button class="remove-stopover-btn bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded">Remove</button>
+                        </div>
+                    </div>
+                </div>`;
+
+            return stopoverItem;
+        }
 
         // Function to check if a journey exists and create one if it doesn't
         async function checkAndCreateJourney() {
@@ -126,9 +229,13 @@
             }
         }
 
-        window.onload = function() {
+        window.onload = function () {
             checkAndCreateJourney();
+
+            // Attach event handlers for edit and remove buttons
+            attachStopoverEventHandlers();
         };
+    });
 </script>
 
 <!-- Main layout of the page -->

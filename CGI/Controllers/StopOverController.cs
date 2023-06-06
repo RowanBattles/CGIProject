@@ -54,7 +54,8 @@ namespace CGI.Controllers
                 string vehicleTypeName = stopover.VehicleType.GetDisplayName();
 
                 // Include the display name of the VehicleType property in the response object
-                return Json(new { success = true, stopover, vehicleTypeName });
+                Console.WriteLine("Wat de frick " + stopover.Stopover_ID);
+                return Json(new { success = true, stopover = stopover, vehicleTypeName });
             }
 
             return Json(new { success = false });
@@ -163,14 +164,15 @@ namespace CGI.Controllers
             }
             return View(stopover);
         }
+
         [HttpPost]
         public async Task<IActionResult> Edit(Stopover stopover)
         {
-            using (SqlConnection conn = new(_connectionString))
+            Console.WriteLine("id: " + stopover.Stopover_ID);
+            using (SqlConnection conn = new SqlConnection(_connectionString))
             {
-                using (SqlCommand cmd = new("UPDATE Stopovers SET Vehicle_ID = @Vehicle_ID, Distance = @Distance, Start = @Start, [End] = @End, Emission = @Emission WHERE Stopover_ID = @Stopover_ID", conn))
+                using (SqlCommand cmd = new SqlCommand("UPDATE Stopovers SET Vehicle_ID = @Vehicle_ID, Distance = @Distance, Start = @Start, [End] = @End, Emission = @Emission WHERE Stopover_ID = @Stopover_ID", conn))
                 {
-
                     cmd.Parameters.Add("@Vehicle_ID", SqlDbType.Int).Value = stopover.VehicleType;
                     cmd.Parameters.Add("@Distance", SqlDbType.Int).Value = stopover.Distance;
                     cmd.Parameters.Add("@Start", SqlDbType.VarChar).Value = stopover.Start;
@@ -178,13 +180,14 @@ namespace CGI.Controllers
                     cmd.Parameters.Add("@Emission", SqlDbType.Float).Value = stopover.Emission;
                     cmd.Parameters.Add("@Stopover_ID", SqlDbType.Int).Value = stopover.Stopover_ID;
 
-                    conn.Open();
+                    await conn.OpenAsync();
                     await cmd.ExecuteNonQueryAsync();
                 }
             }
 
             return Redirect("/journey?id=" + stopover.JourneyID);
         }
+
         [HttpPost]
         public async Task<IActionResult> Delete(int stopoverid)
         {

@@ -63,10 +63,7 @@ namespace CGI.Models
         public int Distance { get; set; }
         public string Start { get; set; }
         public string End { get; set; }
-
         public int Emission { get; set; }
-
-
         public static readonly Dictionary<Vehicle_ID, Vehicle_Emission> s_emissionMap =
              new()
              {
