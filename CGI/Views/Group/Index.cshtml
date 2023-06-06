@@ -34,7 +34,7 @@
                     @using (Html.BeginForm("Join", "Group", FormMethod.Post))
                     {
                         @Html.Hidden("groupId", group.Id)
-                        <button type="submit" class="px-2 py-1 hover:font-bold @(group.UserIsInGroup ? "hidden" : "")">join</button>
+                        <button type="submit" class="bg-blue-500 rounded px-2 py-1 hover:font-bold @(group.UserIsInGroup ? "hidden" : "")">join</button>
                     }
                 </li>
             }
