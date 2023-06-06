@@ -1,4 +1,4 @@
-namespace CGI.Models
+﻿namespace CGI.Models
 {
     public class LeaderboardViewModel
     {

@@ -28,18 +28,18 @@
         color: silver;
         display: inline-block;
         text-align: center;
-        left: 200px;
+        left: 50px;
         position: absolute;
-        bottom: 440px;
+        bottom: 35px;
 
     }
     .third {
         color: #a05822;
         display: inline-block;
         text-align: center;
-        right: 220px;
+        right: 60px;
         position: absolute;
-        bottom: 410px;
+        bottom: 20px;
     }
     .centered { 
         text-align: center;
@@ -56,7 +56,10 @@
         background-color: yellow;
     }
     .marginTopTable{
-        margin-top: 90px;
+        margin-top: 20px;
+    }
+    .ml-120px{
+        margin-left: 120px;
     }
 
 </style>
@@ -124,7 +127,7 @@ else
         </form>
     </div>
     <div class="block bg-slate-100 p-6 rounded-lg shadow-md shadow-slate-300 centered mx-auto my-auto mt-5">
-        <div>
+        <div class="block bg-white p-6 rounded-lg shadow-md shadow-slate-300 max-h-48 max-w-lg centered ml-120px">
         @foreach (var leaderboardViewModel in Model)
         {
             ranking++;
@@ -173,7 +176,7 @@ else
             
         }
         </div>
-        <div class="mt-8 border border-gray-400 marginTopTable">
+        <div class="mt-8 marginTopTable">
         <table class="table-auto w-full text-center">
             <thead>
                 <tr>
