@@ -1,4 +1,4 @@
-﻿namespace CGI.Models
+namespace CGI.Models
 {
     public class LeaderboardViewModel
     {
@@ -6,5 +6,7 @@
         public string userName { get; set; }
         public int score { get; set; }
         public bool UserIsGroupAdmin { get; set; }
+        public int lowerbound { get; set; }
+        public int upperbound { get; set; }
     }
 }

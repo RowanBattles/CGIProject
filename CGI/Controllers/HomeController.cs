@@ -54,11 +54,14 @@ namespace CGI.Controllers
         public IActionResult Index(int lowerbound, int upperbound)
         {
             List<LeaderboardViewModel> leaderboardViewModels = new List<LeaderboardViewModel>();
-
+            if (upperbound == 0)
+            {
+                upperbound = 500;
+            }
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
-                string sqlSelectUsers = "SELECT Users.Score, FullName, SUM(journeys.total_distance) AS total_user_distance, Users.User_ID FROM Users, (SELECT User_ID, SUM(total_distance) AS total_distance FROM Journeys GROUP BY User_ID) journeys WHERE Users.User_ID = journeys.User_ID AND total_distance > @lowerbounddistance AND total_distance < @upperbounddistance GROUP BY Users.User_ID, FullName, Users.Score";
+                string sqlSelectUsers = "SELECT Users.Score, FullName, SUM(journeys.total_distance) AS total_user_distance, Users.User_ID FROM Users, (SELECT User_ID, SUM(total_distance) AS total_distance FROM Journeys GROUP BY User_ID) journeys WHERE Users.User_ID = journeys.User_ID AND total_distance > @lowerbounddistance AND total_distance < @upperbounddistance GROUP BY Users.User_ID, FullName, Users.Score ORDER BY Users.Score DESC";
 
                 using (SqlCommand command = new SqlCommand(sqlSelectUsers, connection))
                 {
@@ -80,6 +83,8 @@ namespace CGI.Controllers
                         if (!reader.IsDBNull(reader.GetOrdinal("Score")))
                         {
                             leaderboardViewModel.score = (int)reader["Score"];
+                            leaderboardViewModel.lowerbound = lowerbound;
+                            leaderboardViewModel.upperbound = upperbound;
                             Console.WriteLine(leaderboardViewModel.userName);
                         }
 
@@ -92,6 +97,7 @@ namespace CGI.Controllers
 
             }
             Console.WriteLine(lowerbound);
+            Console.WriteLine(upperbound);
             return View(leaderboardViewModels);
         }
 
