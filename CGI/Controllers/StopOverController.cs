@@ -17,7 +17,6 @@ namespace CGI.Controllers
         }
 
         [HttpPost]
-        [HttpPost]
         public async Task<IActionResult> CreateStopOver(Stopover stopover)
         {
             if (ModelState.IsValid)
@@ -169,23 +168,33 @@ namespace CGI.Controllers
         public async Task<IActionResult> Edit(Stopover stopover, int journeyID)
         {
             Console.WriteLine("id: " + stopover.Stopover_ID);
-            using (SqlConnection conn = new SqlConnection(_connectionString))
+            Console.WriteLine("Vehicle: " + stopover.VehicleType);
+            
+            try
             {
-                using (SqlCommand cmd = new SqlCommand("UPDATE Stopovers SET Vehicle_ID = @Vehicle_ID, Distance = @Distance, Start = @Start, [End] = @End, Emission = @Emission WHERE Stopover_ID = @Stopover_ID", conn))
+                using (SqlConnection conn = new SqlConnection(_connectionString))
                 {
-                    cmd.Parameters.Add("@Vehicle_ID", SqlDbType.Int).Value = stopover.VehicleType;
-                    cmd.Parameters.Add("@Distance", SqlDbType.Int).Value = stopover.Distance;
-                    cmd.Parameters.Add("@Start", SqlDbType.VarChar).Value = stopover.Start;
-                    cmd.Parameters.Add("@End", SqlDbType.VarChar).Value = stopover.End;
-                    cmd.Parameters.Add("@Emission", SqlDbType.Float).Value = stopover.Emission;
-                    cmd.Parameters.Add("@Stopover_ID", SqlDbType.Int).Value = stopover.Stopover_ID;
+                    using (SqlCommand cmd = new SqlCommand("UPDATE Stopovers SET Vehicle_ID = @Vehicle_ID, Distance = @Distance, Start = @Start, [End] = @End, Emission = @Emission WHERE Stopover_ID = @Stopover_ID", conn))
+                    {
+                        cmd.Parameters.Add("@Vehicle_ID", SqlDbType.Int).Value = stopover.VehicleType;
+                        cmd.Parameters.Add("@Distance", SqlDbType.Int).Value = stopover.Distance;
+                        cmd.Parameters.Add("@Start", SqlDbType.VarChar).Value = stopover.Start;
+                        cmd.Parameters.Add("@End", SqlDbType.VarChar).Value = stopover.End;
+                        cmd.Parameters.Add("@Emission", SqlDbType.Float).Value = stopover.Emission;
+                        cmd.Parameters.Add("@Stopover_ID", SqlDbType.Int).Value = stopover.Stopover_ID;
 
-                    await conn.OpenAsync();
-                    await cmd.ExecuteNonQueryAsync();
+                        await conn.OpenAsync();
+                        await cmd.ExecuteNonQueryAsync();
+                    }
                 }
-            }
 
-            return Redirect("/journey/details/" + stopover.JourneyID);
+                return Redirect("/journey/details/" + stopover.JourneyID);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
         [HttpPost]

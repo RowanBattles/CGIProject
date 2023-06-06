@@ -94,8 +94,9 @@
             var startLocation = stopoverItem.find('.stopover-start').text().replace('Start: ', '');
             var endLocation = stopoverItem.find('.stopover-end').text().replace('End: ', '');
             var distance = stopoverItem.find('.stopover-distance').text().replace('Emission: ', '').replace(' km', '');
+            var vehicleType = stopoverItem.find('.vehicle-type').text();
 
-            console.log("Ilk dacht da da kon: " + stopoverId);
+            console.log("Stopover ID: " + stopoverId);
 
             // Create the edit form HTML
             var editForm = `
@@ -109,7 +110,36 @@
                     <label>Distance in km:</label>
                     <br>
                     <input class="stopover-distance-input shadow appearance-none border border-black rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" value="${distance}" required>
-                    <button class="save-stopover-btn bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded">Save</button>
+                    <label>Vehicle:</label>
+                    <br>
+                    <select class="stopover-vehicle-input shadow appearance-none border border-black rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" required>
+                        <optgroup label="Electric">
+                            <option value="${Vehicle_ID.ETrain}" ${vehicleType === Vehicle_ID.ETrain.GetDisplayName() ? 'selected' : ''}>${Vehicle_ID.ETrain.GetDisplayName()}</option>
+                            <option value="${Vehicle_ID.EBicycle}" ${vehicleType === Vehicle_ID.EBicycle.GetDisplayName() ? 'selected' : ''}>${Vehicle_ID.EBicycle.GetDisplayName()}</option>
+                            <option value="${Vehicle_ID.EScooter}" ${vehicleType === Vehicle_ID.EScooter.GetDisplayName() ? 'selected' : ''}>${Vehicle_ID.EScooter.GetDisplayName()}</option>
+                            <option value="${Vehicle_ID.ECar}" ${vehicleType === Vehicle_ID.ECar.GetDisplayName() ? 'selected' : ''}>${Vehicle_ID.ECar.GetDisplayName()}</option>
+                        </optgroup>
+                        <optgroup label="Gasoline">
+                            <option value="${Vehicle_ID.GScooter}" ${vehicleType === Vehicle_ID.GScooter.GetDisplayName() ? 'selected' : ''}>${Vehicle_ID.GScooter.GetDisplayName()}</option>
+                            <option value="${Vehicle_ID.GMotorcycle}" ${vehicleType === Vehicle_ID.GMotorcycle.GetDisplayName() ? 'selected' : ''}>${Vehicle_ID.GMotorcycle.GetDisplayName()}</option>
+                            <option value="${Vehicle_ID.GCar}" ${vehicleType === Vehicle_ID.GCar.GetDisplayName() ? 'selected' : ''}>${Vehicle_ID.GCar.GetDisplayName()}</option>
+                        </optgroup>
+                        <optgroup label="Hybrid">
+                            <option value="${Vehicle_ID.HCar}" ${vehicleType === Vehicle_ID.HCar.GetDisplayName() ? 'selected' : ''}>${Vehicle_ID.HCar.GetDisplayName()}</option>
+                        </optgroup>
+                        <optgroup label="Diesel">
+                            <option value="${Vehicle_ID.DTrain}" ${vehicleType === Vehicle_ID.DTrain.GetDisplayName() ? 'selected' : ''}>${Vehicle_ID.DTrain.GetDisplayName()}</option>
+                            <option value="${Vehicle_ID.DCar}" ${vehicleType === Vehicle_ID.DCar.GetDisplayName() ? 'selected' : ''}>${Vehicle_ID.DCar.GetDisplayName()}</option>
+                        </optgroup>
+                        <optgroup label="Other">
+                            <option value="${Vehicle_ID.Walking}" ${vehicleType === Vehicle_ID.Walking.GetDisplayName() ? 'selected' : ''}>${Vehicle_ID.Walking.GetDisplayName()}</option>
+                            <option value="${Vehicle_ID.Bicycle}" ${vehicleType === Vehicle_ID.Bicycle.GetDisplayName() ? 'selected' : ''}>${Vehicle_ID.Bicycle.GetDisplayName()}</option>
+                            <option value="${Vehicle_ID.Tram}" ${vehicleType === Vehicle_ID.Tram.GetDisplayName() ? 'selected' : ''}>${Vehicle_ID.Tram.GetDisplayName()}</option>
+                            <option value="${Vehicle_ID.Bus}" ${vehicleType === Vehicle_ID.Bus.GetDisplayName() ? 'selected' : ''}>${Vehicle_ID.Bus.GetDisplayName()}</option>
+                            <option value="${Vehicle_ID.Metro}" ${vehicleType === Vehicle_ID.Metro.GetDisplayName() ? 'selected' : ''}>${Vehicle_ID.Metro.GetDisplayName()}</option>
+                        </optgroup>
+                    </select>
+                    <button class="save-stopover-btn bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded" value="${stopoverId}">Save</button>
                     <button class="cancel-stopover-btn bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded">Cancel</button>
                 </div>`;
 
@@ -117,19 +147,47 @@
             stopoverItem.replaceWith(editForm);
 
             // Add a click event handler for the Save button
-           $('.save-stopover-btn').on('click', function () {
+            $('.save-stopover-btn').on('click', function () {
                 var updatedStartLocation = $('.stopover-start-input').val();
                 var updatedEndLocation = $('.stopover-end-input').val();
                 var updatedDistance = $('.stopover-distance-input').val();
-                var stopoverId = $(this).closest('.stopover-item').attr('data-stopover-id');
+                var updatedVehicleType = $('.stopover-vehicle-input').val();
+                var stopoverId = $(this).attr('value');
                 var stopoverItem = $(this).closest('.stopover-item');
 
-                console.log(stopoverId);
+                console.log("Stopover ID: " + stopoverId);
+
+                // Send the updated stopover data to the server
+                var stopoverData = {
+                    Stopover_ID: stopoverId,
+                    VehicleType: updatedVehicleType,
+                    Distance: updatedDistance,
+                    Start: updatedStartLocation,
+                    End: updatedEndLocation,
+                    Emission: stopoverItem.find('.stopover-emission').text(),
+                    JourneyID: $('#journeyId').val()
+                };
+
+                $.ajax({
+                    url: '/Stopover/Edit',
+                    type: 'POST',
+                    data: {
+                        stopover: stopoverData,
+                        journeyID: $('#journeyId').val()
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            alert('Stopover updated successfully');
+                        } else {
+                            alert('Failed to update stopover');
+                        }
+                    }
+                });
 
                 // Update the stopover item with the new values
                 var updatedStopoverItem = generateStopoverItem({
                     id: stopoverId,
-                    vehicleTypeName: stopoverItem.find('.vehicle-type').text(),
+                    vehicleTypeName: updatedVehicleType,
                     distance: updatedDistance,
                     start: updatedStartLocation,
                     end: updatedEndLocation,
@@ -141,25 +199,6 @@
 
                 // Re-attach the event handlers
                 attachStopoverEventHandlers();
-
-                // Send the updated stopover data to the server
-                var stopoverData = {
-                    Stopover_ID: stopoverId,
-                    VehicleType: stopoverItem.find('.vehicle-type').text(),
-                    Distance: updatedDistance,
-                    Start: updatedStartLocation,
-                    End: updatedEndLocation,
-                    Emission: stopoverItem.find('.stopover-emission').text(),
-                    JourneyID: $('#journeyId').val()
-                };
-
-                $.post('/Stopover/Edit', stopoverData, function (response) {
-                    if (response.success) {
-                        alert('Stopover updated successfully');
-                    } else {
-                        alert('Failed to update stopover');
-                    }
-                });
             });
 
             // Add a click event handler for the Cancel button
@@ -172,13 +211,26 @@
             });
         }
 
+
         // Function to remove a stopover when the Remove button is clicked
         function handleRemoveStopover() {
             var stopoverId = document.querySelector('.stopover-item').getAttribute('data-stopover-id');
             var stopoverItem = $(this).closest('.stopover-item');
 
-            // TODO: Implement removing a stopover
-            alert('Remove stopover not implemented');
+            // AJAX request
+            $.ajax({
+                url: '/Stopover/Delete', // Replace 'Stopover' with the actual name of your controller
+                type: 'POST',
+                data: { stopoverid: stopoverId },
+                success: function () {
+                    // Optional: Perform any additional actions on success
+                    stopoverItem.remove();
+                },
+                error: function () {
+                    // Optional: Handle the error condition
+                    alert('Failed to delete stopover.');
+                }
+            });
         }
 
         // Function to attach event handlers for edit and remove buttons
