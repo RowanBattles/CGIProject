@@ -21,6 +21,7 @@ namespace CGI.Controllers
         {
             if (ModelState.IsValid)
             {
+                int newStopoverId;
                 stopover.CalculateEmission();
                 using (SqlConnection connection = new SqlConnection(_connectionString))
                 {
@@ -35,10 +36,8 @@ namespace CGI.Controllers
                             command.Parameters.AddWithValue("@VehicleType", (int)stopover.VehicleType);
                             command.Parameters.AddWithValue("@Distance", stopover.Distance);
                             command.Parameters.AddWithValue("@Emission", stopover.Emission);
-
-                            stopover.Stopover_ID = (int)await command.ExecuteScalarAsync();
+                            newStopoverId = (int)await command.ExecuteScalarAsync();
                         }
-
                     }
                     catch (Exception e)
                     {
@@ -46,17 +45,10 @@ namespace CGI.Controllers
                         Console.WriteLine(stopover.VehicleType);
                         throw;
                     }
-
                 }
-
-                // Get the display name of the VehicleType property
                 string vehicleTypeName = stopover.VehicleType.GetDisplayName();
-
-                // Include the display name of the VehicleType property in the response object
-                Console.WriteLine("Wat de frick " + stopover.Stopover_ID);
-                return Json(new { success = true, stopover = stopover, vehicleTypeName });
+                return Json(new { success = true, stopoverId = newStopoverId, stopover = stopover, vehicleTypeName });
             }
-
             return Json(new { success = false });
         }
 
@@ -97,35 +89,33 @@ namespace CGI.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(int id)
         {
-            Stopover stopover;
-
+            List<Stopover> stopovers = new List<Stopover>();
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
-                using (SqlCommand cmd = new SqlCommand("SELECT * FROM Stopovers WHERE Stopover_ID = @Stopoverid ", conn))
+                using (SqlCommand cmd = new SqlCommand("SELECT * FROM Stopovers WHERE Journey_ID = @Journey_ID", conn))
                 {
-                    cmd.Parameters.AddWithValue("@stopoverid", id);
-
+                    cmd.Parameters.AddWithValue("@Journey_ID", id);
                     conn.Open();
-
                     using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
                     {
-                        if (!await reader.ReadAsync())
+                        while (await reader.ReadAsync())
                         {
-                            return NotFound();
+                            Stopover stopover = new Stopover
+                            {
+                                Stopover_ID = reader.GetInt32(0),
+                                VehicleType = (Vehicle_ID)reader.GetInt32(1),
+                                JourneyID = reader.GetInt32(2),
+                                Distance = reader.GetInt32(3),
+                                Start = reader.GetString(4),
+                                End = reader.GetString(5),
+                                Emission = reader.GetInt32(6)
+                            };
+                            stopovers.Add(stopover);
                         }
-                        stopover = new Stopover
-                        {
-                            Stopover_ID = reader.GetInt32(0),
-                            JourneyID = reader.GetInt32(2),
-                            Distance = reader.GetInt32(3),
-                            Start = reader.GetString(4),
-                            End = reader.GetString(5),
-                            Emission = reader.GetInt32(6)
-                        };
                     }
                 }
             }
-            return View(stopover);
+            return Json(stopovers);
         }
 
         [HttpGet]
