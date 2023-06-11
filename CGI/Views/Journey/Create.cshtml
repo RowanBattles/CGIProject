@@ -142,6 +142,28 @@
 
 
 
+            $('#submitJourneyBtn').on('click', async function () {
+                let journeyId = localStorage.getItem('JourneyID');
+                let userId = localStorage.getItem('User_ID');
+                let response = await fetch('/Journey/SubmitJourney?journeyId=' + journeyId + '&userId=' + userId, {
+                    method: 'POST'
+                });
+                if (response.ok) {
+                    let jsonResponse = await response.json();
+                    if (jsonResponse.success) {
+                        // Clear the stored JourneyID from Local Storage
+                        localStorage.removeItem('JourneyID');
+
+                        // Redirect to the Journey Details page
+                        window.location.href = '/Journey/Details?id=' + journeyId;
+                    } else {
+                        console.error('Failed to submit journey:', jsonResponse.message);
+                    }
+                } else {
+                    console.error('Failed to submit journey:', response.statusText);
+                }
+            });
+
 
 
 

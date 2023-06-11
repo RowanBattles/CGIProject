@@ -6,7 +6,7 @@
         <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
             <h2 class="text-2xl font-bold mb-4">Edit Stopover</h2>
 
-            <form method="post" action="@Url.Action("Edit")" class="space-y-6">
+            <form method="post" action="@Url.Action("EditStopOverAndReturn")" class="space-y-6">
                 @Html.AntiForgeryToken()
 
                 <input type="hidden" name="JourneyID" value="@Model.JourneyID" />

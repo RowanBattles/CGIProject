@@ -17,6 +17,41 @@ namespace CGI.Controllers
         }
 
         [HttpPost]
+        public async Task<IActionResult> EditStopOverAndReturn(Stopover stopover)
+        {
+            if (ModelState.IsValid)
+            {
+                stopover.CalculateEmission();
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    connection.Open();
+                    try
+                    {
+                        using (SqlCommand command = new SqlCommand("UPDATE Stopovers SET [Start] = @Start, [End] = @End, Vehicle_ID = @VehicleType, Distance = @Distance, Emission = @Emission WHERE Stopover_ID = @StopoverId", connection))
+                        {
+                            command.Parameters.AddWithValue("@Start", stopover.Start);
+                            command.Parameters.AddWithValue("@End", stopover.End);
+                            command.Parameters.AddWithValue("@VehicleType", (int)stopover.VehicleType);
+                            command.Parameters.AddWithValue("@Distance", stopover.Distance);
+                            command.Parameters.AddWithValue("@Emission", stopover.Emission);
+                            command.Parameters.AddWithValue("@StopoverId", stopover.Stopover_ID);
+                            await command.ExecuteNonQueryAsync();
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                        Console.WriteLine(stopover.VehicleType);
+                        throw;
+                    }
+                }
+                return RedirectToAction("Create", "Journey");
+            }
+            return View(stopover);
+        }
+
+
+        [HttpPost]
         public async Task<IActionResult> CreateStopOver(Stopover stopover)
         {
             if (ModelState.IsValid)

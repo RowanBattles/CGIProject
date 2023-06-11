@@ -41,7 +41,9 @@ namespace CGI.Controllers
 
             return Json(new { success = true, journeyId = newJourneyId });
         }
-        
+
+
+
         [HttpPost]
         public async Task<IActionResult> SubmitJourney(int journeyId, int userId)
         {
