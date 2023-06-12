@@ -45,7 +45,7 @@
         text-align: center;
         position: relative;
         overflow: hidden;
-        height: 600px;
+        height: 550px;
         width: 800px;
         align-items: center;
     }
@@ -66,26 +66,20 @@
 
 @if (Model.Count == 0)
 {
-    <div class="bg-slate-400 h-16 shadow">
-        <h1 class="text-center">
-            No Entries
-        </h1>
+    <div class="flex h-16 bg-gray-50 drop-shadow-lg">
+        <h1 class="mx-auto my-auto">Scoreboard (No Entries)</h1>
     </div>
 }
 else if (Model.First().upperbound == 999999)
 {
-    <div class="bg-slate-400 h-16 shadow">
-        <h1 class="text-center">
-            ALL
-        </h1>
+    <div class="flex h-16 bg-gray-50 drop-shadow-lg">
+        <h1 class="mx-auto my-auto">Scoreboard (All)</h1>
     </div>
 }
 else
 {
-    <div class="bg-slate-400 h-16 shadow">
-        <h1 class="text-center">
-            @Model.First().lowerbound - @Model.First().upperbound
-        </h1>
+    <div class="flex h-16 bg-gray-50 drop-shadow-lg">
+        <h1 class="mx-auto my-auto">Scoreboard (@Model.First().lowerbound - @Model.First().upperbound)</h1>
     </div>
 }
 
@@ -93,7 +87,7 @@ else
 <div class="">
     <div>
         <label>
-            <h1 class="text-2xl font-bold text-center">Choose Distance Range (km)</h1>
+            <h2 class="text-center my-4">Choose Distance Range (km)</h2>
         </label>
     </div>
     <div class="flex justify-center">
@@ -123,11 +117,11 @@ else
         <form id="myForm" action="@Url.Action("Index", "Home")" method="get">
             <input type="hidden" name="lowerbound" id="lowerbound" value="0">
             <input type="hidden" name="upperbound" id="upperbound" value="999999">
-            <button type="submit" id="buttonAll" class="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-2">ALL</button>
+            <button type="submit" id="buttonAll" class="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-2">All</button>
         </form>
     </div>
-    <div class="block bg-slate-100 p-6 rounded-lg shadow-md shadow-slate-300 centered mx-auto my-auto mt-5">
-        <div class="block bg-white p-6 rounded-lg shadow-md shadow-slate-300 max-h-48 max-w-lg centered ml-120px">
+    <div class="block bg-slate-100 p-4 rounded-lg shadow-md shadow-slate-300 centered mx-auto my-auto mt-5">
+        <div class="block bg-white p-4 rounded-lg shadow-md shadow-slate-300 max-h-48 max-w-lg centered ml-120px">
         @foreach (var leaderboardViewModel in Model)
         {
             ranking++;
