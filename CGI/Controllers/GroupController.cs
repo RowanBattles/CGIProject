@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using static System.Formats.Asn1.AsnWriter;
 
 
 namespace CGI.Controllers
@@ -137,13 +138,7 @@ namespace CGI.Controllers
 
 
                 string sqlSelectUsers =
-                    "SELECT U.User_ID, U.FullName, U.Score, GU.user_is_admin " +
-                    "FROM Users U " +
-                    "INNER JOIN GroupUsers GU ON U.User_ID = GU.User_ID " +
-                    "WHERE GU.Group_ID = @groupId " +
-                    "GROUP BY U.User_ID, U.FullName, U.Score, GU.user_is_admin " +
-                    "ORDER BY U.Score DESC;";
-
+                    "SELECT U.User_ID, U.FullName, (SELECT SUM(Score) FROM Journeys WHERE User_ID = U.User_ID ) AS UserScore, GU.user_is_admin FROM Users U INNER JOIN GroupUsers GU ON U.User_ID = GU.User_ID WHERE GU.Group_ID = 1 ORDER BY UserScore DESC;";
 
                 await using (var cmd = new SqlCommand(sqlSelectUsers, conn))
                 {
@@ -171,9 +166,9 @@ namespace CGI.Controllers
                             leaderboardViewModel.userName = (string)reader["Fullname"];
                         }
 
-                        if (!reader.IsDBNull(reader.GetOrdinal("Score")))
+                        if (!reader.IsDBNull(reader.GetOrdinal("UserScore")))
                         {
-                            leaderboardViewModel.score = (int)reader["Score"];
+                            leaderboardViewModel.score = (int)reader["UserScore"];
                         }
 
                         if (!reader.IsDBNull(reader.GetOrdinal("user_is_admin")))

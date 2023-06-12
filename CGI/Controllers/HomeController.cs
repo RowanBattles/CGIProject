@@ -61,7 +61,7 @@ namespace CGI.Controllers
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
-                string sqlSelectUsers = "SELECT Users.Score, FullName, SUM(journeys.total_distance) AS total_user_distance, Users.User_ID FROM Users, (SELECT User_ID, SUM(total_distance) AS total_distance FROM Journeys GROUP BY User_ID) journeys WHERE Users.User_ID = journeys.User_ID AND total_distance > @lowerbounddistance AND total_distance < @upperbounddistance GROUP BY Users.User_ID, FullName, Users.Score ORDER BY Users.Score DESC";
+                string sqlSelectUsers = "SELECT u.User_ID, u.FullName, SUM(j.total_distance) AS total_user_distance, UserScore FROM (SELECT User_ID, SUM(total_distance) AS total_distance, SUM(Score) AS UserScore  FROM Journeys GROUP BY User_ID) j, Users u WHERE j.User_ID = u.User_ID AND total_distance > @lowerbounddistance AND total_distance < @upperbounddistance GROUP BY u.User_ID, u.FullName, UserScore ORDER BY UserScore DESC";
 
                 using (SqlCommand command = new SqlCommand(sqlSelectUsers, connection))
                 {
@@ -80,9 +80,9 @@ namespace CGI.Controllers
                             
                         }
 
-                        if (!reader.IsDBNull(reader.GetOrdinal("Score")))
+                        if (!reader.IsDBNull(reader.GetOrdinal("UserScore")))
                         {
-                            leaderboardViewModel.score = (int)reader["Score"];
+                            leaderboardViewModel.score = (int)reader["UserScore"];
                             leaderboardViewModel.lowerbound = lowerbound;
                             leaderboardViewModel.upperbound = upperbound;
                             Console.WriteLine(leaderboardViewModel.userName);
