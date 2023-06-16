@@ -1,7 +1,17 @@
 ﻿@model JourneyViewModel
 
+
+
 @{
+    int totalEmission = 0;
+    int totalDistance = 0;
     int totalstopovers = 0;
+
+    foreach (var stopover in Model.Stopovers)
+    {
+        totalEmission += stopover.Emission;
+        totalDistance += stopover.Distance;
+    }
 }
 
 <div class="flex h-16 bg-gray-50 drop-shadow-lg">
@@ -14,8 +24,8 @@
         <div class="bg-white rounded-lg shadow-md p-6 mb-5">
             <div class="flex justify-between items-center">
                 <div class="font-bold text-lg">@Model.Journey.Start - @Model.Journey.End | @Model.Journey.Date.ToShortDateString()</div>
-                <div>Distance: @Model.Journey.Total_Distance km</div>
-                <div>Emission: @Model.Journey.Total_Emission gr</div>
+                <div>Distance: @totalDistance km</div>
+                <div>Emission: @totalEmission gr</div>
                 <form asp-controller="journey" asp-action="delete" asp-route-id="@Model.Journey.Journey_ID" class="destroy">
                     <input type="hidden" name="id" value="@Model.Journey.Journey_ID" />
                     <button class="bg-red-500 text-white px-8 py-2 rounded-lg">Delete</button>

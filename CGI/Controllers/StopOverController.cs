@@ -45,7 +45,7 @@ namespace CGI.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction("Create", "Journey");
+                return RedirectToAction("Index", "Journey");
             }
             return View(stopover);
         }

@@ -28,9 +28,17 @@
         margin-right: 10px;
     }
 
-    .edit-stopover,
+    .edit-stopover {
+        border: none;
+        color: white;
+        padding: 5px 10px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 14px;
+    }
+
     .delete-stopover {
-        background-color: #4CAF50; /* Green */
         border: none;
         color: white;
         padding: 5px 10px;
@@ -124,8 +132,8 @@
                     stopoverItem.append(vehicleDistanceRow);
                     let emissionButtonsRow = $('<div class="stopover-emission-buttons"></div>');
                     emissionButtonsRow.append('<span class="stopover-emission">Emission: ' + stopover.emission + '</span>');
-                    emissionButtonsRow.append('<button class="edit-stopover" data-id="' + stopover.stopover_ID + '">Edit</button>');
-                    emissionButtonsRow.append('<button class="delete-stopover" data-id="' + stopover.stopover_ID + '">Delete</button>');
+                    emissionButtonsRow.append('<button class="rounded bg-blue-500 mr-2 edit-stopover" data-id="' + stopover.stopover_ID + '">Edit</button>');
+                    emissionButtonsRow.append('<button class="bg-red-500 rounded delete-stopover" data-id="' + stopover.stopover_ID + '">Delete</button>');
                     stopoverItem.append(emissionButtonsRow);
                     list.append(stopoverItem);
                 }

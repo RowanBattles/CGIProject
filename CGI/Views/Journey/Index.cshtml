@@ -31,9 +31,8 @@
         {
             <ul>
                 @{
-                    List<Journey> orderedJourneys = (from journey in Model
-                                                     orderby journey.Date descending
-                                                     select journey).ToList();
+                    List<Journey> orderedJourneys = (Model.OrderByDescending(x => x.Date)
+                                                    .ToList());
                 }
                 @foreach (var journey in orderedJourneys)
                 {
